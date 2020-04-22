@@ -4,7 +4,7 @@ Zrobiono:
  - Wybrano nazwę dla projektu.
  - Sprecyzowano cele i zakres projektu.
  - Utworzono repozytorium w serwisie GitHub.
- - Dodano wszystkich członków projektu jako kontrubytorów.
+ - Dodano wszystkich członków projektu jako kontrybutorów.
 Nie zrobiono:
  -
 Planujemy:
