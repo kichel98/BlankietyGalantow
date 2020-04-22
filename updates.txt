@@ -1,0 +1,16 @@
+-------------------------------------------
+17-04-2020: Założenie repozytorium
+Zrobiono:
+ - Wybrano nazwę dla projektu.
+ - Sprecyzowano cele i zakres projektu.
+ - Utworzono repozytorium w serwisie GitHub.
+ - Dodano wszystkich członków projektu jako kontrubytorów.
+Nie zrobiono:
+ -
+Planujemy:
+ - Wybrać technologię, w której zrealizujemy projekt.
+ - Rozpocząć tworzenie formalnej specyfikacji, dokumentacji.
+ - Utworzyć mockup/zarys interfejsu.
+ - Utworzyć przydatne diagramy przepływu.
+Problemy:
+ - 
