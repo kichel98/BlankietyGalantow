@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blankiety Galantów</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div id="game">
+        <div id="game-container" class="w3-main w3-twothird">
+
+            <!-- Modal -->
+            <div class="w3-modal" :class="{'w3-show': showSettings}">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                
+                    <div class="w3-center"><br>
+                        <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <h3>Ustawienia</h3>
+                    </div>
+                    <hr>
+                    <div class="w3-container w3-margin">
+                        <p>
+                            <input name="is-open" class="w3-check" type="checkbox" checked="checked">
+                            <label>Zezwól na dołączenie nowych graczy</label>
+                        </p>
+                        <h4>Tryb gry</h4>
+                        <label>
+                            <input class="w3-radio" type="radio" name="game-type" value="default" checked="">
+                            Standardowy
+                        </label><br>
+                        <label>
+                            <input class="w3-radio" type="radio" name="game-type" value="nomercy">
+                            Bez litości
+                        </label><br>
+                        <label>
+                            <input class="w3-radio" type="radio" name="game-type" value="child">
+                            Dziecięcy
+                        </label><br>
+                        <label>
+                            <input class="w3-radio" type="radio" name="game-type" value="pwr">
+                            Prezentacja projektu
+                        </label><br>
+                        <h4>Limit czasu</h4>
+                        <input type="number" name="time-limit" id="time-limit" value="120"> sek.
+                    </div>
+
+            
+                    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                        <button @click="showSettings=false" type="button" class="w3-button w3-red">Cancel</button>
+                        <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right">Zapisz</button>
+                    </div>
+            
+                </div>
+            </div> <!-- Modal -->
+
+            <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-center">
+                <p>Jesteś mistrzem kart, zaczekaj aż wszyscy wybiorą karty</p>
+            </div> 
+    
+            <div class="table">
+                <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
+                    <p>Kocham język Python z powodu ______</p>
+                </div>
+
+                <div class="card w3-card w3-round-large w3-white w3-hover-shadow w3-center "
+                    v-for="player in players">
+                    <p><strong>{{player.name}}</strong></p>
+                    <!-- Status gracza -->
+                    <template v-if="player.state == 'ready'">
+                        <p>Gotowy</p>
+                        <p><i class="fa fa-check w3-text-green w3-xxxlarge"></i></p>
+                    </template>
+                    <template v-if="player.state == 'choosing'">
+                        <p>Wybiera..</p>
+                        <p><i class="fa fa-empire w3-xxxlarge w3-spin"></i></p>
+                    </template>
+                    <template v-if="player.state == 'master'">
+                        <p>Mistrz Kart</p>
+                    <p><i class="fa fa-eye w3-xxxlarge"></i></p>
+                    </template>
+                </div>
+            </div>
+            <hr>
+            <div class="hand">
+                <div class="card w3-card w3-round-large w3-hover-shadow w3-center"
+                    v-for="card in myCards">
+                    <p>{{card.text}}</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="w3-third">
+            <div id="sidebar" class="w3-card w3-bar-block">
+                <div class="w3-container w3-bar-item" style="display: flex;">
+                    <h2 style="width: 100%;">Stół: {{ tableId }}</h2>
+                    <button class="w3-button" style="width: 100px;" @click="showSettings=true"><i class="fa fa-cog w3-xxxlarge"></i></button>
+                </div>
+                <button class="w3-button w3-bar-item w3-light-grey" @click="showPlayers = !showPlayers">Gracze <i class="fa fa-caret-down"></i></button>
+                <div id="player-list" v-show="showPlayers">
+
+                    <div class="player-info w3-padding"
+                        v-for="player in players">
+                        <p><strong>{{player.name}} <i class="fa fa-star" v-if="player.admin"></i></strong> 
+                            <span v-if="player.id === me.id">(ty)</span></p>
+                        <p>punkty: {{player.score}}</p>
+                    </div>
+
+                </div>
+                <button class="w3-button w3-bar-item w3-light-grey" @click="showChat = !showChat">Czat <i class="fa fa-caret-down"></i></button>
+                <div id="chat-content" class="w3-padding" v-show="showChat">
+
+                    <p v-for="(msg, idx) in chat" :class="{'user-bot': msg.log}">
+                        <strong>{{msg.name}}: </strong>
+                        {{msg.message}}
+                    </p>
+
+                </div>
+                <div id="chat-input-area" class="w3-border-top" v-show="showChat">
+                    <input type="text" name="message" id="chat-input" autocomplete="off" v-model="newMessage" @keyup.enter="sendMessage">
+                    <button @click="sendMessage"><i class="fa fa-send"></i></button>
+                </div>
+            </div>    
+        </div>
+    </div> <!-- game -->
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
