@@ -6,6 +6,7 @@ var app = new Vue({
             console.log("Zapisywanie do Local Storage...");
         }
     },
+    /* Some mockup data */
     data: {
         username: "Bober",
         servers: [
