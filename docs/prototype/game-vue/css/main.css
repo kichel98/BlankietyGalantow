@@ -5,6 +5,10 @@
     margin: 0.5em 1em;
     padding: 0.5em 1em;
 }
+.card:hover {
+    cursor: pointer;
+}
+
 .table {
     display: flex;
     justify-content: center;
@@ -50,4 +54,14 @@
 }
 #chat-input {
     width: 100%;
+}
+
+/* FONTELLO FIX */
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+    margin: 0;
+}
+
+i {
+    display: inline-block;
+    line-height: 1;
 }
