@@ -8,6 +8,10 @@
 .card:hover {
     cursor: pointer;
 }
+.card.selected {
+    background: #fff9bf;
+    transform: translateY(-8px);
+}
 
 .table {
     display: flex;
