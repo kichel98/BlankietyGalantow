@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blankiety Galantów</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="../vendor/fontello/css/fontello.css">
+    <link rel="stylesheet" href="../vendor/hover/hover-min.css">
+    <link rel="stylesheet" href="../vendor/w3css/w3.css">
     <link rel="stylesheet" href="css/main.css">
+
+    <script src="../vendor/vue/vue-dev.js"></script>
+    <script src="js/components.js"></script>
 </head>
 <body>
     <div id="game">
@@ -65,29 +69,19 @@
                 <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
                     <p>Kocham język Python z powodu ______</p>
                 </div>
-
-                <div class="card w3-card w3-round-large w3-white w3-hover-shadow w3-center "
-                    v-for="player in players">
-                    <p><strong>{{player.name}}</strong></p>
-                    <!-- Status gracza -->
-                    <template v-if="player.state == 'ready'">
-                        <p>Gotowy</p>
-                        <p><i class="fa fa-check w3-text-green w3-xxxlarge"></i></p>
-                    </template>
-                    <template v-if="player.state == 'choosing'">
-                        <p>Wybiera..</p>
-                        <p><i class="fa fa-empire w3-xxxlarge w3-spin"></i></p>
-                    </template>
-                    <template v-if="player.state == 'master'">
-                        <p>Mistrz Kart</p>
-                    <p><i class="fa fa-eye w3-xxxlarge"></i></p>
-                    </template>
-                </div>
+                <card-player
+                    v-for="player in players"
+                    v-bind:key="player.id"
+                    v-bind:player="player">
+                </card-player>
             </div>
             <hr>
             <div class="hand">
-                <div class="card w3-card w3-round-large w3-hover-shadow w3-center"
-                    v-for="card in myCards">
+
+                <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float"
+                    v-for="card in myCards"
+                    v-bind:class="{selected: card.selected}"
+                    v-on:click="card.selected = !card.selected">
                     <p>{{card.text}}</p>
                 </div>
             </div>
@@ -97,20 +91,20 @@
             <div id="sidebar" class="w3-card w3-bar-block">
                 <div class="w3-container w3-bar-item" style="display: flex;">
                     <h2 style="width: 100%;">Stół: {{ tableId }}</h2>
-                    <button class="w3-button" style="width: 100px;" @click="showSettings=true"><i class="fa fa-cog w3-xxxlarge"></i></button>
+                    <button class="w3-button" style="width: 100px;" @click="showSettings=true"><i class="icon-cog w3-xxxlarge"></i></button>
                 </div>
-                <button class="w3-button w3-bar-item w3-light-grey" @click="showPlayers = !showPlayers">Gracze <i class="fa fa-caret-down"></i></button>
+                <button class="w3-button w3-bar-item w3-light-grey" @click="showPlayers = !showPlayers">Gracze <i class="icon-down-dir"></i></button>
                 <div id="player-list" v-show="showPlayers">
 
                     <div class="player-info w3-padding"
                         v-for="player in players">
-                        <p><strong>{{player.name}} <i class="fa fa-star" v-if="player.admin"></i></strong> 
+                        <p><strong>{{player.name}} <i class="icon-star" v-if="player.admin"></i></strong> 
                             <span v-if="player.id === me.id">(ty)</span></p>
                         <p>punkty: {{player.score}}</p>
                     </div>
 
                 </div>
-                <button class="w3-button w3-bar-item w3-light-grey" @click="showChat = !showChat">Czat <i class="fa fa-caret-down"></i></button>
+                <button class="w3-button w3-bar-item w3-light-grey" @click="showChat = !showChat">Czat <i class="icon-down-dir"></i></button>
                 <div id="chat-content" class="w3-padding" v-show="showChat">
 
                     <p v-for="(msg, idx) in chat" :class="{'user-bot': msg.log}">
@@ -121,13 +115,12 @@
                 </div>
                 <div id="chat-input-area" class="w3-border-top" v-show="showChat">
                     <input type="text" name="message" id="chat-input" autocomplete="off" v-model="newMessage" @keyup.enter="sendMessage">
-                    <button @click="sendMessage"><i class="fa fa-send"></i></button>
+                    <button @click="sendMessage"><i class="icon-send"></i></button>
                 </div>
             </div>    
         </div>
     </div> <!-- game -->
 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
