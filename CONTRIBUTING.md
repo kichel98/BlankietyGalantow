@@ -31,7 +31,7 @@ Ustalamy konwencję *branch-per-feature*, tzn. tworzymy nowego brancha, gdy chce
 * Dodać hotfixa
 * Naprawić buga
 
-Celem tworzenia branchy jest możliwość przejżenia i skomentowania zmian przez innych członków zespołu na GitHubie nim zostaną one zmerge'owane do projektu. Daje to możliwość przetestowania zmian przed wdrożeniem.
+Celem tworzenia branchy jest możliwość przejrzenia i skomentowania zmian przez innych członków zespołu na GitHubie nim zostaną one zmerge'owane do projektu. Daje to możliwość przetestowania zmian przed wdrożeniem.
 
 Zmiany do swoich własnych branchy commitujemy bez obaw. Natomiast chcąc dodać funkcjonalność do brancha `dev` lub `master` powinno się najpierw utworzyć *Github Merge Request* i poczekać aż ktoś zrobi review zmian.
 
@@ -46,7 +46,7 @@ Po raz kolejny zachowujemy zdrowy rozsądek. Jeśli zmiany są błahe i/lub piln
 | `docs` | Rozwijanie dokumentacji projektu |
 | `dev` | Branch na aktualnie rozwijane funkcjonalności |
 | `feat/some-name` | Branch na jakąś konkretną funkcjonalność |
-| `hotfix/some-name` | Hitfix jakiejś niedawno dodanej zmiany |
+| `hotfix/some-name` | Hotfix jakiejś niedawno dodanej zmiany |
 | `bugfix/some-name` | Naprawa błędu |
 | `some-name` | Gdy nic nie pasuje |
 
