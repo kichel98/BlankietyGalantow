@@ -1,5 +1,6 @@
 import uvicorn
 import codecs
+import json
 from typing import List, Dict
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
@@ -16,10 +17,18 @@ app.mount("/css", StaticFiles(directory="./docs/prototype/servers-vue/css"), nam
 app.mount("/game/js", StaticFiles(directory="./docs/prototype/game-vue/js"), name="game/js")
 app.mount("/game/css", StaticFiles(directory="./docs/prototype/game-vue/css"), name="game/css")
 
+class User:
+    def __init__(self, username:str, socket:WebSocket):
+        self.username = username
+        self.socket = socket
+    username:str
+    socket:WebSocket
+
 class Server:
     def __init__(self):
         self.tables = {}
-    tables: Dict[int, List[WebSocket]]
+    tables: Dict[int, List[User]]
+
 
 server = Server()
 
@@ -35,14 +44,19 @@ async def connect_to_game(game_id):
 
 
 @app.websocket("/connect/{game_id}")
-async def websocket_endpoint(websocket: WebSocket, game_id: int):
+async def websocket_endpoint(websocket: WebSocket, game_id: int, username: str):
     await websocket.accept()
     if game_id in server.tables:
-        server.tables[game_id].append(websocket)
+        server.tables[game_id].append(User(username, websocket))
     else:
-        server.tables[game_id] = [websocket]
+        server.tables[game_id] = [User(username, websocket)]
     while True:
         data = await websocket.receive_text()
-        for socket in server.tables[game_id]:
-            await socket.send_text(f"[Game {game_id}] Message text was: {data}")
+        
+        for user in server.tables[game_id]:
+            message = {
+                "user": username,
+                "message": data
+            }
+            await user.socket.send_text(json.dumps(message))
         

@@ -101,8 +101,9 @@ var game = new Vue({
 
 // Recive message from websocket
 socket.onmessage = function(event) {
+    data = JSON.parse(event.data)
     game.chat.push({
-        name: game.me.name,
-        message: event.data
+        name: data.user,
+        message: data.message
     });
 };
