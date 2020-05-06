@@ -6,21 +6,23 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
-app.mount("/vendor", StaticFiles(directory="../docs/prototype/vendor"), name="vendor")
-app.mount("/js", StaticFiles(directory="../docs/prototype/servers-vue/js"), name="js")
-app.mount("/css", StaticFiles(directory="../docs/prototype/servers-vue/css"), name="css")
-app.mount("/game/js", StaticFiles(directory="../docs/prototype/game-vue/js"), name="game/js")
-app.mount("/game/css", StaticFiles(directory="../docs/prototype/game-vue/css"), name="game/css")
+app.mount("/vendor", StaticFiles(directory="./docs/prototype/vendor"), name="vendor")
+app.mount("/js", StaticFiles(directory="./docs/prototype/servers-vue/js"), name="js")
+app.mount("/css", StaticFiles(directory="./docs/prototype/servers-vue/css"), name="css")
+app.mount("/game/js", StaticFiles(directory="./docs/prototype/game-vue/js"), name="game/js")
+app.mount("/game/css", StaticFiles(directory="./docs/prototype/game-vue/css"), name="game/css")
 
+def run():
+    uvicorn.run(app, host="localhost", port=8000)
 
 @app.get("/")
 async def get():
-    f = codecs.open('../docs/prototype/servers-vue/index.html','r', 'utf-8')
+    f = codecs.open('./docs/prototype/servers-vue/index.html','r', 'utf-8')
     return HTMLResponse(f.read())
 
 @app.get("/game/{game_id}")
 async def connect_to_game(game_id):
-    f = codecs.open('../docs/prototype/game-vue/index.html','r', 'utf-8')
+    f = codecs.open('./docs/prototype/game-vue/index.html','r', 'utf-8')
     return HTMLResponse(f.read())
 
 
