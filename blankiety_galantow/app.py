@@ -1,6 +1,8 @@
 import uvicorn
+import codecs
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
@@ -39,10 +41,16 @@ html = """
 </html>
 """
 
+app.mount("/vendor", StaticFiles(directory="../docs/prototype/vendor"), name="vendor")
+app.mount("/js", StaticFiles(directory="../docs/prototype/servers-vue/js"), name="js")
+app.mount("/css", StaticFiles(directory="../docs/prototype/servers-vue/css"), name="css")
+
+
 
 @app.get("/")
 async def get():
-    return HTMLResponse(html)
+    f = codecs.open('../docs/prototype/servers-vue/index.html','r', 'utf-8')
+    return HTMLResponse(f.read())
 
 
 @app.websocket("/ws")
