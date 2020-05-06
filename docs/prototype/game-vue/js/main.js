@@ -1,3 +1,5 @@
+socket = connect()
+
 var game = new Vue({
     el: '#game',
     methods: {
@@ -14,10 +16,13 @@ var game = new Vue({
                 return;
 
             // Wysyłanie wiadomości...
-            this.chat.push({
-                name: this.me.name,
-                message: this.newMessage
-            });
+            // this.chat.push({
+            //     name: this.me.name,
+            //     message: this.newMessage
+            // });
+
+            // Testowe wysyłanie na websocket
+            socket.send(this.newMessage)
 
             this.newMessage = ''; // Po wysłaniu wiadomości wyczyść input.
         }
@@ -42,8 +47,7 @@ var game = new Vue({
     data: {
         tableId: 20965,
         myId: 4,
-        players: [
-            {
+        players: [{
                 id: 1,
                 name: "Tomek",
                 score: 1,
@@ -70,22 +74,22 @@ var game = new Vue({
             }
         ],
         myCards: [
-            {id: 21, text: "Śmieszny tekst 1", selected: false},
-            {id: 22, text: "Śmieszny tekst 2", selected: false},
-            {id: 23, text: "Śmieszny tekst 3", selected: false},
-            {id: 24, text: "Śmieszny tekst 4", selected: false},
-            {id: 25, text: "Śmieszny tekst 5", selected: false},
-            {id: 26, text: "Śmieszny tekst 6", selected: false},
-            {id: 27, text: "Śmieszny tekst 7", selected: false},
-            {id: 28, text: "Śmieszny tekst 8", selected: false},
+            { id: 21, text: "Śmieszny tekst 1", selected: false },
+            { id: 22, text: "Śmieszny tekst 2", selected: false },
+            { id: 23, text: "Śmieszny tekst 3", selected: false },
+            { id: 24, text: "Śmieszny tekst 4", selected: false },
+            { id: 25, text: "Śmieszny tekst 5", selected: false },
+            { id: 26, text: "Śmieszny tekst 6", selected: false },
+            { id: 27, text: "Śmieszny tekst 7", selected: false },
+            { id: 28, text: "Śmieszny tekst 8", selected: false },
         ],
         chat: [
-            {name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true},
-            {name: "Gra", message: "Gracz Tomek zostaje mistrzem kart.", log: true},
-            {name: "Michał", message: "Kurcze nic mi nie pasuje :("},
-            {name: "Ala", message: "Oo to będzie mocne!"},
-            {name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true},
-            {name: "Zuza", message: "Chyba jednak nie było xD"},
+            { name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true },
+            { name: "Gra", message: "Gracz Tomek zostaje mistrzem kart.", log: true },
+            { name: "Michał", message: "Kurcze nic mi nie pasuje :(" },
+            { name: "Ala", message: "Oo to będzie mocne!" },
+            { name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true },
+            { name: "Zuza", message: "Chyba jednak nie było xD" },
         ],
         newMessage: '',
         showPlayers: false,
@@ -93,3 +97,12 @@ var game = new Vue({
         showSettings: false
     }
 });
+
+
+// Recive message from websocket
+socket.onmessage = function(event) {
+    game.chat.push({
+        name: game.me.name,
+        message: event.data
+    });
+};
