@@ -1,19 +1,9 @@
-function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
 var app = new Vue({
     el: '#container',
     // I dont know react and vue, so this is quiet random ;) [Bartek]
     methods: {
         connect: function(id) {
-            console.log(id)
-            setCookie("game_id", id, 0.2)
             window.location.pathname = "game/" + id;
-            console.log("http://localhost:8000/game/" + id)
         }
     },
     watch: {
