@@ -1,0 +1,125 @@
+main {
+    padding: 10px 20px;
+}
+
+header {
+    text-align: center;
+}
+header h1 {
+    font-size: 4em;
+}
+
+#container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 30px;
+}
+
+i {
+    line-height: 1;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* FONTELLO FIX */
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+    margin: 0;
+}
+
+/* SERVERS */
+
+.servers {
+    flex-grow: 1;
+}
+.servers li {
+    padding: 0;
+}
+
+.server-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 8px 16px;
+}
+.server-item:hover {
+    cursor: pointer;
+}
+.server-item.hvr-radial-out:before {
+    background: #3f75d9;
+}
+
+.server-icon {
+    font-size: 50px;
+    padding: 8px 8px;
+}
+.server-info {
+    flex-grow: 1;
+    padding: 8px 16px;
+}   
+.server-status {
+    display: flex;
+    align-items: center;
+    font-size: 40px;
+    margin-right: 5px;
+}
+.server-status .open {
+    color: #4CAF50;
+}
+.server-status .closed {
+    color: #eb4034;
+}
+.server-status .full {
+    color: #bababa;
+}
+
+.join-btn {
+    font-size: 32px;
+    color: #4CAF50;
+}
+
+/* SIDEBAR */
+
+aside h2 {
+    margin-bottom: 0;
+}
+
+/* SETTINGS */
+
+.settings {
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+}
+.settings label {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+
+}
+.settings input {
+    width: 100%;
+    padding: 2px;
+}
+
+/* ABOUT */
+.about p {
+    text-align: justify;
+}
+
+/* Screen larger than 600px */
+@media (min-width:600px) {
+    main {
+        padding: 10px 40px;
+    }
+    #container {
+        flex-direction: row-reverse;
+
+    }
+
+    aside {
+        width: 300px;
+        margin-left: 20px;
+    }
+}
