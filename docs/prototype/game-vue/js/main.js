@@ -38,6 +38,7 @@ var game = new Vue({
             }, 500);
         }
     },
+    /* Mockup data */
     data: {
         tableId: 20965,
         myId: 4,
@@ -69,14 +70,14 @@ var game = new Vue({
             }
         ],
         myCards: [
-            {id: 21, text: "Śmieszny tekst 1"},
-            {id: 22, text: "Śmieszny tekst 2"},
-            {id: 23, text: "Śmieszny tekst 3"},
-            {id: 24, text: "Śmieszny tekst 4"},
-            {id: 25, text: "Śmieszny tekst 5"},
-            {id: 26, text: "Śmieszny tekst 6"},
-            {id: 27, text: "Śmieszny tekst 7"},
-            {id: 28, text: "Śmieszny tekst 8"},
+            {id: 21, text: "Śmieszny tekst 1", selected: false},
+            {id: 22, text: "Śmieszny tekst 2", selected: false},
+            {id: 23, text: "Śmieszny tekst 3", selected: false},
+            {id: 24, text: "Śmieszny tekst 4", selected: false},
+            {id: 25, text: "Śmieszny tekst 5", selected: false},
+            {id: 26, text: "Śmieszny tekst 6", selected: false},
+            {id: 27, text: "Śmieszny tekst 7", selected: false},
+            {id: 28, text: "Śmieszny tekst 8", selected: false},
         ],
         chat: [
             {name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true},

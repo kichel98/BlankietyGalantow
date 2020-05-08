@@ -1,1 +1,7 @@
-docs/blankiety_galantow.code-workspace
+venv/
+__pycache__/
+
+*.pyc
+
+# Visual Studio Code
+*.code-workspace

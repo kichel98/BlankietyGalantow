@@ -1,4 +1,26 @@
 -------------------------------------------
+04-05-2020: Przygotowanie prototypu interfejsu
+Zrobiono:
+ - Utworzono grafiki koncepcyjne interfejsu.
+ - Zaimplementowano prototypy interfejsu z użyciem Vue.js
+ - Sporządzono specyfikację projektu (oczekuje na dodanie).
+ - Sporządzono zasady projektu (oczekuje na dodanie).
+ - Przygotowano repozytorium, dodano etykiety, kamienie milowe,
+   tablice kanban itd.
+ - Zaproponowano technologie do wykorzystania na backendzie.
+ - Zatwierdzenie zaproponowanej specyfikacji i zasad projektu.
+ - Przedyskutowanie zaproponowanych technologii, frameworków.
+Nie zrobiono:
+ - 
+Planujemy:
+ - Przygotowanie prototypu serwera.
+ - Sporządzenie specyfikacji zasad gry.
+ - Nauka frameworka FastAPI.
+ - Nauka WebSockets w Pythonie (FastAPI).
+Problemy:
+ - Nowy framework na froncie i backendzie, którego wcześniej nie używaliśmy.
+
+-------------------------------------------
 17-04-2020: Założenie repozytorium
 Zrobiono:
  - Wybrano nazwę dla projektu.

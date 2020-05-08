@@ -1,0 +1,71 @@
+.card {
+    display: inline-block;
+    width: 150px;
+    height: 200px;
+    margin: 0.5em 1em;
+    padding: 0.5em 1em;
+}
+.card:hover {
+    cursor: pointer;
+}
+.card.selected {
+    background: #fff9bf;
+    transform: translateY(-8px);
+}
+
+.table {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hand {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#sidebar {
+    font-size: 1.1em;
+    margin: 1em;
+}
+
+#player-list .player-info p {
+    display: inline-block;
+    margin: 0;
+}
+#player-list .player-info p:nth-child(2) {
+    float: right;
+}
+
+#chat-content {
+    overflow-y: scroll;
+    height: 300px;
+}
+#chat-content p {
+    margin: 0;
+}
+#chat-content .user-bot strong{
+    color: #2e66ff;
+}
+#chat-content .user-bot {
+    font-style: italic;
+    color: #444;
+}
+#chat-input-area {
+    display: flex; 
+    padding: 8px;
+}
+#chat-input {
+    width: 100%;
+}
+
+/* FONTELLO FIX */
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+    margin: 0;
+}
+
+i {
+    display: inline-block;
+    line-height: 1;
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blankiety Galantów</title>
+
+    <link rel="stylesheet" href="../vendor/w3css/w3.css">
+    <link rel="stylesheet" href="../vendor/hover/hover-min.css">
+    <link rel="stylesheet" href="../vendor/fontello/css/fontello.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<main class="w3-content">
+    <header>
+        <h1>Blankiety Galantów</h1>
+    </header>
+
+    <div class="container">
+        <sidebar class="">
+            <div class="settings w3-card w3-container">
+                <header>
+                    <h2>Ustawienia</h2>
+                </header>
+                <hr>
+                <label for="peas">Nazwa użytkownika</label>
+                <input type="text" name="name" id="name-input" autocomplete="off" value="Player" required>
+            </div>
+
+            <div class="about w3-card w3-container">
+                <header>
+                    <h2>O grze</h2>
+                </header>
+                <hr>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc malesuada magna et ligula elementum molestie. Aenean in convallis sem, a tincidunt tellus. Nam venenatis nibh ac mauris tristique, eu tempor sapien pulvinar.</p>
+            </div>
+
+        </sidebar>
+
+        <div class="servers w3-card">
+            <ul class="w3-ul">
+                <li>
+                    <div class="server-item hvr-icon-grow hvr-radial-out">
+                        <i class="icon-group server-icon w3-hide-small"></i>
+                        <div class="server-info">
+                            <span class="w3-large">Alpha</span><br>
+                            <span>Gracze: 1/6</span>
+                        </div>
+                        <div class="server-status open">
+                            <i class="icon-lock-open hvr-icon"></i>
+                        </div>
+                    </div>
+                </li>
+            
+                <li>
+                    <div class="server-item hvr-icon-grow hvr-radial-out">
+                        <i class="icon-group server-icon w3-hide-small"></i>
+                        <div class="server-info">
+                            <span class="w3-large">Beta</span><br>
+                            <span>Gracze: 3/6</span>
+                        </div>
+                        <div class="server-status closed">
+                            <i class="icon-lock-closed hvr-icon"></i>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="server-item hvr-icon-grow hvr-radial-out">
+                        <i class="icon-group server-icon w3-hide-small"></i>
+                        <div class="server-info">
+                            <span class="w3-large">Charlie</span><br>
+                            <span>Gracze: 6/6</span>
+                        </div>
+                        <div class="server-status full">
+                            <i class="icon-lock-closed-alt hvr-icon"></i>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
