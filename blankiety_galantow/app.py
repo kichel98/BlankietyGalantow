@@ -1,7 +1,11 @@
+import os
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from blankiety_galantow.routers import router
+
+os.chdir(os.path.dirname(__file__))
 
 app = FastAPI()
 app.mount("/css", StaticFiles(directory="resources/css"), name="css")
