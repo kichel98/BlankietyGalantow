@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blankiety Galantów</title>
+
+    <link rel="stylesheet" href="vendor/w3css/w3.css">
+    <link rel="stylesheet" href="vendor/hover/hover-min.css">
+    <link rel="stylesheet" href="vendor/fontello/css/fontello.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="vendor/vue/vue-dev.js"></script>
+    <script src="js/components.js"></script>
+</head>
+<body>
+
+    <main class="w3-content">
+        <header>
+            <h1>Blankiety Galantów</h1>
+        </header>
+
+        <div id="container">
+            <aside class="">
+                <div class="settings w3-card w3-container">
+                    <header>
+                        <h2>Ustawienia</h2>
+                    </header>
+                    <hr>
+                    <label for="peas">Nazwa użytkownika</label>
+                    <input type="text" name="name" id="name-input" autocomplete="off" required
+                        v-model="username">
+                </div>
+
+                <div class="about w3-card w3-container">
+                    <header>
+                        <h2>O grze</h2>
+                    </header>
+                    <hr>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc malesuada magna et ligula elementum molestie. Aenean in convallis sem, a tincidunt tellus. Nam venenatis nibh ac mauris tristique, eu tempor sapien pulvinar.</p>
+                </div>
+
+            </aside>
+
+            <div class="servers w3-card">
+                <ul class="w3-ul">
+                    <server-item
+                        v-for="server in servers"
+                        v-bind:key="server.id"
+                        v-bind:server="server">
+                    </server-item>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
