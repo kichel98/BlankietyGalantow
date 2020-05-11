@@ -40,25 +40,53 @@ Użytkownik uruchamia aplikację pod adresem, np. https://blankiety-galantow.pl 
 Alternatywnym sposobem na dołączenie do wybranego serwera jest przejście pod link udostępniony przez jednego z graczy, np. https://blankiety-galantow.pl/game/12345.
 
 ### Mechanika rozgrywki
-*Opis krok po kroku wszystkich stanów rozgrywki po kolei. Najlepiej na jakimś przykładzie z 3 osobami.*
+* Ilość graczy: 3 – ∞ (górny limit do ustalenia w trakcie tworzenia GUI)
+* Warunki zwycięstwa: zdobycie przez gracza ustalonej wcześniej ilości punktów
+  
+* Opis elementów rozgrywki:
+  * Karta biała – zawiera krótką, maksymalnie jednozdaniową odpowiedź na kartę czarną. Ich skończona ilość jest elementem zestawu kart.
+  * Karta czarna – zawiera krótkie pytanie lub zdanie z jedną lub dwoma lukami do uzupełnienia. Także zawiera się w zestawie kart.
+  * Zestaw kart – pakiet kart białych i czarnych, o zazwyczaj spójnej tematyce. Administrator serwera może wybrać z których zestawów będą losowane karty przed rozpoczęciem rozgrywki.
+  
+* Przebieg rozgrywki:
+  
+    *W poniższym opisie, karta biała może być utożsamiana z parą kart białych w przypadku, gdy zagrana jest karta czarna z dwoma lukami.*
+  1. Każdy gracz otrzymuje 10 losowych kart białych.
+  2. Jeden z graczy, wedle kolejności na liście graczy, zostaje mistrzem kart. Wyświetlona zostaje losowa czarna karta.
+  3. Pozostali gracze wybierają jedną z białych kart dostępnych na swojej ręce. Ich celem jest jest takie dopasowanie karty białej do czarnej, aby mistrz kart uznał ją za najśmieszniejszą.
+  4. Białe karty zostają odkryte w taki sposób, by ich właściciele pozostali anonimowi. Mistrz kart oddaje głos na jedną z białych kart.
+  5. Gracz, którego karta zwyciężyła zostaje ujawniony, wygrywa rundę i otrzymuje punkt. 
+  6. Ręka każdego z graczy zostaje uzupełniona o dodatkowe losowe karty białe tak, by każdy z graczy ponownie posiadał 10 kart.
+  7. Jeżeli żaden z graczy nie uzyskał ilości punktów wymaganej do zwycięstwa, wróc do punktu 2.
+   
+* Opcjonalne mechaniki, możliwe do zaimplementowania i uruchomienia przed rozpoczęciem gry:
+  * **Mydełko** – Gracz może otrzymać pustą białą kartę, którą uzupełnia przed zagraniem jej maksymalnie 50 znakami tekstu.
+  * **Czarny Jacek** – Mistrz kart przed wylosowaniem karty czarnej, może otrzymać możliwość własnoręcznego wybrania treści karty, do maksymalnie 100 znaków tekstu.
+  * **Hazardista** – Gracz może zastawić swój punkt zwycięstwa w zamian za możliwość zagrania dwóch kart, lub zestawów kart białych. Jeżeli wygra rundę otrzymuje 2 punkty. W przeciwnym wypadku traci 1 punkt.
+  * **Reset** – Gracz po zakończeniu rundy może wydać jeden punkt zwycięstwa na odrzucenie dowolnej ilości białych kart z ręki i zastąpieniem ich nowymi, losowo dobranymi kartami.
+  * **Martwy mistrz** – Rola mistrza kart zostaje usunięta z gry, zwycięska karta biała jest wybierana na zasadzie głosowania.
+  * **Przetrwają najsilniejsi** - Rola mistrza także zostaje usunięta. W trakcie głosowania gracze głosują na najmniej śmieszną kartę do czasu gdy pozostanie tylko jedna, której właściciel wygrywa rundę.
+  * **Gramy na poważnie** – Mistrz kart wybiera 3 najśmiesznejsze karty, których właściciele otrzymują kolejno 3, 2 i 1 punkt zwycięstwa.
+  * **Potęga chaosu** – Do rozgrywki dołącza bot Losowy Marcin, który w każdej turze zagrywa losowe karty białe. Jeżeli Losowy Marcin wygra rundę, gracze okrywają się hańbą i muszą zastanowić się nad swoim życiem.
+  * **Pan i władca** – Mistrz kart może odrzucić niesmieszną czarną kartę, która zostaje zastąpiona nową.
+  
 
 ### Czat
 W trakcie rozgrywki dostępny jest czat dla graczy. Wiadomości wysyłane są tylko w obrębie danej rozgrywki. **Historia czatu nie jest w żaden sposób zachowywana po stronie serwera.** Backend jedynie przekazuje wiadomości do konkretnych użytkowników i natychmiast je zapomina.
 
 ### Ustawienia serwera
 Będąc administratorem serwera użytkownik ma możliwość w dowolnej chwili je zmienić. Informacja o zmianie ustawień zostanie ogłoszona wszystkim użytkownikom na czacie. Dostępne opcje obejmują m. in.:
-* Otwarcie / Zamknięcie serwera
-* Wyrzucenie gracza z rozgrywki (kick)
-* Zmiana trybu gry (?)
+* Otwarcie / Zamknięcie serwera.
+* Wybór hasła dostępu do serwera.
+* Ustalenie ilości punktów wymaganej do zwycięstwa.
+* Wyrzucenie gracza z rozgrywki (kick).
+* Wybór zestawów kart dostępnych w rozgrywce.
+* Uruchomienie opcjonalnych modyfikatorów rozgrywki opisanych szerzej w sekcji **Mechanika rozgrywki**
 
 ### Funkcjonalności dodatkowe
-* Karta specjalna "wpisz co chcesz"
 * Możliwość włączenia opcji "zaraz wracam", która pomija za nas kolejki
-* Możliwość wydania zdobytych punktów na umiejętności specjalne typu:
-  * Wymień wybrane białe karty na ręce
-  * Wymień nieśmieszną czarną kartę
-  * Dodaj białą kartę do talii (każdy gracz może ją wyciągnąć)
-  * Dodaj czarną kartę do tablii
+* Administrator serwera jako jedyny może rozpocząc grę, zpauzować ją lub zakończyć w dowolnym momencie.
+
 
 ## Frontend
 W całości pisany w technologiach webowych interfejs składający sie ze statycznych plików HTML+CSS+JS opartych o Vue.js. Na cały interfejs składają się dwa niezależne od siebie widoki
@@ -76,7 +104,7 @@ Strona jest pobierana z backendu bez listy serwerów. Dopiero załadowanie JavaS
 Uwaga implementacyjna: początkowo możemy predefiniować pewną liczbę serwerów, a funkcjonalnością zakładania swojego serwera zostawić na koniec. Czyli w celach testu uruchamiamy np. 10 serwerów.
 
 ### Widok ekranu gry
-Strona ta jest również pobierana z backendu w formie statycznej (wszystko jest początkowo puste). Znajdujący się na tej stronie kod JavaScipt ma za zadanie nawiązać połączenie z backendem za pomocą technologii WebScoekts. Informacje, które są potrzebne do nawiązania połączenia, to:
+Strona ta jest również pobierana z backendu w formie statycznej (wszystko jest początkowo puste). Znajdujący się na tej stronie kod JavaScipt ma za zadanie nawiązać połączenie z backendem za pomocą technologii WebSockets. Informacje, które są potrzebne do nawiązania połączenia, to:
 * Nick gracza, który się łączy (odczytany np. z Local Storage)
 * ID serwera (odczytany np. z linka: '[...]/game/12345')
 
