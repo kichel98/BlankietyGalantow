@@ -45,7 +45,11 @@
 
             <div class="servers w3-card">
                 <ul class="w3-ul">
-                    <server-item v-for="server in servers" v-bind:key="server.id" v-bind:server="server" @click.native="connect(server.id)">
+                    <server-item 
+                        v-for="server in servers" 
+                        v-bind:key="server.id" 
+                        v-bind:server="server" 
+                        @click.native="connect(server.id)">
                     </server-item>
                 </ul>
             </div>
