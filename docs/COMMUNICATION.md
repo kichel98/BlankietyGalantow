@@ -21,12 +21,9 @@ __Oznaczenia__
   tableId: int,
   message: {
     playerId: int,
-    cardIds: {
-      first: int,
-      second: int,
-      third: int,
-      ...
-    }
+    cardIds: [
+      int, ...
+    ]
   }
 }
 ```
@@ -38,7 +35,6 @@ __Oznaczenia__
   type: "CHOOSE_WINNING_CARD",
   tableId: int,
   message: {
-    playerId: int,
     cardId: int
   }
 }
