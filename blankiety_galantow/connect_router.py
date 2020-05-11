@@ -5,7 +5,7 @@ from fastapi.responses import HTMLResponse
 import blankiety_galantow.app as app
 from fastapi.staticfiles import StaticFiles
 # Importing classes
-from .classes.User import User
+from .classes.Player import Player
 from .classes.Server import Server
 
 connect_router = APIRouter()
@@ -20,9 +20,9 @@ async def connect_to_game(game_id):
 async def websocket_endpoint(websocket: WebSocket, game_id: int, username: str):
     await websocket.accept()
     if game_id in app.server.tables:
-        app.server.tables[game_id].append(User(username, websocket))
+        app.server.tables[game_id].append(Player(username, websocket))
     else:
-        app.server.tables[game_id] = [User(username, websocket)]
+        app.server.tables[game_id] = [Player(username, websocket)]
     while True:
         data = await websocket.receive_text()
         

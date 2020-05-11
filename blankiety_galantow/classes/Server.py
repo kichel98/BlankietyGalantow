@@ -1,7 +1,7 @@
 from typing import List, Dict
-from .User import User
+from .Player import Player
 
 class Server:
     def __init__(self):
         self.tables = {}
-    tables: Dict[int, List[User]]
+    tables: Dict[int, List[Player]]

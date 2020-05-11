@@ -10,7 +10,6 @@ from fastapi.staticfiles import StaticFiles
 from blankiety_galantow.routers import router
 from blankiety_galantow.connect_router import connect_router
 # Importing classes
-from .classes.User import User
 from .classes.Server import Server
 
 os.chdir(os.path.dirname(__file__))

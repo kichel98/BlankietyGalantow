@@ -1,8 +1,8 @@
 from fastapi import WebSocket
 
-class User:
+class Player:
     def __init__(self, username:str, socket:WebSocket):
         self.username = username
         self.socket = socket
-    username:str
+    player_name:str
     socket:WebSocket
