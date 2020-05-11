@@ -114,6 +114,19 @@ __Oznaczenia__
 }
 ```
 
+### &#x1F4D8; Wiadomość systemowa
+
+```elixir
+{
+  type: "LOG_MESSAGE",
+  tableId: int,
+  message: {
+    name: string
+    message: string
+  }
+}
+```
+
 ### &#x1F4D8; Przyznanie punktu zwycięstwa
 
 ```elixir
@@ -127,15 +140,3 @@ __Oznaczenia__
 }
 ```
 
-### &#x1F4D8; Komunikat o kicku
-
-```elixir
-{
-  type: "PLAYER_KICKED",
-  tableId: int,
-  message: {
-    playerId: int,
-    playerName: string,
-  }
-}
-```
