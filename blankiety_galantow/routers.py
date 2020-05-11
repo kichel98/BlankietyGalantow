@@ -1,18 +1,19 @@
 import codecs
 import json
-from fastapi import APIRouter, FastAPI, WebSocket
+
+from fastapi import APIRouter, WebSocket
 from fastapi.responses import HTMLResponse
+
 import blankiety_galantow.app as app
-from fastapi.staticfiles import StaticFiles
-# Importing classes
 from .classes.Player import Player
-from .classes.Server import Server
 
 router = APIRouter()
+
 
 @router.get("/", response_class=HTMLResponse)
 async def root():
     return codecs.open("resources/index.html", "r", "utf-8").read()
+
 
 @router.get("/game/{game_id}")
 async def connect_to_game(game_id):

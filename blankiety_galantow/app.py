@@ -1,19 +1,15 @@
 import os
 
 import uvicorn
-import codecs
-import json
-from typing import List, Dict
-from fastapi import FastAPI, WebSocket
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from blankiety_galantow.routers import router
-# Importing classes
+
 from .classes.Server import Server
 
 os.chdir(os.path.dirname(__file__))
 
-# Creating FastApi instantion and mounting static files
+# Creating FastApi instance and mounting static files
 app = FastAPI()
 app.mount("/css", StaticFiles(directory="resources/css"), name="css")
 app.mount("/js", StaticFiles(directory="resources/js"), name="js")
@@ -23,9 +19,10 @@ app.mount("/game/js", StaticFiles(directory="resources/game/js"), name="game/js"
 # Attaching router to app
 app.include_router(router)
 
+# Creating server object
+server = Server()
+
+
 # Starting server using uvicorn
 def run():
     uvicorn.run(app, host="localhost", port=80)
-
-# Creating server object
-server = Server()
