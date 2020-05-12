@@ -1,4 +1,3 @@
-from typing import Dict
 from .player import Player
 from .room import Room
 
@@ -20,5 +19,3 @@ class Server:
     async def add_player(self, room_id: int, player: Player):
         """Add new player to existing room."""
         await self._rooms[room_id].add_player_and_listen(player)
-
-    _rooms: Dict[int, Room]

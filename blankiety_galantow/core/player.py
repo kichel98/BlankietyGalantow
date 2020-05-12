@@ -21,6 +21,3 @@ class Player:
     async def send_json(self, data):
         """Send JSON data to the player via socket."""
         await self.socket.send_json(data)
-
-    name: str
-    socket: WebSocket
