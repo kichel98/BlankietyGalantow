@@ -16,4 +16,4 @@ app.include_router(router)
 
 
 def run():
-    uvicorn.run(app, host="localhost", port=8080)
+    uvicorn.run(app, host="localhost", port=80)

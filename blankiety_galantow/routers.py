@@ -14,5 +14,5 @@ async def root():
 
 @router.get("/api/rooms")
 async def rooms():
-    rooms_dict = {i: take(4, iteritems(vars(Room("server" + str(i), i, "addr" + str(i), randint(0, i), randint(0, i), [], {}, {})))) for i in range(10)}
+    rooms_dict = {i: vars(Room("room" + str(i), i, "addr" + str(i), randint(0, i), randint(0, i), [], {}, [], [])) for i in range(10)}
     return {"rooms": rooms_dict}
