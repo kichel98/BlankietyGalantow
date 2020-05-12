@@ -1,4 +1,4 @@
-let socket = connect()
+let socket = connect();
 
 var game = new Vue({
     el: '#game',
