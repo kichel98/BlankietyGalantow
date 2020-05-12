@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
     <script src="../vendor/vue/vue-dev.js"></script>
     <script src="js/components.js"></script>
 </head>
+
 <body>
     <div id="game">
         <div id="game-container" class="w3-main w3-twothird">
@@ -20,7 +22,7 @@
             <!-- Modal -->
             <div class="w3-modal" :class="{'w3-show': showSettings}">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-                
+
                     <div class="w3-center"><br>
                         <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
                         <h3>Ustawienia</h3>
@@ -52,41 +54,39 @@
                         <input type="number" name="time-limit" id="time-limit" value="120"> sek.
                     </div>
 
-            
+
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="showSettings=false" type="button" class="w3-button w3-red">Cancel</button>
                         <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right">Zapisz</button>
                     </div>
-            
+
                 </div>
-            </div> <!-- Modal -->
+            </div>
+            <!-- Modal -->
 
             <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-center">
                 <p>Jesteś mistrzem kart, zaczekaj aż wszyscy wybiorą karty</p>
-            </div> 
-    
+            </div>
+
             <div class="table">
                 <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
                     <p>Kocham język Python z powodu ______</p>
                 </div>
-                <card-player
-                    v-for="player in players"
-                    v-bind:key="player.id"
-                    v-bind:player="player">
+                <card-player v-for="player in players" v-bind:key="player.id" v-bind:player="player">
                 </card-player>
             </div>
             <hr>
             <div class="hand">
 
-                <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float"
-                    v-for="card in myCards"
-                    v-bind:class="{selected: card.selected}"
+                <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float" 
+                    v-for="card in myCards" 
+                    v-bind:class="{selected: card.selected}" 
                     v-on:click="card.selected = !card.selected">
                     <p>{{card.text}}</p>
                 </div>
             </div>
         </div>
-    
+
         <div class="w3-third">
             <div id="sidebar" class="w3-card w3-bar-block">
                 <div class="w3-container w3-bar-item" style="display: flex;">
@@ -96,9 +96,8 @@
                 <button class="w3-button w3-bar-item w3-light-grey" @click="showPlayers = !showPlayers">Gracze <i class="icon-down-dir"></i></button>
                 <div id="player-list" v-show="showPlayers">
 
-                    <div class="player-info w3-padding"
-                        v-for="player in players">
-                        <p><strong>{{player.name}} <i class="icon-star" v-if="player.admin"></i></strong> 
+                    <div class="player-info w3-padding" v-for="player in players">
+                        <p><strong>{{player.name}} <i class="icon-star" v-if="player.admin"></i></strong>
                             <span v-if="player.id === me.id">(ty)</span></p>
                         <p>punkty: {{player.score}}</p>
                     </div>
@@ -108,8 +107,7 @@
                 <div id="chat-content" class="w3-padding" v-show="showChat">
 
                     <p v-for="(msg, idx) in chat" :class="{'user-bot': msg.log}">
-                        <strong>{{msg.name}}: </strong>
-                        {{msg.message}}
+                        <strong>{{msg.name}}: </strong> {{msg.message}}
                     </p>
 
                 </div>
@@ -117,10 +115,13 @@
                     <input type="text" name="message" id="chat-input" autocomplete="off" v-model="newMessage" @keyup.enter="sendMessage">
                     <button @click="sendMessage"><i class="icon-send"></i></button>
                 </div>
-            </div>    
+            </div>
         </div>
-    </div> <!-- game -->
+    </div>
+    <!-- game -->
 
+    <script src="js/websocket_connect.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
