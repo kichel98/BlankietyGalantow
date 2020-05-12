@@ -9,6 +9,13 @@ from .core.player import Player
 
 router = APIRouter()
 
+rooms_mockup = [
+    Room("Alpha", 1, 1, 6, True, [], {}, [], []),
+    Room("Beta", 2, 3, 6, False, [], {}, [], []),
+    Room("Charlie", 3, 6, 6, True, [], {}, [], [])
+    ]
+
+
 
 @router.get("/", response_class=HTMLResponse)
 async def root():
@@ -37,5 +44,11 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int, username: str):
 
 @router.get("/api/rooms")
 async def rooms():
-    rooms_dict = {i: vars(Room("room" + str(i), i, "addr" + str(i), randint(0, i), randint(0, i), [], {}, [], [])) for i in range(10)}
-    return {"rooms": rooms_dict}
+    rooms_list = [{
+        "id": room.id,
+        "name": room.name,
+        "players": room.number_of_players,
+        "maxPlayers": room.number_of_seats,
+        "open": room.open}
+        for room in rooms_mockup]
+    return {"rooms": rooms_list}
