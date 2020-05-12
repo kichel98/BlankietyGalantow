@@ -104,7 +104,7 @@ var game = new Vue({
 });
 
 
-// Recive message from websocket
+// Receive message from websocket
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
 	// TODO: check if data-type is CHAT_MESSAGE
