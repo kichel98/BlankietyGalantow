@@ -6,8 +6,15 @@ from .player import Player
 
 class Room:
     """Single room that manages players inside and game state."""
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
+        self.open = True
+        self.number_of_seats = 6
         self.players = []
+
+    @property
+    def number_of_players(self):
+        return len(self.players)
 
     async def add_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""

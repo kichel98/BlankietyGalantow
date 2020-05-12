@@ -17,7 +17,7 @@ function getCookie(cname) {
 
 function connect() {
     const parts = document.location.href.split('/');
-    const game_id = parseInt(parts[parts.length - 1]);
+    const game_id = parts[parts.length - 1];
     const username = getCookie("username");
     return new WebSocket("ws://localhost:80/connect/" + game_id + "?username=" + username);
 }

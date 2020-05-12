@@ -21,6 +21,11 @@ app.include_router(router)
 # Creating server object
 server = Server()
 
+# Create mockup servers (TEMPORARY)
+server.add_room("Alpha")
+server.add_room("Beta")
+server.add_room("Gamma")
+
 
 # Starting server using uvicorn
 def run():
