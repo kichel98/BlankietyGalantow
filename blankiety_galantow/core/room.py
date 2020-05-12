@@ -1,5 +1,5 @@
 from typing import Dict
-from starlette.websockets import WebSocketDisconnect
+from fastapi.websockets import WebSocketDisconnect
 
 from .player import Player
 
