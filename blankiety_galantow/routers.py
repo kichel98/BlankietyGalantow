@@ -19,12 +19,12 @@ async def connect_to_game(game_id):
 
 
 @router.websocket("/connect/{room_id}")
-async def websocket_endpoint(websocket: WebSocket, room_id: int, username: str):
+async def websocket_endpoint(websocket: WebSocket, room_id: str, username: str):
     await websocket.accept()
 
     if app.server.room_exists(room_id):
         player = Player(websocket, username)
-        await app.server.add_player(room_id, player)
+        await app.server.add_player_to_room(room_id, player)
     else:
         print(f"Connection to nonexistent room id = {room_id}")
         await websocket.send_json({
@@ -32,3 +32,9 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int, username: str):
             "error": "Invalid server id"
         })
         await websocket.close(code=1000)
+
+
+@router.get("/api/rooms")
+async def rooms():
+    room_list = app.server.get_room_list()
+    return {"rooms": room_list}
