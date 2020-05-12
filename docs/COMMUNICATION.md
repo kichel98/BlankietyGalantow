@@ -15,53 +15,38 @@ __Oznaczenia__
 
 ### &#x1F4D8; Wybranie karty
 
-```elixir
+```js
 {
   type: "CARD_SELECT",
-  tableId: int,
-  message: {
-    playerId: int,
-    cardIds: [
-      int, ...
-    ]
-  }
+  cards: [Int, ...]
 }
 ```
 
 ### &#x1F4D8; Wybranie wygrywającej karty
 
-```elixir
+```js
 {
   type: "CHOOSE_WINNING_CARD",
-  tableId: int,
-  message: {
-    cardId: int
-  }
+  card: Int
 }
 ```
 
 ### &#x1F4D8; Wysłanie wiadomości na czacie
 
-```elixir
+```js
 {
   type: "CHAT_MESSAGE",
-  tableId: int,
-  message: {
-    playerId: int,
-    message: string
-  }
+  message: String
 }
 ```
 
-### &#x1F4D8; Opuszczenie stołu
+### &#x1F4D8; Zmiana ustawień
 
-```elixir
+```js
 {
-  type: "LEAVE_TABLE",
-  tableId: int,
-  message: {
-    playerId: int,
-  }
+  type: "SETTINGS_CHANGE",
+  option: String,
+  value: String
 }
 ```
 
@@ -69,70 +54,107 @@ __Oznaczenia__
 
 ### &#x1F4D8; Lista kart na ręce gracza
 
-```elixir
+```js
 {
   type: "PLAYER_HAND",
-  tableId: int,
-  message: {
-    playerId: int,
-    hand: [
-      8xCard object {cardId:int , cardText: string}
-    ]
+  cards: [
+    {
+      id: Int,
+      text: String
+    }, 
+    ...
+  ]
+}
+```
+
+### &#x1F4D8; Nowa karta
+```js
+{
+  type: "NEW_CARD",
+  card: {
+    id: Int,
+    text: String
   }
 }
 ```
 
 ### &#x1F4D8; Wylosowana czarna karta
 
-```elixir
+```js
 {
   type: "BLACK_CARD",
-  tableId: int,
-  message: {
-    cardId: int,
-    cardText: string,
-    whiteCardsNumber: int
+  card: {
+    id: Int,
+    text: String
   }
+}
+```
+
+### &#x1F4D8; Odświeżenie statusów graczy
+```js
+{
+  type: "PLAYERS_STATE",
+  states: [
+    {
+      playerId: Int,
+      state: "ready" | "choosing" | "master"
+    }
+  ]
+}
+```
+
+### &#x1F4D8; Odsłonięcie kart na stole
+```js
+{
+  type: "CARD_REVEAL",
+  cards: [
+    {
+      id: Int,
+      text: String
+    }
+  ]
 }
 ```
 
 ### &#x1F4D8; Wiadomość na czacie
 
-```elixir
+```js
 {
   type: "CHAT_MESSAGE",
-  tableId: int,
   message: {
-    playerId: int,
-    playerName: string,
-    message: string
+    log: Boolean,
+    name: String,
+    text: String
   }
 }
 ```
 
-### &#x1F4D8; Wiadomość systemowa
+### &#x1F4D8; Odświeżenie listy graczy
 
-```elixir
+```js
 {
-  type: "LOG_MESSAGE",
-  tableId: int,
-  message: {
-    name: string
-    message: string
-  }
+  type: "PLAYER_LIST",
+  players: [
+    {
+      id: Int,
+      name: String,
+      points: Int
+    }
+  ]
 }
 ```
 
-### &#x1F4D8; Przyznanie punktu zwycięstwa
+### &#x1F4D8; Odświeżenie ustawień pokoju
 
-```elixir
+```js
 {
-  type: "WIN_POINT",
-  tableId: int,
-  message: {
-    playerId: int,
-    playerName: string,
+  type: "SETTINGS",
+  options: {
+    "option-name": "value",
+    "option-name": "value",
+    ...
   }
+  
 }
 ```
 
