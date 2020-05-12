@@ -13,10 +13,9 @@ async def root():
     return codecs.open("resources/index.html", "r", "utf-8").read()
 
 
-@router.get("/game/{game_id}")
+@router.get("/game/{game_id}", response_class=HTMLResponse)
 async def connect_to_game(game_id):
-    f = codecs.open('resources/game/index.html', 'r', 'utf-8')
-    return HTMLResponse(f.read())
+    return codecs.open("resources/game/index.html", "r", "utf-8").read()
 
 
 @router.websocket("/connect/{room_id}")
