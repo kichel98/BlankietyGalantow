@@ -155,7 +155,9 @@ Jest to po prostu serwer HTTP udostępniający zasoby pod wskazanymi endpointami
 Serce gry, w którym obsługiwane są połączenia przez WebSockets z przeglądarkami. Zadaniem tej części backendu jest zarządzanie stanem każdej trwającej aktualnie gry.
 
 **Do przemyślenia**\
-Cały backend działa na jednym wątku i opiera się o asynchroniczność (tutaj film świetnie wyjaśniający co to jest asynchroniczność na przykładnie Node: https://youtu.be/jOupHNvDIq8). W naszej grze karcianej nie ma akcji, które koniecznie muszą być wykonywane równolegle... z jednym wyjątkiem, a jest nim licznik czasu do końca tury, który dla każdej gry działa niezależnie i bez przerwy. Należy się zastanowić, czy da się to zaimplementować asynchronicznie.
+Cały backend działa na jednym wątku i opiera się o asynchroniczność (tutaj film świetnie wyjaśniający co to jest asynchroniczność na przykładnie Node: https://youtu.be/jOupHNvDIq8). W naszej grze karcianej nie ma akcji, które koniecznie muszą być wykonywane równolegle... z jednym wyjątkiem, a jest nim licznik czasu do końca tury, który dla każdej gry działa niezależnie i bez przerwy. Należy się zastanowić, czy da się to zaimplementować asynchronicznie.\
+**Rozwiązanie**\
+Można uruchomić asynchronicznie opóźnione zdarzenie, które da się też anulować: [call later](https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.loop.call_later). Jak mamy pecha, to może dojść do kolizji z innymi asynchronicznymi zdarzeniami. W tym celu można się posłużyć [lockiem](https://docs.python.org/3/library/asyncio-sync.html#asyncio.Lock).
 
 #### Funkcjonalności
 Funkcjonalności części dynamicznej mogą zostać podzielone na *moduły*, co ułatwi nam podział pracy. Warto zwrócić uwagę, że moduły o których mowa *nie są niezależne od siebie*, a współpracują i razem tworzą rdzeń gry. Nadmierna hermetyzacja i uniezależnianie modułów od siebie poprzez zaimplementowanie wszystkiego jako `private` nie jest wskazane. Nie o to chodzi w tych *modułach*.
