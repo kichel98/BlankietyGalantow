@@ -1,11 +1,9 @@
 import codecs
-import json
-
 from fastapi import APIRouter, WebSocket
 from fastapi.responses import HTMLResponse
 
 import blankiety_galantow.app as app
-from .classes.Player import Player
+from .core.player import Player
 
 router = APIRouter()
 
@@ -17,23 +15,21 @@ async def root():
 
 @router.get("/game/{game_id}")
 async def connect_to_game(game_id):
-    f = codecs.open('resources/game/index.html','r', 'utf-8')
+    f = codecs.open('resources/game/index.html', 'r', 'utf-8')
     return HTMLResponse(f.read())
 
 
-@router.websocket("/connect/{game_id}")
-async def websocket_endpoint(websocket: WebSocket, game_id: int, username: str):
+@router.websocket("/connect/{room_id}")
+async def websocket_endpoint(websocket: WebSocket, room_id: int, username: str):
     await websocket.accept()
-    if game_id in app.server.tables:
-        app.server.tables[game_id].append(Player(username, websocket))
+
+    if app.server.room_exists(room_id):
+        player = Player(websocket, username)
+        await app.server.add_player(room_id, player)
     else:
-        app.server.tables[game_id] = [Player(username, websocket)]
-    while True:
-        data = await websocket.receive_text()
-        
-        for user in app.server.tables[game_id]:
-            message = {
-                "user": username,
-                "message": data
-            }
-            await user.socket.send_text(json.dumps(message))
+        print(f"Connection to nonexistent room id = {room_id}")
+        await websocket.send_json({
+            "type": "ERROR",
+            "error": "Invalid server id"
+        })
+        await websocket.close(code=1000)

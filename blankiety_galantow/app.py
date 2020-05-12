@@ -1,11 +1,10 @@
 import os
-
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from blankiety_galantow.routers import router
 
-from .classes.Server import Server
+from .core.server import Server
 
 os.chdir(os.path.dirname(__file__))
 

@@ -21,8 +21,13 @@ var game = new Vue({
             //     message: this.newMessage
             // });
 
+            data = {
+                type: "CHAT_MESSAGE",
+                message: this.newMessage
+            };
+
             // Testowe wysyłanie na websocket
-            socket.send(this.newMessage)
+            socket.send(JSON.stringify(data));
 
             this.newMessage = ''; // Po wysłaniu wiadomości wyczyść input.
         }
@@ -102,7 +107,9 @@ var game = new Vue({
 // Recive message from websocket
 socket.onmessage = function(event) {
     data = JSON.parse(event.data)
+	// TODO: check if data-type is CHAT_MESSAGE
     game.chat.push({
+		log: data.log,
         name: data.user,
         message: data.message
     });
