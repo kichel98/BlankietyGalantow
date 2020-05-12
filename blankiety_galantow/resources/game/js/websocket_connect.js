@@ -21,6 +21,5 @@ function connect() {
     console.log(game_id)
     username = getCookie("username")
     socket = new WebSocket("ws://localhost:80/connect/" + game_id + "?username=" + username)
-    console.log("XDDD")
     return socket
 }
