@@ -43,14 +43,14 @@
 
             </aside>
 
-            <div class="servers w3-card">
+            <div class="rooms w3-card">
                 <ul class="w3-ul">
-                    <server-item 
-                        v-for="server in servers" 
-                        v-bind:key="server.id" 
-                        v-bind:server="server" 
-                        @click.native="connect(server.id)">
-                    </server-item>
+                    <room-item
+                        v-for="room in rooms"
+                        v-bind:key="room.id"
+                        v-bind:room="room"
+                        @click.native="connect(room.id)">
+                    </room-item>
                 </ul>
             </div>
         </div>

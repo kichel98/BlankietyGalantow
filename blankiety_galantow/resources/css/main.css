@@ -29,49 +29,49 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
     margin: 0;
 }
 
-/* SERVERS */
+/* ROOMS */
 
-.servers {
+.rooms {
     flex-grow: 1;
 }
-.servers li {
+.rooms li {
     padding: 0;
 }
 
-.server-item {
+.room-item {
     display: flex;
     align-items: center;
     background: #fff;
     padding: 8px 16px;
 }
-.server-item:hover {
+.room-item:hover {
     cursor: pointer;
 }
-.server-item.hvr-radial-out:before {
+.room-item.hvr-radial-out:before {
     background: #3f75d9;
 }
 
-.server-icon {
+.room-icon {
     font-size: 50px;
     padding: 8px 8px;
 }
-.server-info {
+.room-info {
     flex-grow: 1;
     padding: 8px 16px;
 }   
-.server-status {
+.room-status {
     display: flex;
     align-items: center;
     font-size: 40px;
     margin-right: 5px;
 }
-.server-status .open {
+.room-status .open {
     color: #4CAF50;
 }
-.server-status .closed {
+.room-status .closed {
     color: #eb4034;
 }
-.server-status .full {
+.room-status .full {
     color: #bababa;
 }
 
