@@ -104,6 +104,7 @@ socket.onmessage = function(event) {
     if(!data.type) {
         console.error("Received incorrect message:");
         console.error(data);
+        return;
     }
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);
