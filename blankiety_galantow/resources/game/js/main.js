@@ -1,35 +1,29 @@
 let socket = connect();
 
-var game = new Vue({
+const app = new Vue({
     el: '#game',
     methods: {
         getPlayerById: function(id) {
-            for (var p of this.players) {
+            for (let p of this.players) {
                 if (p.id === id)
                     return p;
             }
             return undefined;
         },
-        sendMessage: function(event) {
-            // Nie wysyłaj pustej wiadomości.
+        sendMessage: function() {
+            // Don't send empty messages.
             if (this.newMessage === "")
                 return;
 
-            // Wysyłanie wiadomości...
-            // this.chat.push({
-            //     name: this.me.name,
-            //     message: this.newMessage
-            // });
-
-            data = {
+            const data = {
                 type: "CHAT_MESSAGE",
                 message: this.newMessage
             };
 
-            // Testowe wysyłanie na websocket
+            // Send chat message via websocket.
             socket.send(JSON.stringify(data));
 
-            this.newMessage = ''; // Po wysłaniu wiadomości wyczyść input.
+            this.newMessage = ''; // Clear the input element.
         }
     },
     computed: {
@@ -43,7 +37,7 @@ var game = new Vue({
             // Ta funkcja się uruchamia zanim Vue.js zaktualizuje DOM z czatem
             // dlatego tymczasowo robię takie coś ;D
             setTimeout(() => {
-                var element = document.getElementById("chat-content");
+                const element = document.getElementById("chat-content");
                 element.scrollTop = element.scrollHeight + 9999;
             }, 500);
         }
@@ -107,10 +101,24 @@ var game = new Vue({
 // Receive message from websocket
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
-	// TODO: check if data-type is CHAT_MESSAGE
-    game.chat.push({
-		log: data.log,
-        name: data.user,
-        message: data.message
-    });
+    if(!data.type) {
+        console.error("Received incorrect message:");
+        console.error(data);
+        return;
+    }
+    if(data.type === "CHAT_MESSAGE" && data.message) {
+        addMessageToChat(data.message);
+    }
+    // TODO: add other types of messages
 };
+
+
+function addMessageToChat(message) {
+    if(message.user && message.text) {
+        app.chat.push({
+            log: message.log,
+            name: message.user,
+            message: message.text
+        });
+    }
+}
