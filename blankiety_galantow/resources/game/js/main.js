@@ -134,7 +134,7 @@ const app = new Vue({
         showChat: true,
         showSettings: false,
         cardsSelected: 0,
-        cardsNumber: 1,
+        cardsNumber: 3,
         cardsConfirmed: false,
     }
 });
