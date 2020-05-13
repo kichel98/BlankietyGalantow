@@ -32,9 +32,6 @@ const app = new Vue({
                     type: "CARD_SELECT",
                     cards: []
                 };
-                for(let i = 0; i < this.cardsNumber; i++){
-                    data.cards.push(i);
-                }
                 for(const card of this.myCards)
                 {
                     if(card.order > 0){
