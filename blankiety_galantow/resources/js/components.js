@@ -1,19 +1,19 @@
-Vue.component('server-item', {
+Vue.component('room-item', {
     props: {
-        server: Object
+        room: Object
     },
     template: `
         <li>
-            <div class="server-item hvr-icon-grow hvr-radial-out">
-                <i class="icon-group server-icon w3-hide-small"></i>
-                <div class="server-info">
-                    <span class="w3-large">{{server.name}}</span><br>
-                    <span>Gracze: {{server.players}}/{{server.maxPlayers}}</span>
+            <div class="room-item hvr-icon-grow hvr-radial-out">
+                <i class="icon-group room-icon w3-hide-small"></i>
+                <div class="room">
+                    <span class="w3-large">{{room.name}}</span><br>
+                    <span>Gracze: {{room.players}}/{{room.maxPlayers}}</span>
                 </div>
-                <div class="server-status">
-                    <i v-if="server.open && server.players < server.maxPlayers" class="hvr-icon icon-lock-open open"></i>
-                    <i v-else-if="!server.open" class="hvr-icon icon-lock-closed closed"></i>
-                    <i v-else="!server.open" class="hvr-icon icon-lock-closed-alt full"></i>
+                <div class="room-status">
+                    <i v-if="room.open && room.players < room.maxPlayers" class="hvr-icon icon-lock-open open"></i>
+                    <i v-else-if="!room.open" class="hvr-icon icon-lock-closed closed"></i>
+                    <i v-else="!room.open" class="hvr-icon icon-lock-closed-alt full"></i>
                 </div>
             </div>
         </li>

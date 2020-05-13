@@ -7,8 +7,23 @@ function setCookie(cname, cvalue, exdays) {
 
 var app = new Vue({
     el: '#container',
+    data: {
+        username: "Bober",
+        rooms: []
+    },
+    // instead of `created` lifecycle hook, we can use `mounted`, if needed
+    created: function() {
+      this.fetchRooms()
+    },
     // I dont know react and vue, so this is quiet random ;) [Bartek]
     methods: {
+        fetchRooms: function() {
+            fetch("/api/rooms")
+                .then(response => response.json())
+                .then(data => {
+                    this.rooms = data.rooms;
+                })
+        },
         connect: function(id) {
             setCookie("username", this.username, 1)
             window.location.pathname = "game/" + id;
@@ -19,32 +34,5 @@ var app = new Vue({
             console.log("Zmieniono nazwę gracza na: " + newName);
             console.log("Zapisywanie do Local Storage...");
         }
-    },
-    /* Some mockup data */
-    data: {
-        username: "Bober",
-        servers: [{
-                id: 1,
-                name: "Alpha",
-                players: 1,
-                maxPlayers: 6,
-                open: true
-            },
-            {
-                id: 2,
-                name: "Beta",
-                players: 3,
-                maxPlayers: 6,
-                open: false
-            },
-            {
-                id: 3,
-                name: "Charlie",
-                players: 6,
-                maxPlayers: 6,
-                open: true
-            }
-        ]
     }
-
 });

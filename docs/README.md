@@ -142,7 +142,7 @@ Jest to po prostu serwer HTTP udostępniający zasoby pod wskazanymi endpointami
 | Endpoint       | Zasób                         |
 |----------------|-------------------------------|
 | `/`            | HTML z frontem listy serwerów |
-| `/api/servers` | JSON z listą serwerów         |
+| `/api/rooms` | JSON z listą serwerów         |
 | `/game/{id}`   | HTML z frontem gry            |
 | POST `/game/`  | *Utworzenie serwera*          |
 
