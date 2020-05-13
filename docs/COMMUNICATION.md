@@ -26,8 +26,8 @@ __Oznaczenia__
 
 ```js
 {
-  type: "CHOOSE_WINNING_CARD",
-  card: Int
+  type: "CHOOSE_WINNING_CARDS",
+  card: [Int, ...]
 }
 ```
 
@@ -102,7 +102,22 @@ __Oznaczenia__
   ]
 }
 ```
-
+### &#x1F4D8; Karty do odsłonięcia, przez mistrza kart
+```js
+{
+  type: "CARDS_MASTER",
+  cards: [
+    {
+      playerCards: [
+        {
+          id: Int,
+          text: String
+        }
+      ]
+    }
+  ]
+}
+```
 ### &#x1F4D8; Odsłonięcie kart na stole
 ```js
 {
