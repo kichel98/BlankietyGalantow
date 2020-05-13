@@ -4,21 +4,37 @@ const app = new Vue({
     el: '#game',
     methods: {
         selectCard: function(card){
-            if(card.selected){               
-                for(const item of this.myCards)
-                {
-                    if(item.order > card.order){
-                        item.order--;
-                    }
-                }
-                card.order = 0;
-                this.cardsSelected--;
-            }
-            else
+            if(!this.cardsConfirmed)
             {
-                card.order = ++this.cardsSelected;
+                if(card.selected){               
+                    for(const item of this.myCards)
+                    {
+                        if(item.order > card.order){
+                            item.order--;
+                        }
+                    }
+                    card.order = 0;
+                    this.cardsSelected--;
+                }
+                else
+                {
+                    card.order = ++this.cardsSelected;
+                }
+                card.selected = !card.selected;
             }
-            card.selected = !card.selected;
+        },
+        confirmSelectedCards: function(player){
+            console.log(player)
+            if(player.state === "selecting" && this.cardsSelected===this.cardsNumber){
+                player.state = "ready";
+                this.cardsConfirmed = true;
+                // TODO: tutaj wysyłanie kart na serwer
+                // this.cardsSelected = 0;
+                // for(const card of this.myCards)
+                // {
+                //     card.order = 0;
+                // }
+            }
         },
         getPlayerById: function(id) {
             for (let p of this.players) {
@@ -112,7 +128,8 @@ const app = new Vue({
         showChat: true,
         showSettings: false,
         cardsSelected: 0,
-        cardsNumber: 3
+        cardsNumber: 3,
+        cardsConfirmed: false,
     }
 });
 

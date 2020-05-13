@@ -3,7 +3,7 @@ Vue.component('card-player', {
         player: Object
     },
     template: `
-        <div class="card player w3-card w3-round-large w3-white w3-hover-shadow w3-center">
+        <div class="card player w3-card w3-round-large w3-hover-shadow w3-center">
             <p><strong>{{player.name}}</strong></p>
             <!-- Status gracza -->
             <template v-if="player.state == 'ready'">
