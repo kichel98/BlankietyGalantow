@@ -24,6 +24,49 @@
     border:1px solid black
 }
 
+/*master cards stylesheet*/
+.cardStacks {
+    display: inline-block;
+}
+
+.playerStack {
+    display: inline-block;
+    position: relative;
+    width: 150px;
+    height: 200px;
+    margin: 0.5em 1em;
+    padding: 0.5em 1em;
+}
+.playerStack:hover {
+    cursor: pointer;
+}
+.playerCard {
+    position: absolute;
+    width: 150px;
+    height: 200px;
+    margin: 0.5em 1em;
+    padding: 0.5em 1em;
+}
+.playerCard:hover {
+    z-index:5;
+    transform: translateY(-8px);
+}
+.playerCard.selected {
+    background: #fff9bf;
+    transform: translateY(-8px);
+}
+
+.playerCard .order-bubble {
+    position: absolute;
+    bottom: -10px;
+    right: -5px;
+    padding: 10px 15px;
+    border-radius: 50%;
+    background: rgb(0, 0, 0);
+    color: white;
+    border:1px solid black
+}
+
 .player {
     opacity: 0.2;
 }
@@ -32,10 +75,15 @@
     opacity: 1.0;
 }
 
+.disabled {
+    opacity: 0.2;
+}
+
 .table {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    padding-top: 40px;
 }
 
 .hand {

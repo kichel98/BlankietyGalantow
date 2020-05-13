@@ -4,7 +4,7 @@ const app = new Vue({
     el: '#game',
     methods: {
         selectCard: function(card){
-            if(!this.cardsConfirmed)
+            if(this.getPlayerById(this.myId).state === 'selecting')
             {
                 if(card.selected){               
                     this.selectedCards.splice(this.selectedCards.indexOf(card),1);
@@ -51,6 +51,12 @@ const app = new Vue({
             socket.send(JSON.stringify(data));
 
             this.newMessage = ''; // Clear the input element.
+        },
+        selectStack: function(playerCards) {
+            
+            this.revealedCards = this.revealedCards.concat(playerCards.filter((item)=>this.revealedCards.indexOf(item)<0));
+            console.log(this.revealedCards);
+            this.winningCards = playerCards;
         }
     },
     computed: {
@@ -95,7 +101,7 @@ const app = new Vue({
             {
                 id: 4,
                 name: "Zuza",
-                state: "selecting",
+                state: "master",
                 score: 2
             }
         ],
@@ -123,7 +129,37 @@ const app = new Vue({
         showSettings: false,
         selectedCards: [],
         cardsNumber: 3,
-        cardsConfirmed: false,
+
+        // Card master variables
+        playedCards: [
+            {
+                playerCards: [
+                    { id: 21, text: "Śmieszny tekst 1"},
+                    { id: 22, text: "Śmieszny tekst 2"},
+                    { id: 23, text: "Śmieszny tekst 3"}
+                ]
+            },
+            {
+                playerCards: [
+                    { id: 24, text: "Śmieszny tekst 4"},
+                    { id: 25, text: "Śmieszny tekst 5"},
+                    { id: 26, text: "Śmieszny tekst 6"}
+                ]
+            },
+            {
+                playerCards: [
+                    { id: 27, text: "Śmieszny tekst 7"},
+                    { id: 28, text: "Śmieszny tekst 8"},
+                    { id: 29, text: "Śmieszny tekst 9"}
+                ]
+            }
+        ],
+        revealedCards: [
+
+        ],
+        winningCards: [
+
+        ]
     }
 });
 
