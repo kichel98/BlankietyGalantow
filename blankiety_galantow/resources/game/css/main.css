@@ -25,11 +25,11 @@
 }
 
 /*master cards stylesheet*/
-.cardStacks {
+.card-stacks {
     display: inline-block;
 }
 
-.playerStack {
+.player-stack {
     display: inline-block;
     position: relative;
     width: 150px;
@@ -37,26 +37,26 @@
     margin: 0.5em 1em;
     padding: 0.5em 1em;
 }
-.playerStack:hover {
+.player-stack:hover {
     cursor: pointer;
 }
-.playerCard {
+.player-card {
     position: absolute;
     width: 150px;
     height: 200px;
     margin: 0.5em 1em;
     padding: 0.5em 1em;
 }
-.playerCard:hover {
+.player-card:hover {
     z-index:5;
     transform: translateY(-8px);
 }
-.playerCard.selected {
+.player-card.selected {
     background: #fff9bf;
     transform: translateY(-8px);
 }
 
-.playerCard .order-bubble {
+.player-card .order-bubble {
     position: absolute;
     bottom: -10px;
     right: -5px;

@@ -57,6 +57,9 @@ const app = new Vue({
             this.revealedCards = this.revealedCards.concat(playerCards.filter((item)=>this.revealedCards.indexOf(item)<0));
             console.log(this.revealedCards);
             this.winningCards = playerCards;
+        },
+        chooseWinner: function() {
+            
         }
     },
     computed: {

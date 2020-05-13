@@ -82,15 +82,15 @@
                     </card-player>
                 </div>
                 <div v-if="playedCards.length!==0&&me.state==='master'">
-                    <div class="cardStacks" v-for="cards in playedCards" 
+                    <div class="card-stacks" v-for="cards in playedCards" 
                     v-on:click="selectStack(cards.playerCards)">
-                    <div class="playerStack" 
-                        v-bind:style="{ 'margin-left': cards.playerCards.length*30 + 'px' }">
+                        <div class="player-stack" 
+                            v-bind:style="{ 'margin-left': cards.playerCards.length*30 + 'px' }">
 
                             <div v-for="card in cards.playerCards" v-bind:key="card.id">
-                                <div class="playerCard w3-card w3-round-large w3-hover-shadow w3-center" 
-                                    v-bind:style="{ left: '-' + (cards.playerCards.length-cards.playerCards.indexOf(card))*30 + 'px',
-                                                top: '-' + (cards.playerCards.length-cards.playerCards.indexOf(card))*20 + 'px' }"
+                                <div class="player-card w3-card w3-round-large w3-hover-shadow w3-center" 
+                                    v-bind:style="{ left: '-' + (cards.playerCards.length-1-cards.playerCards.indexOf(card))*30 + 'px',
+                                                top: '-' + (cards.playerCards.length-1-cards.playerCards.indexOf(card))*20 + 'px' }"
                                     v-bind:class="{ 'w3-green': winningCards.indexOf(card)>=0,
                                                     'w3-white': 0>winningCards.indexOf(card) }">
                                     <div v-if="revealedCards.indexOf(card)>=0">
@@ -101,6 +101,12 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>   
+                    </div>
+                    <div class="played-card w3-card w3-round-large w3-hover-shadow w3-center">
+                        <div v-bind:class="{ disabled: revealedCards.length !== (players.length-1)*cardsNumber }">
+                            <p>Przyznaj punkt</p>
+                        <p><i class="icon-trophy w3-xxxlarge"></i></p>
                         </div>
                     </div>
                 </div>
