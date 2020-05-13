@@ -22,7 +22,7 @@ const app = new Vue({
     },
     watch: {
         username: function(newName) {
-            window.localStorage.setItem("username", this.username);
+            window.localStorage.setItem("username", newName);
         }
     }
 });
