@@ -3,21 +3,21 @@ let socket = connect();
 const app = new Vue({
     el: '#game',
     methods: {
-        selectCard: function(card){
-            if(!this.cardsConfirmed)
-            {
-                if(card.selected){               
+        selectCard: function(card) {
+            if(!this.cardsConfirmed) {
+                if(card.selected) {
+                    // Deselect the card
                     this.selectedCards.splice(this.selectedCards.indexOf(card),1);
                 }
-                else
-                {
+                else {
+                    // Add card to the list of selected
                     this.selectedCards.push(card);
                 }
                 card.selected = !card.selected;
             }
         },
-        confirmSelectedCards: function(player){
-            if(player.state === "selecting" && this.selectedCards.length===this.cardsNumber){
+        confirmSelectedCards: function(player) {
+            if(player.state === "selecting" && this.selectedCards.length===this.cardsNumber) {
                 player.state = "ready";
                 this.cardsConfirmed = true;
                 // Making websocket message
