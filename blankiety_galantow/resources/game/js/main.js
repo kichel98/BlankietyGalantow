@@ -7,37 +7,25 @@ const app = new Vue({
             if(!this.cardsConfirmed)
             {
                 if(card.selected){               
-                    for(const item of this.myCards)
-                    {
-                        if(item.order > card.order){
-                            item.order--;
-                        }
-                    }
-                    card.order = 0;
-                    this.cardsSelected--;
+                    this.selectedCards.splice(this.selectedCards.indexOf(card),1);
                 }
                 else
                 {
-                    card.order = ++this.cardsSelected;
+                    this.selectedCards.push(card);
                 }
                 card.selected = !card.selected;
             }
         },
         confirmSelectedCards: function(player){
-            if(player.state === "selecting" && this.cardsSelected===this.cardsNumber){
+            if(player.state === "selecting" && this.selectedCards.length===this.cardsNumber){
                 player.state = "ready";
                 this.cardsConfirmed = true;
                 // Making websocket message
                 const data = {
                     type: "CARD_SELECT",
-                    cards: []
+                    cards: this.selectedCards
                 };
-                for(const card of this.myCards)
-                {
-                    if(card.order > 0){
-                        data.cards[card.order-1] = card.id;
-                    }
-                }
+                
                 // Send selected cards via websocket.
                 socket.send(JSON.stringify(data));
             }
@@ -133,7 +121,7 @@ const app = new Vue({
         showPlayers: false,
         showChat: true,
         showSettings: false,
-        cardsSelected: 0,
+        selectedCards: [],
         cardsNumber: 3,
         cardsConfirmed: false,
     }
