@@ -6,7 +6,7 @@ Vue.component('room-item', {
         <li>
             <div class="room-item hvr-icon-grow hvr-radial-out">
                 <i class="icon-group room-icon w3-hide-small"></i>
-                <div class="room">
+                <div class="room-info">
                     <span class="w3-large">{{room.name}}</span><br>
                     <span>Gracze: {{room.players}}/{{room.maxPlayers}}</span>
                 </div>
