@@ -74,8 +74,10 @@
                 </div>
                 <card-player v-for="player in players" v-bind:key="player.id" v-bind:player="player"
 
-                v-bind:class="{visible: (player.id !== me.id)||(selectedCards.length===cardsNumber),
-                               selectAnimation: (player.id === me.id)&&(selectedCards.length===cardsNumber)&&(player.state==='selecting'),
+                v-bind:class="{visible: (player.id !== me.id) || (selectedCards.length===cardsNumber),
+                               selectAnimation: (player.id === me.id)
+                                                && (selectedCards.length === cardsNumber)
+                                                && (player.state === 'selecting'),
                                'w3-white': (player.id !== me.id) }"
                 v-on:click.native="confirmSelectedCards(player)">
                 </card-player>
