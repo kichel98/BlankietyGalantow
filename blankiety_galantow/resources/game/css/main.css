@@ -90,7 +90,7 @@ i {
 }
 
 /*Player select animation*/
-@keyframes changewidth {
+@keyframes changesize {
     from {
         transform: scale(1);
     }
@@ -102,7 +102,7 @@ i {
 
 .selectAnimation {
     animation-duration: 1s;
-    animation-name: changewidth;
+    animation-name: changesize;
     animation-iteration-count: infinite;
     animation-direction: alternate;
     background: #c8eec6;
