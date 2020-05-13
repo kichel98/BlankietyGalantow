@@ -3,6 +3,23 @@ let socket = connect();
 const app = new Vue({
     el: '#game',
     methods: {
+        selectCard: function(card){
+            if(card.selected){               
+                for(const item of this.myCards)
+                {
+                    if(item.order > card.order){
+                        item.order--;
+                    }
+                }
+                card.order = 0;
+                this.cardsSelected--;
+            }
+            else
+            {
+                card.order = ++this.cardsSelected;
+            }
+            card.selected = !card.selected;
+        },
         getPlayerById: function(id) {
             for (let p of this.players) {
                 if (p.id === id)
@@ -56,7 +73,7 @@ const app = new Vue({
             {
                 id: 2,
                 name: "Ala",
-                state: "choosing",
+                state: "master",
                 score: 0
             },
             {
@@ -68,7 +85,7 @@ const app = new Vue({
             {
                 id: 4,
                 name: "Zuza",
-                state: "master",
+                state: "selecting",
                 score: 2
             }
         ],
@@ -93,7 +110,9 @@ const app = new Vue({
         newMessage: '',
         showPlayers: false,
         showChat: true,
-        showSettings: false
+        showSettings: false,
+        cardsSelected: 0,
+        cardsNumber: 3
     }
 });
 
