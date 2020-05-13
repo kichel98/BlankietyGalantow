@@ -24,16 +24,25 @@ const app = new Vue({
             }
         },
         confirmSelectedCards: function(player){
-            console.log(player)
             if(player.state === "selecting" && this.cardsSelected===this.cardsNumber){
                 player.state = "ready";
                 this.cardsConfirmed = true;
-                // TODO: tutaj wysyłanie kart na serwer
-                // this.cardsSelected = 0;
-                // for(const card of this.myCards)
-                // {
-                //     card.order = 0;
-                // }
+                // Making websocket message
+                const data = {
+                    type: "CARD_SELECT",
+                    cards: []
+                };
+                for(let i = 0; i < this.cardsNumber; i++){
+                    data.cards.push(i);
+                }
+                for(const card of this.myCards)
+                {
+                    if(card.order > 0){
+                        data.cards[card.order-1] = card.id;
+                    }
+                }
+                // Send selected cards via websocket.
+                socket.send(JSON.stringify(data));
             }
         },
         getPlayerById: function(id) {
@@ -128,7 +137,7 @@ const app = new Vue({
         showChat: true,
         showSettings: false,
         cardsSelected: 0,
-        cardsNumber: 3,
+        cardsNumber: 1,
         cardsConfirmed: false,
     }
 });
