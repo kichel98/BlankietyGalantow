@@ -17,7 +17,15 @@ __Oznaczenia__
 
 ```js
 {
-  type: "CARD_SELECT",
+  type: "CARDS_SELECT",
+  cards: [Int, ...]
+}
+```
+### &#x1F4D8; Odkrycie karty przez mistrza gry
+
+```js
+{
+  type: "CARDS_REVEAL",
   cards: [Int, ...]
 }
 ```
@@ -27,7 +35,7 @@ __Oznaczenia__
 ```js
 {
   type: "CHOOSE_WINNING_CARDS",
-  card: [Int, ...]
+  cards: [Int, ...]
 }
 ```
 
@@ -49,6 +57,8 @@ __Oznaczenia__
   value: String
 }
 ```
+
+
 
 ## Wiadomości wysyłane przez serwer
 
