@@ -87,12 +87,12 @@
                     <div class="card-stacks" v-for="cards in playedCards" 
                     v-on:click="selectStack(cards.playerCards)">
                         <div class="player-stack" 
-                            v-bind:style="{ 'margin-left': cards.playerCards.length*30 + 'px' }">
+                            v-bind:style="{ 'margin-left': cards.playerCards.length*10 + 'px' }">
 
                             <div v-for="card in cards.playerCards.slice().reverse()" v-bind:key="card.id">
                                 <div class="player-card w3-card w3-round-large w3-hover-shadow w3-center" 
-                                    v-bind:style="{ left: '-' + (cards.playerCards.indexOf(card))*30 + 'px',
-                                                top: '-' + (cards.playerCards.indexOf(card))*20 + 'px' }"
+                                    v-bind:style="{ left: '-' + (cards.playerCards.indexOf(card))*10 + 'px',
+                                                top: '-' + (cards.playerCards.indexOf(card))*10 + 'px' }"
                                     v-bind:class="{ 'selected': winningCards.indexOf(card)>=0,
                                                     'w3-white': 0>winningCards.indexOf(card) }"
                                     >
@@ -100,8 +100,10 @@
                                         {{card.text}}
                                     </div>
                                     
-                                    <div class="order-bubble w3-round-xxlarge">
-                                        {{cards.playerCards.indexOf(card)+1}}
+                                    <div v-if="cards.playerCards.indexOf(card)===0 
+                                                && revealedCards.indexOf(card)>=0" 
+                                        class="order-bubble w3-round-xxlarge">
+                                        {{card.number}}
                                     </div>
                                     
                                 </div>

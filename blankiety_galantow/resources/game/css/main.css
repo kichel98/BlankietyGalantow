@@ -47,21 +47,16 @@
     margin: 0.5em 1em;
     padding: 1.5em 1em;
 }
-.player-card:hover {
+/* .player-card:hover {
     z-index:5;
     transform: translateY(-8px);
-}
+} */
 .player-card.selected {
     background: #fff9bf;
     transform: translateY(-8px);
 }
 
 .player-card .order-bubble {
-    visibility: hidden;
-}
-
-.player-card:hover .order-bubble {
-    visibility: visible;
     position: absolute;
     bottom: -10px;
     left: -5px;

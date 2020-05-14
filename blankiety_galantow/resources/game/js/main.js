@@ -45,6 +45,12 @@ const app = new Vue({
             this.newMessage = ''; // Clear the input element.
         },
         selectStack: function(playerCards) {
+            if(playerCards.every((item)=>this.revealedCards.includes(item)))
+            {
+                let tempCard = playerCards.shift();
+                playerCards.push(tempCard)
+            }
+            
             if(this.me.state==="master")
             {
                 let tempLength = this.revealedCards.length;
@@ -80,23 +86,23 @@ const app = new Vue({
         tempFill: function() {
             this.playedCards = [{
                 playerCards: [
-                    { id: 21, text: "Śmieszny tekst 1"},
-                    { id: 22, text: "Śmieszny tekst 2"},
-                    { id: 23, text: "Śmieszny tekst 3"}
+                    { id: 21, text: "Śmieszny tekst 1", number: 1},
+                    { id: 22, text: "Śmieszny tekst 2", number: 2},
+                    { id: 23, text: "Śmieszny tekst 3", number: 3}
                 ]
             },
             {
                 playerCards: [
-                    { id: 24, text: "Śmieszny tekst 4"},
-                    { id: 25, text: "Śmieszny tekst 5"},
-                    { id: 26, text: "Śmieszny tekst 6"}
+                    { id: 24, text: "Śmieszny tekst 4", number: 1},
+                    { id: 25, text: "Śmieszny tekst 5", number: 2},
+                    { id: 26, text: "Śmieszny tekst 6", number: 3}
                 ]
             },
             {
                 playerCards: [
-                    { id: 27, text: "Śmieszny tekst 7"},
-                    { id: 28, text: "Śmieszny tekst 8"},
-                    { id: 29, text: "Śmieszny tekst 9"}
+                    { id: 27, text: "Śmieszny tekst 7", number: 1},
+                    { id: 28, text: "Śmieszny tekst 8", number: 2},
+                    { id: 29, text: "Śmieszny tekst 9", number: 3}
                 ]
             }]
         }
