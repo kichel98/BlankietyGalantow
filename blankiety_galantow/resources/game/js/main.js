@@ -65,13 +65,13 @@ const app = new Vue({
         },
         chooseWinner: function() {
             // Sending CHOOSE_WINNING_CARDS message to server
-            if(this.revealedCards.length === (this.players.length-1)*this.numberOfCardsToSelect)
+            if(this.revealedCards.length === (this.players.length-1)*this.numberOfCardsToSelect && !this.pointsGranted)
             {
                 const data = {
                     type: "CHOOSE_WINNING_CARDS",
                     cards: this.winningCards
                 };
-
+                this.pointsGranted = true;
                 // Send chat message via websocket.
                 socket.send(JSON.stringify(data));
             }
@@ -173,6 +173,7 @@ const app = new Vue({
         numberOfCardsToSelect: 3,
 
         // Card master variables
+        pointsGranted: false,
         playedCards: [
             
         ],

@@ -109,8 +109,8 @@
                         </div>   
                     </div>
                     <div v-if="me.state=='master'" class="played-card choose-winner w3-card w3-round-large w3-hover-shadow w3-center">
-                        <div v-bind:class="{ disabled: revealedCards.length !== (players.length-1)*numberOfCardsToSelect,
-                                            'select-animation': !(revealedCards.length !== (players.length-1)*numberOfCardsToSelect)}"
+                        <div v-bind:class="{ disabled: revealedCards.length !== (players.length-1)*numberOfCardsToSelect||pointsGranted,
+                                            'select-animation': !(revealedCards.length !== (players.length-1)*numberOfCardsToSelect)&&!pointsGranted}"
                              v-on:click="chooseWinner">
                             <p>Przyznaj punkt</p>
                         <p><i class="icon-trophy w3-xxxlarge"></i></p>
