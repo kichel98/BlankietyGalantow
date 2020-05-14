@@ -104,6 +104,27 @@ const app = new Vue({
     computed: {
         me: function() {
             return this.players.filter((player)=>player.me)[0];
+        },
+        topInfo: function() {
+            if(this.me.state==="master"){
+                if(this.playedCards.length === 0){
+                    return "Jesteś mistrzem kart, zaczekaj aż wszyscy wybiorą karty"
+                }
+                else{
+                    return "Odsłoń karty i wybierz zwycięzcę"
+                }
+            }
+            else if(this.me.state === "choosing"){
+                return "Wybierz karty, które chcesz zagrać"
+            }
+            else if(this.me.state === "ready"){
+                if(this.playedCards.length === 0){
+                    return "Zaczekaj aż wszyscy wybiorą karty"
+                }
+                else{
+                    return "Mistrz kart wybiera zwycięzcę"
+                }
+            }
         }
     },
     watch: {
