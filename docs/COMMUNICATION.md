@@ -112,16 +112,32 @@ __Oznaczenia__
   ]
 }
 ```
-### &#x1F4D8; Karty do odsłonięcia, przez mistrza kart
+### &#x1F4D8; Karty zagrane w tej turze
+#### Karty do odsłonięcia, przez mistrza kart
 ```js
 {
-  type: "CARDS_MASTER",
+  type: "PLAYED_CARDS_MASTER",
   cards: [
     {
       playerCards: [
         {
           id: Int,
           text: String
+        }
+      ]
+    }
+  ]
+}
+```
+#### Karty dla pozostałych graczy
+```js
+{
+  type: "PLAYED_CARDS",
+  cards: [
+    {
+      playerCards: [
+        {
+          id: Int,
         }
       ]
     }
