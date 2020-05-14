@@ -17,7 +17,15 @@ __Oznaczenia__
 
 ```js
 {
-  type: "CARD_SELECT",
+  type: "CARDS_SELECT",
+  cards: [Int, ...]
+}
+```
+### &#x1F4D8; Odkrycie karty przez mistrza gry
+
+```js
+{
+  type: "CARDS_REVEAL",
   cards: [Int, ...]
 }
 ```
@@ -27,7 +35,7 @@ __Oznaczenia__
 ```js
 {
   type: "CHOOSE_WINNING_CARDS",
-  card: [Int, ...]
+  cards: [Int, ...]
 }
 ```
 
@@ -49,6 +57,8 @@ __Oznaczenia__
   value: String
 }
 ```
+
+
 
 ## Wiadomości wysyłane przez serwer
 
@@ -102,10 +112,11 @@ __Oznaczenia__
   ]
 }
 ```
-### &#x1F4D8; Karty do odsłonięcia, przez mistrza kart
+### &#x1F4D8; Karty zagrane w tej turze
+#### Karty do odsłonięcia, przez mistrza kart
 ```js
 {
-  type: "CARDS_MASTER",
+  type: "PLAYED_CARDS_MASTER",
   cards: [
     {
       playerCards: [
@@ -118,10 +129,25 @@ __Oznaczenia__
   ]
 }
 ```
+#### Karty dla pozostałych graczy
+```js
+{
+  type: "PLAYED_CARDS",
+  cards: [
+    {
+      playerCards: [
+        {
+          id: Int,
+        }
+      ]
+    }
+  ]
+}
+```
 ### &#x1F4D8; Odsłonięcie kart na stole
 ```js
 {
-  type: "CARD_REVEAL",
+  type: "CARDS_REVEAL",
   cards: [
     {
       id: Int,

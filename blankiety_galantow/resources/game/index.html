@@ -122,7 +122,7 @@
             <div class="hand" v-bind:class="{disabled: (me.state==='master')}">
                 <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float" 
                     v-for="card in myCards" 
-                    v-bind:class="{selected: card.selected}" 
+                    v-bind:class="{selected: selectedCards.includes(card)}" 
                     v-on:click="selectCard(card)">
                     <p>{{card.text}}</p>
                     <div class="order-bubble w3-round-xxlarge"
