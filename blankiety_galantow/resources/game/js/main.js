@@ -59,7 +59,7 @@ const app = new Vue({
             this.winningCards = playerCards;
         },
         chooseWinner: function() {
-            
+
         }
     },
     computed: {

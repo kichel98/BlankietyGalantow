@@ -57,9 +57,14 @@
 }
 
 .player-card .order-bubble {
+    visibility: hidden;
+}
+
+.player-card:hover .order-bubble {
+    visibility: visible;
     position: absolute;
     bottom: -10px;
-    right: -5px;
+    left: -5px;
     padding: 10px 15px;
     border-radius: 50%;
     background: rgb(0, 0, 0);
@@ -148,7 +153,7 @@ i {
     }
 }
 
-.selectAnimation {
+.select-animation {
     animation-duration: 1s;
     animation-name: changesize;
     animation-iteration-count: infinite;
