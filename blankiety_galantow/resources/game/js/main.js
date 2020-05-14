@@ -17,7 +17,7 @@ const app = new Vue({
             }
         },
         confirmSelectedCards: function(player) {
-            if(player.state === "choosing" && this.selectedCards.length===this.numberOfCardsToSelect) {
+            if(player.state === "choosing" && this.selectedCards.length===this.numberOfCardsToSelect && player.me) {
                 player.state = "ready";
                 // Making websocket message
                 const data = {
