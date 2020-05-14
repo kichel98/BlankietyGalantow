@@ -89,10 +89,10 @@
                         <div class="player-stack" 
                             v-bind:style="{ 'margin-left': cards.playerCards.length*30 + 'px' }">
 
-                            <div v-for="card in cards.playerCards" v-bind:key="card.id">
+                            <div v-for="card in cards.playerCards.slice().reverse()" v-bind:key="card.id">
                                 <div class="player-card w3-card w3-round-large w3-hover-shadow w3-center" 
-                                    v-bind:style="{ left: '-' + (cards.playerCards.length-1-cards.playerCards.indexOf(card))*30 + 'px',
-                                                top: '-' + (cards.playerCards.length-1-cards.playerCards.indexOf(card))*20 + 'px' }"
+                                    v-bind:style="{ left: '-' + (cards.playerCards.indexOf(card))*30 + 'px',
+                                                top: '-' + (cards.playerCards.indexOf(card))*20 + 'px' }"
                                     v-bind:class="{ 'selected': winningCards.indexOf(card)>=0,
                                                     'w3-white': 0>winningCards.indexOf(card) }"
                                     >
