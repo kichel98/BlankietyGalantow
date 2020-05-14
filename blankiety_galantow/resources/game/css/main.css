@@ -45,7 +45,7 @@
     width: 150px;
     height: 200px;
     margin: 0.5em 1em;
-    padding: 0.5em 1em;
+    padding: 1.5em 1em;
 }
 .player-card:hover {
     z-index:5;
@@ -75,6 +75,7 @@
 .choose-winner {
     margin-left: 40px;
 }
+/* End of master cards stylesheet */
 .player {
     opacity: 0.2;
 }
