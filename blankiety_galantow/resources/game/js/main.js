@@ -29,13 +29,6 @@ const app = new Vue({
                 socket.send(JSON.stringify(data));
             }
         },
-        getPlayerById: function(id) {
-            for (let p of this.players) {
-                if (p.id === id)
-                    return p;
-            }
-            return undefined;
-        },
         sendMessage: function() {
             // Don't send empty messages.
             if (this.newMessage === "")
@@ -54,7 +47,7 @@ const app = new Vue({
     },
     computed: {
         me: function() {
-            return this.getPlayerById(this.myId);
+            return this.players.filter((player)=>player.me)[0];
         }
     },
     watch: {
@@ -71,7 +64,6 @@ const app = new Vue({
     /* Mockup data */
     data: {
         tableId: 20965,
-        myId: 4,
         players: [{
                 id: 1,
                 name: "Tomek",
@@ -95,7 +87,8 @@ const app = new Vue({
                 id: 4,
                 name: "Zuza",
                 state: "choosing",
-                score: 2
+                score: 2,
+                me: true
             }
         ],
         myCards: [
