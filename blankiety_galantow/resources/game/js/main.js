@@ -4,7 +4,7 @@ const app = new Vue({
     el: '#game',
     methods: {
         selectCard: function(card) {
-            if(!this.cardsConfirmed) {
+            if(this.me.state === "choosing") {
                 if(card.selected) {
                     // Deselect the card
                     this.selectedCards.splice(this.selectedCards.indexOf(card),1);
@@ -17,9 +17,8 @@ const app = new Vue({
             }
         },
         confirmSelectedCards: function(player) {
-            if(player.state === "selecting" && this.selectedCards.length===this.cardsNumber) {
+            if(player.state === "choosing" && this.selectedCards.length===this.numberOfCardsToSelect) {
                 player.state = "ready";
-                this.cardsConfirmed = true;
                 // Making websocket message
                 const data = {
                     type: "CARD_SELECT",
@@ -95,19 +94,19 @@ const app = new Vue({
             {
                 id: 4,
                 name: "Zuza",
-                state: "selecting",
+                state: "choosing",
                 score: 2
             }
         ],
         myCards: [
-            { id: 21, text: "Śmieszny tekst 1", selected: false },
-            { id: 22, text: "Śmieszny tekst 2", selected: false },
-            { id: 23, text: "Śmieszny tekst 3", selected: false },
-            { id: 24, text: "Śmieszny tekst 4", selected: false },
-            { id: 25, text: "Śmieszny tekst 5", selected: false },
-            { id: 26, text: "Śmieszny tekst 6", selected: false },
-            { id: 27, text: "Śmieszny tekst 7", selected: false },
-            { id: 28, text: "Śmieszny tekst 8", selected: false },
+            { id: 21, text: "Śmieszny tekst 1" },
+            { id: 22, text: "Śmieszny tekst 2" },
+            { id: 23, text: "Śmieszny tekst 3" },
+            { id: 24, text: "Śmieszny tekst 4" },
+            { id: 25, text: "Śmieszny tekst 5" },
+            { id: 26, text: "Śmieszny tekst 6" },
+            { id: 27, text: "Śmieszny tekst 7" },
+            { id: 28, text: "Śmieszny tekst 8" },
         ],
         chat: [
             { name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true },
@@ -122,8 +121,7 @@ const app = new Vue({
         showChat: true,
         showSettings: false,
         selectedCards: [],
-        cardsNumber: 3,
-        cardsConfirmed: false,
+        numberOfCardsToSelect: 3,
     }
 });
 

@@ -100,7 +100,7 @@ i {
     }
 }
 
-.selectAnimation {
+.select-animation {
     animation-duration: 1s;
     animation-name: changesize;
     animation-iteration-count: infinite;
