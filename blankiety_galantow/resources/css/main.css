@@ -12,7 +12,7 @@ header h1 {
 #container{
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     margin-top: 30px;
 }
 
@@ -104,6 +104,9 @@ aside h2 {
 }
 
 /* ABOUT */
+.about {
+    margin-bottom: 10px;
+}
 .about p {
     text-align: justify;
 }
@@ -115,7 +118,7 @@ aside h2 {
     }
     #container {
         flex-direction: row-reverse;
-
+        align-items: flex-start;
     }
 
     aside {
