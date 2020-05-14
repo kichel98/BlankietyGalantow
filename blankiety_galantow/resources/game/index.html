@@ -72,7 +72,7 @@
                 <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
                     <p>Kocham język Python z powodu ______</p>
                 </div>
-                <template v-if="playedCards.length===0">
+                <div v-if="playedCards.length===0">
                     <card-player v-for="player in players" v-bind:key="player.id" v-bind:player="player" v-bind:me="player.me"
 
                     v-bind:class="{visible: (player.id !== me.id)||(selectedCards.length===numberOfCardsToSelect),
@@ -82,8 +82,8 @@
                                 'w3-white': (player.id !== me.id) }"
                     v-on:click.native="confirmSelectedCards(player)">
                     </card-player>
-                </template>
-                <template v-if="playedCards.length!==0">
+                </div>
+                <div v-if="playedCards.length!==0">
                     <div class="card-stacks" v-for="cards in playedCards" 
                     v-on:click="selectStack(cards.playerCards)">
                         <div class="player-stack" 
@@ -116,7 +116,7 @@
                         <p><i class="icon-trophy w3-xxxlarge"></i></p>
                         </div>
                     </div>
-                </template>
+                </div>
             </div>
             <hr>
             <div class="hand" v-bind:class="{disabled: (me.state==='master')}">
