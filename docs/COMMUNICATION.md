@@ -147,7 +147,7 @@ __Oznaczenia__
 ### &#x1F4D8; Odsłonięcie kart na stole
 ```js
 {
-  type: "CARD_REVEAL",
+  type: "CARDS_REVEAL",
   cards: [
     {
       id: Int,
