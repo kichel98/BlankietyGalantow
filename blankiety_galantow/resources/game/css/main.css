@@ -13,6 +13,25 @@
     transform: translateY(-8px);
 }
 
+.card .order-bubble {
+    position: absolute;
+    bottom: -10px;
+    right: -5px;
+    padding: 10px 15px;
+    border-radius: 50%;
+    background: rgb(0, 0, 0);
+    color: white;
+    border:1px solid black
+}
+
+.player {
+    opacity: 0.2;
+}
+
+.visible {
+    opacity: 1.0;
+}
+
 .table {
     display: flex;
     justify-content: center;
@@ -68,4 +87,23 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
 i {
     display: inline-block;
     line-height: 1;
+}
+
+/*Player select animation*/
+@keyframes changesize {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.05);
+    }
+}
+
+.select-animation {
+    animation-duration: 1s;
+    animation-name: changesize;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    background: #c8eec6;
 }
