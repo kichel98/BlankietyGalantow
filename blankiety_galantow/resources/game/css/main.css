@@ -72,6 +72,9 @@
     border:1px solid black
 }
 
+.choose-winner {
+    margin-left: 40px;
+}
 .player {
     opacity: 0.2;
 }

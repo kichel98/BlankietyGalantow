@@ -21,7 +21,7 @@ const app = new Vue({
                 player.state = "ready";
                 // Making websocket message
                 const data = {
-                    type: "CARD_SELECT",
+                    type: "CARDS_SELECT",
                     cards: this.selectedCards
                 };
                 
@@ -45,13 +45,60 @@ const app = new Vue({
             this.newMessage = ''; // Clear the input element.
         },
         selectStack: function(playerCards) {
-            
-            this.revealedCards = this.revealedCards.concat(playerCards.filter((item)=>this.revealedCards.indexOf(item)<0));
-            console.log(this.revealedCards);
-            this.winningCards = playerCards;
+            if(this.me.state==="master")
+            {
+                let tempLength = this.revealedCards.length;
+                this.revealedCards = this.revealedCards.concat(playerCards.filter((item)=>this.revealedCards.indexOf(item)<0));
+                this.winningCards = playerCards;
+
+                // Sending CARDS_REVEAL message to server
+                if(this.revealedCards.length > tempLength){
+                    const data = {
+                        type: "CARDS_REVEAL",
+                        cards: this.winningCards
+                    };
+        
+                    // Send chat message via websocket.
+                    socket.send(JSON.stringify(data));
+                }
+            }
         },
         chooseWinner: function() {
+            // Sending CHOOSE_WINNING_CARDS message to server
+            if(this.revealedCards.length === (this.players.length-1)*this.numberOfCardsToSelect)
+            {
+                const data = {
+                    type: "CHOOSE_WINNING_CARDS",
+                    cards: this.winningCards
+                };
 
+                // Send chat message via websocket.
+                socket.send(JSON.stringify(data));
+            }
+        },
+        // Use this function to fill playerCards with mockup data. Usefull for testing reactivity of webpage 
+        tempFill: function() {
+            this.playedCards = [{
+                playerCards: [
+                    { id: 21, text: "Śmieszny tekst 1"},
+                    { id: 22, text: "Śmieszny tekst 2"},
+                    { id: 23, text: "Śmieszny tekst 3"}
+                ]
+            },
+            {
+                playerCards: [
+                    { id: 24, text: "Śmieszny tekst 4"},
+                    { id: 25, text: "Śmieszny tekst 5"},
+                    { id: 26, text: "Śmieszny tekst 6"}
+                ]
+            },
+            {
+                playerCards: [
+                    { id: 27, text: "Śmieszny tekst 7"},
+                    { id: 28, text: "Śmieszny tekst 8"},
+                    { id: 29, text: "Śmieszny tekst 9"}
+                ]
+            }]
         }
     },
     computed: {
@@ -127,27 +174,7 @@ const app = new Vue({
 
         // Card master variables
         playedCards: [
-            {
-                playerCards: [
-                    { id: 21, text: "Śmieszny tekst 1"},
-                    { id: 22, text: "Śmieszny tekst 2"},
-                    { id: 23, text: "Śmieszny tekst 3"}
-                ]
-            },
-            {
-                playerCards: [
-                    { id: 24, text: "Śmieszny tekst 4"},
-                    { id: 25, text: "Śmieszny tekst 5"},
-                    { id: 26, text: "Śmieszny tekst 6"}
-                ]
-            },
-            {
-                playerCards: [
-                    { id: 27, text: "Śmieszny tekst 7"},
-                    { id: 28, text: "Śmieszny tekst 8"},
-                    { id: 29, text: "Śmieszny tekst 9"}
-                ]
-            }
+            
         ],
         revealedCards: [
 
