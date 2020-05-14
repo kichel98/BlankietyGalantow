@@ -1,3 +1,4 @@
+import argparse
 import os
 import uvicorn
 from fastapi import FastAPI
@@ -29,4 +30,10 @@ server.add_room("Gamma")
 
 # Starting server using uvicorn
 def run():
-    uvicorn.run(app, host="localhost", port=80)
+    parser = argparse.ArgumentParser(prog="blankiety_galantow", description="Run the app")
+    parser.add_argument("--port", default=80, type=int, help="Set port (default: 80)")
+    parser.add_argument("--host", default="localhost", help="Set host (default: localhost)")
+
+    args = vars(parser.parse_args())
+    uvicorn.run(app, **args)
+
