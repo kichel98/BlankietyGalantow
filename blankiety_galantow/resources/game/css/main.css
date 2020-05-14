@@ -47,9 +47,8 @@
     margin: 0.5em 1em;
     padding: 1.5em 1em;
 }
-.player-card:hover {
+.front {
     z-index:5;
-    transform: translateY(-8px);
 }
 .player-card.selected {
     background: #fff9bf;
@@ -57,10 +56,6 @@
 }
 
 .player-card .order-bubble {
-    visibility: hidden;
-}
-
-.player-card:hover .order-bubble {
     visibility: visible;
     position: absolute;
     bottom: -10px;

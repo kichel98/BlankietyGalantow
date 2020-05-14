@@ -45,12 +45,21 @@ const app = new Vue({
             this.newMessage = ''; // Clear the input element.
         },
         selectStack: function(playerCards) {
+            for(let i = 0; i < playerCards.length; i++){
+                if(playerCards[i].front)
+                {
+                    playerCards[(i+1)%playerCards.length].front = true;
+                    playerCards[i].front = false;
+                    break;
+                }
+            }
+            console.log(playerCards)
             if(this.me.state==="master")
             {
                 let tempLength = this.revealedCards.length;
                 this.revealedCards = this.revealedCards.concat(playerCards.filter((item)=>this.revealedCards.indexOf(item)<0));
                 this.winningCards = playerCards;
-
+                
                 // Sending CARDS_REVEAL message to server
                 if(this.revealedCards.length > tempLength){
                     const data = {
@@ -82,21 +91,21 @@ const app = new Vue({
                 playerCards: [
                     { id: 21, text: "Śmieszny tekst 1"},
                     { id: 22, text: "Śmieszny tekst 2"},
-                    { id: 23, text: "Śmieszny tekst 3"}
+                    { id: 23, text: "Śmieszny tekst 3", front: true}
                 ]
             },
             {
                 playerCards: [
                     { id: 24, text: "Śmieszny tekst 4"},
                     { id: 25, text: "Śmieszny tekst 5"},
-                    { id: 26, text: "Śmieszny tekst 6"}
+                    { id: 26, text: "Śmieszny tekst 6", front: true}
                 ]
             },
             {
                 playerCards: [
                     { id: 27, text: "Śmieszny tekst 7"},
                     { id: 28, text: "Śmieszny tekst 8"},
-                    { id: 29, text: "Śmieszny tekst 9"}
+                    { id: 29, text: "Śmieszny tekst 9", front: true}
                 ]
             }]
         }
