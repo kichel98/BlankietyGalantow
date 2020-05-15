@@ -25,13 +25,13 @@ Vue.component('card-player', {
 Vue.component('card-player-me', {
     props: {
         player: Object,
-        readyToSelect: Boolean
+        readyToSubmit: Boolean
     },
     template: `
         <div class="card w3-card w3-round-large w3-hover-shadow w3-center"
              v-bind:class="{
-                'select-animation': readyToSelect,
-                'faded': player.state == 'choosing' && !readyToSelect
+                'select-animation': readyToSubmit,
+                'faded': player.state == 'choosing' && !readyToSubmit
                 }">
             <p><strong>{{player.name}}</strong></p>
             <!-- Status gracza -->

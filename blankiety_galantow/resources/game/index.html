@@ -79,7 +79,7 @@
                         <card-player-me v-if="player.me"
                                         v-bind:key="player.id"
                                         v-bind:player="player"
-                                        v-bind:ready-to-select="readyToSubmit"
+                                        v-bind:ready-to-submit="readyToSubmit"
                                         v-on:click.native="confirmSelectedCards()">
                         </card-player-me>
                         <card-player v-else v-bind:key="player.id"
