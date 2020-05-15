@@ -1,3 +1,10 @@
+.faded {
+    opacity: 0.2;
+}
+.on-top {
+    z-index: 3;
+}
+
 .card {
     display: inline-block;
     width: 150px;
@@ -25,8 +32,17 @@
 }
 
 /*master cards stylesheet*/
-.card-stacks {
-    display: inline-block;
+
+.player-stack.glow .player-card {
+    -webkit-box-shadow: 0 0 10px 4px rgba(145,204,255,1);
+    -moz-box-shadow: 0 0 10px 4px rgba(145,204,255,1);
+    box-shadow: 0 0 10px 4px rgba(145,204,255,1);
+}
+
+.player-stack.glow:hover .player-card {
+    -webkit-box-shadow: 0 0 10px 4px rgba(255,255,0,1);
+    -moz-box-shadow: 0 0 10px 4px rgba(255,255,0,1);
+    box-shadow: 0 0 10px 4px rgba(255,255,0,1);
 }
 
 .player-stack {
@@ -34,7 +50,7 @@
     position: relative;
     width: 150px;
     height: 200px;
-    margin: 0.5em 1em;
+    margin: 0.5em 1em 40px;
     padding: 0.5em 1em;
 }
 .player-stack:hover {
@@ -44,7 +60,6 @@
     position: absolute;
     width: 150px;
     height: 200px;
-    margin: 0.5em 1em;
     padding: 1.5em 1em;
 }
 /* .player-card:hover {
@@ -57,6 +72,7 @@
 }
 
 .player-card .order-bubble {
+    z-index: 2;
     position: absolute;
     bottom: -10px;
     left: -5px;
@@ -67,21 +83,12 @@
     border:1px solid black
 }
 
+/* Choose winner button */
 .choose-winner {
-    margin-left: 40px;
+    text-align: center;
 }
 /* End of master cards stylesheet */
-.player {
-    opacity: 0.2;
-}
 
-.visible {
-    opacity: 1.0;
-}
-
-.disabled {
-    opacity: 0.2;
-}
 
 .table {
     display: flex;

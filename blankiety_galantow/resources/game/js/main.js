@@ -16,9 +16,9 @@ const app = new Vue({
                 card.selected = !card.selected;
             }
         },
-        confirmSelectedCards: function(player) {
-            if(player.state === "choosing" && this.selectedCards.length===this.numberOfCardsToSelect && player.me) {
-                player.state = "ready";
+        confirmSelectedCards: function() {
+            if(this.readyToSubmit) {
+                this.me.state = "ready";
                 // Making websocket message
                 const data = {
                     type: "CARDS_SELECT",
@@ -44,91 +44,111 @@ const app = new Vue({
 
             this.newMessage = ''; // Clear the input element.
         },
-        selectStack: function(playerCards) {
-            if(playerCards.every((item)=>this.revealedCards.includes(item)))
-            {
-                let tempCard = playerCards.shift();
-                playerCards.push(tempCard)
-            }
-            
-            if(this.me.state==="master")
-            {
-                let tempLength = this.revealedCards.length;
-                this.revealedCards = this.revealedCards.concat(playerCards.filter((item)=>this.revealedCards.indexOf(item)<0));
-                this.winningCards = playerCards;
+        onStackClick: function(stack) {
+            // You can't reveal the stack if you're not a card master
+            if(this.me.state !== "master")
+                return;
 
-                // Sending CARDS_REVEAL message to server
-                if(this.revealedCards.length > tempLength){
-                    const data = {
-                        type: "CARDS_REVEAL",
-                        cards: this.winningCards
-                    };
-        
-                    // Send chat message via websocket.
-                    socket.send(JSON.stringify(data));
-                }
+            if(this.selectingWinnerMode) {
+                this.selectWinner(stack);
+                return;
             }
+
+            if (stack.revealed)
+                stack.currentCard = (stack.currentCard + 1) % stack.cards.length;
+
+            // First click reveals the stack
+            stack.revealed = true;
+            // TODO: instead of revealing the stack by hand and changing the current
+            //  card we can send that info  to the server so it notifies other players
+            //  and cards are changed for all players.
         },
-        chooseWinner: function() {
+        selectWinner: function(stack) {
             // Sending CHOOSE_WINNING_CARDS message to server
-            if(this.revealedCards.length === (this.players.length-1)*this.numberOfCardsToSelect && !this.pointsGranted)
-            {
-                const data = {
-                    type: "CHOOSE_WINNING_CARDS",
-                    cards: this.winningCards
-                };
-                this.pointsGranted = true;
-                // Send chat message via websocket.
-                socket.send(JSON.stringify(data));
-            }
+            const data = {
+                type: "CHOOSE_WINNING_CARDS",
+                cards: stack.cards
+            };
+            socket.send(JSON.stringify(data));
+
+            // TODO: If winner is correct then server sends empty playedCards
+            //  temporarily we do it by hand
+            this.playedCards = [];
         },
         // Use this function to fill playerCards with mockup data. Usefull for testing reactivity of webpage 
         tempFill: function() {
-            this.playedCards = [{
-                playerCards: [
-                    { id: 21, text: "Śmieszny tekst 1", number: 1},
-                    { id: 22, text: "Śmieszny tekst 2", number: 2},
-                    { id: 23, text: "Śmieszny tekst 3", number: 3}
-                ]
-            },
-            {
-                playerCards: [
-                    { id: 24, text: "Śmieszny tekst 4", number: 1},
-                    { id: 25, text: "Śmieszny tekst 5", number: 2},
-                    { id: 26, text: "Śmieszny tekst 6", number: 3}
-                ]
-            },
-            {
-                playerCards: [
-                    { id: 27, text: "Śmieszny tekst 7", number: 1},
-                    { id: 28, text: "Śmieszny tekst 8", number: 2},
-                    { id: 29, text: "Śmieszny tekst 9", number: 3}
-                ]
-            }]
+            this.playedCards = [
+                {
+                    revealed: false,
+                    currentCard: 0,
+                    cards: [
+                        {id: 21, text: "Śmieszny tekst 1"},
+                        {id: 22, text: "Śmieszny tekst 2"},
+                        {id: 23, text: "Śmieszny tekst 3"}
+                    ]
+                },
+                {
+                    revealed: false,
+                    currentCard: 0,
+                    cards: [
+                        { id: 24, text: "Śmieszny tekst 4"},
+                        { id: 25, text: "Śmieszny tekst 5"},
+                        { id: 26, text: "Śmieszny tekst 6"}
+                    ]
+                },
+                {
+                    revealed: false,
+                    currentCard: 0,
+                    cards: [
+                        { id: 27, text: "Śmieszny tekst 7"},
+                        { id: 28, text: "Śmieszny tekst 8"},
+                        { id: 29, text: "Śmieszny tekst 9"}
+                    ]
+                }
+            ];
         }
     },
     computed: {
         me: function() {
             return this.players.filter((player)=>player.me)[0];
         },
+        readyToSubmit: function() {
+            // Check if player is ready to submit his/her selected cards
+            return this.me.state === "choosing" && this.selectedCards.length === this.numberOfCardsToSelect;
+        },
+        selectingStage: function() {
+            // If no cards are played then it's selecting stage.
+            return this.playedCards.length === 0;
+        },
+        readingStage: function() {
+            // If some cards are played then it's reading stage.
+            return this.playedCards.length > 0;
+        },
+        allStacksRevealed: function() {
+            let stacksRevealed = this.playedCards.every( stack => stack.revealed );
+            return this.readingStage && stacksRevealed;
+        },
         topInfo: function() {
-            if(this.me.state==="master"){
-                if(this.playedCards.length === 0){
-                    return "Jesteś mistrzem kart, zaczekaj aż wszyscy wybiorą karty"
+            if(this.selectingStage) {
+                if(this.me.state === "master") {
+                    return "Jesteś mistrzem kart, zaczekaj aż wszyscy wybiorą karty";
                 }
-                else{
-                    return "Odsłoń karty i wybierz zwycięzcę"
+                if(this.me.state === "choosing") {
+                    return "Wybierz karty, które chcesz zagrać";
+                }
+                if(this.me.state === "ready") {
+                    return "Zaczekaj aż wszyscy wybiorą karty";
                 }
             }
-            else if(this.me.state === "choosing"){
-                return "Wybierz karty, które chcesz zagrać"
+            if(this.readingStage && this.me.state !== "master") {
+                return "Mistrz kart wybiera zwycięzcę";
             }
-            else if(this.me.state === "ready"){
-                if(this.playedCards.length === 0){
-                    return "Zaczekaj aż wszyscy wybiorą karty"
+            if(this.readingStage && this.me.state === "master") {
+                if(this.selectingWinnerMode) {
+                    return "Wybierz najzabawniejsze dopasowanie";
                 }
-                else{
-                    return "Mistrz kart wybiera zwycięzcę"
+                else {
+                    return "Odsłoń karty nadesłane przez graczy";
                 }
             }
         }
@@ -200,16 +220,8 @@ const app = new Vue({
         numberOfCardsToSelect: 3,
 
         // Card master variables
-        pointsGranted: false,
-        playedCards: [
-            
-        ],
-        revealedCards: [
-
-        ],
-        winningCards: [
-
-        ]
+        playedCards: [],
+        selectingWinnerMode: false,
     }
 });
 

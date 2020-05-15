@@ -72,56 +72,47 @@
                 <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
                     <p>Kocham język Python z powodu ______</p>
                 </div>
-                <div v-if="playedCards.length===0">
-                    <card-player v-for="player in players" v-bind:key="player.id" v-bind:player="player" v-bind:me="player.me"
 
-                    v-bind:class="{visible: (player.id !== me.id)||(selectedCards.length===numberOfCardsToSelect),
-                                'select-animation': (player.id === me.id)
-                                                    && (selectedCards.length===numberOfCardsToSelect) 
-                                                    && (player.state === 'choosing'),
-                                'w3-white': (player.id !== me.id) }"
-                    v-on:click.native="confirmSelectedCards(player)">
-                    </card-player>
-                </div>
-                <div v-if="playedCards.length!==0">
-                    <div class="card-stacks" v-for="cards in playedCards" 
-                    v-on:click="selectStack(cards.playerCards)">
-                        <div class="player-stack" 
-                            v-bind:style="{ 'margin-left': cards.playerCards.length*10 + 'px' }">
+                <!-- Player cards -->
+                <template v-if="selectingStage">
+                    <template v-for="player in players">
+                        <card-player-me v-if="player.me"
+                                        v-bind:key="player.id"
+                                        v-bind:player="player"
+                                        v-bind:ready-to-select="readyToSubmit"
+                                        v-on:click.native="confirmSelectedCards()">
+                        </card-player-me>
+                        <card-player v-else v-bind:key="player.id"
+                                     v-bind:player="player">
+                        </card-player>
+                    </template>
+                </template>
 
-                            <div v-for="card in cards.playerCards.slice().reverse()" v-bind:key="card.id">
-                                <div class="player-card w3-card w3-round-large w3-hover-shadow w3-center" 
-                                    v-bind:style="{ left: '-' + (cards.playerCards.indexOf(card))*10 + 'px',
-                                                top: '-' + (cards.playerCards.indexOf(card))*10 + 'px' }"
-                                    v-bind:class="{ 'selected': winningCards.indexOf(card)>=0,
-                                                    'w3-white': 0>winningCards.indexOf(card) }"
-                                    >
-                                    <div v-if="revealedCards.indexOf(card)>=0">
-                                        {{card.text}}
-                                    </div>
-                                    
-                                    <div v-if="cards.playerCards.indexOf(card)===0 
-                                                && revealedCards.indexOf(card)>=0" 
-                                        class="order-bubble w3-round-xxlarge">
-                                        {{card.number}}
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                    <div v-if="me.state=='master'" class="played-card choose-winner w3-card w3-round-large w3-hover-shadow w3-center">
-                        <div v-bind:class="{ disabled: revealedCards.length !== (players.length-1)*numberOfCardsToSelect||pointsGranted,
-                                            'select-animation': !(revealedCards.length !== (players.length-1)*numberOfCardsToSelect)&&!pointsGranted}"
-                             v-on:click="chooseWinner">
-                            <p>Przyznaj punkt</p>
-                        <p><i class="icon-trophy w3-xxxlarge"></i></p>
-                        </div>
-                    </div>
-                </div>
+                <!-- Card stacks -->
+                <template v-if="readingStage">
+                    <card-stack v-for="(stack, id) in playedCards"
+                                v-bind:key="id"
+                                v-bind:stack="stack"
+                                v-on:click.native="onStackClick(stack)"
+                                v-bind:class="{glow: selectingWinnerMode}">
+                    </card-stack>
+                </template>
             </div>
+
+            <!-- Choose winner button -->
+            <div class="choose-winner" v-if="allStacksRevealed && me.state === 'master'">
+                <button class="w3-button w3-green w3-card w3-round-medium "
+                        v-bind:class="{'w3-gray': selectingWinnerMode}"
+                        v-bind:class="{'select-animation': !selectingWinnerMode}"
+                        v-on:click="selectingWinnerMode = !selectingWinnerMode">
+                    <i class="icon-trophy w3-xlarge"></i> <br>
+                    <strong>Wybierz zwycięzcę</strong>
+                </button>
+            </div>
+
             <hr>
-            <div class="hand" v-bind:class="{disabled: (me.state==='master')}">
+
+            <div class="hand" v-bind:class="{faded: (me.state==='master')}">
                 <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float" 
                     v-for="card in myCards" 
                     v-bind:class="{selected: selectedCards.includes(card)}" 
