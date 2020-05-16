@@ -3,9 +3,10 @@ from fastapi import WebSocket
 
 
 class Player:
-    def __init__(self, socket: WebSocket, username: str):
+    def __init__(self, socket: WebSocket, username: str, id: str):
         self.name = username
         self.socket = socket
+        self.id = id
 
     async def receive_json(self):
         """Await for incoming message from the player."""

@@ -130,6 +130,9 @@ socket.onmessage = function(event) {
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);
     }
+    if(data.type === "PLAYERS") {
+        // app.players = data.players
+    }
     // TODO: add other types of messages
 };
 
