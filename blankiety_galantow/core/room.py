@@ -35,7 +35,7 @@ class Room:
                 await self.process_message(player, msg)
         except WebSocketDisconnect:
             self.players.remove(player)
-            self.handle_player_leaving(player)
+            await self.handle_player_leaving(player)
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
