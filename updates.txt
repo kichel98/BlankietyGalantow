@@ -1,4 +1,33 @@
 -------------------------------------------
+15-06-2020: Praca z WebSocketami i rozwój interfejsu
+Zrobiono:
+ - Założono projekt Python FastAPI.
+ - Dodano wysyłanie plików statycznych z serwera HTTP.
+ - Dodano REST API udostępniające aktualną listę pokojów
+   wraz z id, ilością graczy oraz informację czy jest on
+   otwarty na nowych użytkowników.
+ - Rozbudowano listę pokojów na frontendzie. Teraz pobiera
+   informacje o serwerach z REST API.
+ - Zaimplementowano mechanikę WebSocketów po stronie 
+   serwera oraz klienta. Gracz może teraz połączyć się z 
+   wybranym pokojem.
+ - Zaimplementowano działający czat pomiędzy użytkownikami w
+   jednym pokoju.
+ - Dodano obsługę sytuacji zerwania połączenia z klientem.
+ - Rozpoczęto pracę nad interfejsem gry w poszczególnych
+   etapach rozgrywki.
+Nie zrobiono:
+ -
+Planujemy:
+ - Zaimplementować mechanikę gry na serwerze i kliencie.
+ - Rozbudować GUI, aby reagował na komunikaty z serwera.
+ - Obsługiwać więcej zdarzeń od klienta na serwerze.
+ - Móc przeprowadzić pierwszą, prototypową rozgrywkę przez sieć.
+Problemy:
+ - GUI robi się bardziej skomplikowane i spędzamy nad nim więcej
+   czasu niż pierwotnie zakładano.
+
+-------------------------------------------
 04-05-2020: Przygotowanie prototypu interfejsu
 Zrobiono:
  - Utworzono grafiki koncepcyjne interfejsu.
