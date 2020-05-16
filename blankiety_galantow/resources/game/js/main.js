@@ -131,6 +131,7 @@ socket.onmessage = function(event) {
         addMessageToChat(data.message);
     }
     if(data.type === "PLAYERS") {
+        // TODO: refresh GUI after players update
         // app.players = data.players
     }
     // TODO: add other types of messages

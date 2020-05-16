@@ -35,13 +35,7 @@ class Room:
                 await self.process_message(player, msg)
         except WebSocketDisconnect:
             self.players.remove(player)
-            if player == self.admin:
-                if self.players:
-                    self.admin = random.choice(self.players)
-                else:
-                    self.admin = None
-            await self.send_chat_message_from_system(f"Gracz '{player.name}' opuścił pokój.")
-            await self.send_players_update()
+            self.handle_player_leaving(player)
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
@@ -74,8 +68,22 @@ class Room:
         }
         await self.send_json_to_all_players(data)
 
+    def handle_player_leaving(self, player):
+        """Does all needed operations after player leaving a room"""
+        if player == self.admin:
+            self.set_new_random_admin()
+        await self.send_chat_message_from_system(f"Gracz '{player.name}' opuścił pokój.")
+        await self.send_players_update()
+
+    def set_new_random_admin(self):
+        """Choose random player as admin"""
+        if self.players:
+            self.admin = random.choice(self.players)
+        else:
+            self.admin = None
+
     async def send_players_update(self):
-        """Send info about change in amount/state of players in room to all of them."""
+        """Send info about players in room to all of them."""
         players_info = self.get_players_info()
         for player in self.players:
             data = {
@@ -87,14 +95,15 @@ class Room:
 
     def get_players_info(self):
         """Get list of player info"""
+        # TODO: Fill player info with correct state and score
         players_info = []
         for player in self.players:
             player_info = {
                 "id": player.id,
                 "name": player.name,
-                "state": "ready",
-                "score": 0,
-                "admin": False
+                "state": "ready",  # Needs to be changed
+                "score": 0,  # Needs to be changed
+                "admin": player == self.admin
             }
             players_info.append(player_info)
         return players_info
