@@ -11,7 +11,7 @@ class Deck:
         self.shuffle_cards()
 
     def load_from_file(self):
-        with open(self.path, mode='r') as deck_csv:
+        with open(self.path, mode='r', encoding='utf-8') as deck_csv:
             deck_reader = csv.DictReader(deck_csv, delimiter=';')
             
             for id, row in enumerate(deck_reader):
