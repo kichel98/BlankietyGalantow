@@ -12,7 +12,7 @@ class Deck:
 
     def load_from_file(self):
         with open(self.path, mode='r') as deck_csv:
-            deck_reader = csv.DictReader(deck_csv)
+            deck_reader = csv.DictReader(deck_csv, delimiter=';')
             
             for id, row in enumerate(deck_reader):
                 new_card = self.CardType(id, row)
