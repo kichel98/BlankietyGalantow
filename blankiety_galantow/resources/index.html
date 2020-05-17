@@ -23,6 +23,27 @@
         </header>
 
         <div id="container">
+            <!-- Modal -->
+            <div class="w3-modal" :class="{'w3-show': showCreateRoomModal}">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                    <div class="w3-center"><br>
+                        <span @click="showCreateRoomModal=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <h3>Tworzenie pokoju</h3>
+                    </div>
+                    <hr>
+                    <div class="w3-container w3-margin">
+                        <h4>Nazwa pokoju</h4>
+                        <input type="text" name="room-name" id="room-name" value="Pokoj69">
+                        <h4>Liczba miejsc</h4>
+                        <input type="number" name="room-seats" id="room-seats" value="6">
+                    </div>
+                    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                        <button @click="showCreateRoomModal=false" type="button" class="w3-button w3-red">Anuluj</button>
+                        <button @click="createRoom" type="button" class="w3-button w3-green w3-right">Stwórz</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
             <aside class="">
                 <div class="settings w3-card w3-container">
                     <header>
@@ -45,6 +66,9 @@
 
             <div class="rooms w3-card">
                 <ul class="w3-ul">
+                    <room-create-button
+                        @click.native="showCreateRoomModal=true">
+                    </room-create-button>
                     <room-item
                         v-for="room in rooms"
                         v-bind:key="room.id"

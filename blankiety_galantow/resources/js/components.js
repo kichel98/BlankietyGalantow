@@ -19,3 +19,22 @@ Vue.component('room-item', {
         </li>
     `
 })
+
+Vue.component('room-create-button', {
+    props: {
+        room: Object
+    },
+    template: `
+        <li>
+            <div class="room-item hvr-icon-grow hvr-radial-out">
+                <i class="icon-group room-icon w3-hide-small"></i>
+                <div class="room-info">
+                    <span class="w3-large">Nowy pokój</span><br>
+                </div>
+                <div class="room-status">
+                    <i class="hvr-icon icon-plus-circled full"></i>
+                </div>
+            </div>
+        </li>
+    `
+})
