@@ -69,7 +69,7 @@ class Room:
         await self.send_json_to_all_players(data)
 
     async def handle_player_leaving(self, player):
-        """Does all needed operations after player leaving a room"""
+        """Does all needed operations after player leaves a room"""
         if player == self.admin:
             self.set_new_random_admin()
         await self.send_chat_message_from_system(f"Gracz '{player.name}' opuścił pokój.")
