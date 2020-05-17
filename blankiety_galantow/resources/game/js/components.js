@@ -12,11 +12,11 @@ Vue.component('card-player', {
             </template>
             <template v-if="player.state == 'master'">
                 <p>Mistrz Kart</p>
-            <p><i class="icon-eye w3-xxxlarge"></i></p>
+                <p><i class="icon-eye w3-xxxlarge"></i></p>
+            </template>
             <template v-if="player.state == 'choosing'">
                 <p>Wybiera..</p>
                 <p><i class="icon-spin w3-xxxlarge w3-spin"></i></p>
-            </template>
             </template>
         </div>
     `
