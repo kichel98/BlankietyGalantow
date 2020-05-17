@@ -84,11 +84,14 @@ class Room:
 
     async def send_players_update(self):
         """Send info about players in room to all of them."""
-        players_info = self.get_players_info()
         for player in self.players:
+            players_info = self.get_players_info()
+            # Add "me" field depending on player we send message to
+            for player_info in players_info:
+                if player_info["id"] == player.id:
+                    player_info["me"] = True
             data = {
                 "type": "PLAYERS",
-                "myId": player.id,
                 "players": players_info
             }
             await player.send_json(data)

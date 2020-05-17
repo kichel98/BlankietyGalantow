@@ -64,33 +64,7 @@ const app = new Vue({
     /* Mockup data */
     data: {
         tableId: 20965,
-        players: [{
-                id: 1,
-                name: "Tomek",
-                score: 1,
-                state: "ready",
-                admin: true
-            },
-            {
-                id: 2,
-                name: "Ala",
-                state: "master",
-                score: 0
-            },
-            {
-                id: 3,
-                name: "Michał",
-                state: "choosing",
-                score: 1
-            },
-            {
-                id: 4,
-                name: "Zuza",
-                state: "choosing",
-                score: 2,
-                me: true
-            }
-        ],
+        players: [],
         myCards: [
             { id: 21, text: "Śmieszny tekst 1" },
             { id: 22, text: "Śmieszny tekst 2" },
@@ -131,8 +105,7 @@ socket.onmessage = function(event) {
         addMessageToChat(data.message);
     }
     if(data.type === "PLAYERS") {
-        // TODO: refresh GUI after players update
-        // app.players = data.players
+        app.players = data.players
     }
     // TODO: add other types of messages
 };
