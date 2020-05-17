@@ -1,3 +1,10 @@
+.faded {
+    opacity: 0.2;
+}
+.on-top {
+    z-index: 3;
+}
+
 .card {
     display: inline-block;
     width: 150px;
@@ -24,18 +31,70 @@
     border:1px solid black
 }
 
-.player {
-    opacity: 0.2;
+/*master cards stylesheet*/
+
+.player-stack.glow .player-card {
+    -webkit-box-shadow: 0 0 10px 4px rgba(145,204,255,1);
+    -moz-box-shadow: 0 0 10px 4px rgba(145,204,255,1);
+    box-shadow: 0 0 10px 4px rgba(145,204,255,1);
 }
 
-.visible {
-    opacity: 1.0;
+.player-stack.glow:hover .player-card {
+    -webkit-box-shadow: 0 0 10px 4px rgba(255,255,0,1);
+    -moz-box-shadow: 0 0 10px 4px rgba(255,255,0,1);
+    box-shadow: 0 0 10px 4px rgba(255,255,0,1);
 }
+
+.player-stack {
+    display: inline-block;
+    position: relative;
+    width: 150px;
+    height: 200px;
+    margin: 0.5em 1em 40px;
+    padding: 0.5em 1em;
+}
+.player-stack:hover {
+    cursor: pointer;
+}
+.player-card {
+    position: absolute;
+    width: 150px;
+    height: 200px;
+    padding: 1.5em 1em;
+}
+/* .player-card:hover {
+    z-index:5;
+    transform: translateY(-8px);
+} */
+.player-card.selected {
+    background: #fff9bf;
+    transform: translateY(-8px);
+}
+
+.player-card .order-bubble {
+    z-index: 2;
+    position: absolute;
+    bottom: -10px;
+    left: -5px;
+    padding: 10px 15px;
+    border-radius: 50%;
+    background: rgb(0, 0, 0);
+    color: white;
+    border:1px solid black
+}
+
+/* Choose winner button */
+.choose-winner {
+    text-align: center;
+}
+/* End of master cards stylesheet */
+
 
 .table {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    padding-top: 40px;
 }
 
 .hand {

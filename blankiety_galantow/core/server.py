@@ -19,13 +19,16 @@ class Server:
         """Add new player to existing room."""
         await self._rooms[room_id].add_player_and_listen(player)
 
-    def add_room(self, name: str):
+    def add_room(self, name: str, seats: int = 0):
         """Add new room with random alpha-numeric id"""
         while True:
             random_id = get_random_string(length=8)
             if random_id not in self._rooms:
-                self._rooms[random_id] = Room(name)
-                break
+                room = Room(name)
+                if seats != 0:
+                    room.number_of_seats = seats
+                self._rooms[random_id] = room
+                return random_id
 
     def get_room_list(self):
         """Prepare and return list of all rooms."""
