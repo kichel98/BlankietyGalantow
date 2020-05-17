@@ -65,26 +65,54 @@
             <!-- Modal -->
 
             <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-center">
-                <p>Jesteś mistrzem kart, zaczekaj aż wszyscy wybiorą karty</p>
+                <p>{{topInfo}}</p>
             </div>
 
             <div class="table">
                 <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
                     <p>Kocham język Python z powodu ______</p>
                 </div>
-                <card-player v-for="player in players" v-bind:key="player.id" v-bind:player="player" v-bind:me="player.me"
 
-                v-bind:class="{visible: (player.id !== me.id) || (selectedCards.length===numberOfCardsToSelect),
-                                'select-animation': (player.id === me.id)
-                                                && (selectedCards.length === numberOfCardsToSelect)
-                                                && (player.state === 'choosing'),
-                               'w3-white': (player.id !== me.id) }"
-                v-on:click.native="confirmSelectedCards(player)">
-                </card-player>
+                <!-- Player cards -->
+                <template v-if="selectingStage">
+                    <template v-for="player in players">
+                        <card-player-me v-if="player.me"
+                                        v-bind:key="player.id"
+                                        v-bind:player="player"
+                                        v-bind:ready-to-submit="readyToSubmit"
+                                        v-on:click.native="confirmSelectedCards()">
+                        </card-player-me>
+                        <card-player v-else v-bind:key="player.id"
+                                     v-bind:player="player">
+                        </card-player>
+                    </template>
+                </template>
+
+                <!-- Card stacks -->
+                <template v-if="readingStage">
+                    <card-stack v-for="(stack, id) in playedCards"
+                                v-bind:key="id"
+                                v-bind:stack="stack"
+                                v-on:click.native="onStackClick(stack)"
+                                v-bind:class="{glow: selectingWinnerMode}">
+                    </card-stack>
+                </template>
             </div>
-            <hr>
-            <div class="hand">
 
+            <!-- Choose winner button -->
+            <div class="choose-winner" v-if="allStacksRevealed && me.state === 'master'">
+                <button class="w3-button w3-green w3-card w3-round-medium "
+                        v-bind:class="{'w3-gray': selectingWinnerMode}"
+                        v-bind:class="{'select-animation': !selectingWinnerMode}"
+                        v-on:click="selectingWinnerMode = !selectingWinnerMode">
+                    <i class="icon-trophy w3-xlarge"></i> <br>
+                    <strong>Wybierz zwycięzcę</strong>
+                </button>
+            </div>
+
+            <hr>
+
+            <div class="hand" v-bind:class="{faded: (me.state==='master')}">
                 <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float" 
                     v-for="card in myCards" 
                     v-bind:class="{selected: selectedCards.includes(card)}" 
