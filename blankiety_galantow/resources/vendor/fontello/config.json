@@ -89,6 +89,12 @@
       "css": "trophy",
       "code": 59400,
       "src": "entypo"
+    },
+    {
+      "uid": "4ba33d2607902cf690dd45df09774cb0",
+      "css": "plus-circled",
+      "code": 59401,
+      "src": "fontawesome"
     }
   ]
 }

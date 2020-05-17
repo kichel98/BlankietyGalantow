@@ -38,3 +38,9 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, username: str):
 async def rooms():
     room_list = app.server.get_room_list()
     return {"rooms": room_list}
+
+@router.get("/api/create")
+async def create_room(name: str, seats: int = 0):
+    room_id = app.server.add_room(name, seats)
+    return {"room_id": room_id}
+
