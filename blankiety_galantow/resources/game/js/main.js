@@ -167,7 +167,35 @@ const app = new Vue({
     /* Mockup data */
     data: {
         tableId: 20965,
-        players: [],
+        players: [
+            // TODO: we should start with empty list of players
+            {
+                id: 1,
+                name: "Tomek",
+                score: 1,
+                state: "ready",
+                admin: true
+            },
+            {
+                id: 2,
+                name: "Ala",
+                state: "master",
+                score: 0
+            },
+            {
+                id: 3,
+                name: "Michał",
+                state: "choosing",
+                score: 1
+            },
+            {
+                id: 4,
+                name: "Zuza",
+                state: "choosing",
+                score: 2,
+                me: true
+            }
+        ],
         myCards: [
             { id: 21, text: "Śmieszny tekst 1" },
             { id: 22, text: "Śmieszny tekst 2" },
