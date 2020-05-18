@@ -6,6 +6,7 @@ from .helpers import get_random_string
 from .player import Player
 from .deck import Deck, WhiteCard, BlackCard
 from .game_master import GameMaster
+from .observer.observable_list import ObservableList
 
 
 class Room:
@@ -14,23 +15,20 @@ class Room:
         self.name = name
         self.open = True
         self.number_of_seats = 6
-        self.players = []
-        # Loading card decks and initialization
-        white_deck = Deck(WhiteCard, "resources/game/decks/classic_white.csv")
-        black_deck = Deck(BlackCard, "resources/game/decks/classic_black.csv")
-        self.game_master = GameMaster(white_deck, black_deck) 
-
+        self.players = ObservableList()
+        self.game_master = GameMaster() 
+        self.players.add_observer(self.game_master)
+        # Chat should also be added as observer here
         self.admin = None
 
     @property
     def number_of_players(self):
-        return len(self.players)
+        return len(self.players.list)
 
     async def add_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""
         player.id = self.generate_unique_player_id()
-        self.players.append(player)
-        await self.game_master.new_player(player)
+        await self.players.add_item(player)
 
         if self.admin is None:
             self.admin = player
@@ -40,7 +38,7 @@ class Room:
 
     def generate_unique_player_id(self):
         player_id = get_random_string()
-        players_id = [player.id for player in self.players]
+        players_id = [player.id for player in self.players.list]
         while player_id in players_id:
             player_id = get_random_string()
         return player_id
@@ -52,7 +50,7 @@ class Room:
                 msg = await player.receive_json()
                 await self.process_message(player, msg)
         except WebSocketDisconnect:
-            self.players.remove(player)
+            await self.players.remove_item(player)
             await self.handle_player_leaving(player)
 
     async def process_message(self, player: Player, data: Dict):
@@ -99,14 +97,14 @@ class Room:
 
     def set_new_random_admin(self):
         """Choose random player as admin"""
-        if self.players:
-            self.admin = random.choice(self.players)
+        if self.number_of_players>0:
+            self.admin = random.choice(self.players.list)
         else:
             self.admin = None
 
     async def send_players_update(self):
         """Send info about players in room to all of them."""
-        for player in self.players:
+        for player in self.players.list:
             players_info = self.get_players_info()
             # Add "me" field depending on player we send message to
             for player_info in players_info:
@@ -122,7 +120,7 @@ class Room:
         """Get list of player info"""
         # TODO: Fill player info with correct state and score
         players_info = []
-        for player in self.players:
+        for player in self.players.list:
             player_info = {
                 "id": player.id,
                 "name": player.name,
@@ -135,5 +133,5 @@ class Room:
 
     async def send_json_to_all_players(self, json):
         """Send json (given as Python dictionary) to all players"""
-        for player in self.players:
+        for player in self.players.list:
             await player.send_json(json)

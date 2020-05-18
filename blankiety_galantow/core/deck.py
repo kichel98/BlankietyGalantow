@@ -43,12 +43,12 @@ class Deck:
 
 class WhiteCard:
     def __init__(self, card_id: int, deck_reader):
-        self.id: int = id
+        self.card_id: int = card_id
         self.text: str = deck_reader["treść"]
 
 
 class BlackCard:
-    def __init__(self, id, deck_reader):
-        self.id = id
+    def __init__(self, card_id, deck_reader):
+        self.card_id = card_id
         self.text = deck_reader["treść"]
         self.gap_count = deck_reader["luki"]
