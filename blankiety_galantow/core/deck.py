@@ -48,9 +48,6 @@ class WhiteCard:
 
 
 class BlackCard:
-    id: int
-    text: str
-    gap_count: int
     def __init__(self, id, deck_reader):
         self.id = id
         self.text = deck_reader["treść"]
