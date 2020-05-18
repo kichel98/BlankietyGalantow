@@ -42,11 +42,9 @@ class Deck:
 
 
 class WhiteCard:
-    id: int
-    text: str
-    def __init__(self, id, deck_reader):
-        self.id = id
-        self.text = deck_reader["treść"]
+    def __init__(self, card_id: int, deck_reader):
+        self.id: int = id
+        self.text: str = deck_reader["treść"]
 
 
 class BlackCard:
