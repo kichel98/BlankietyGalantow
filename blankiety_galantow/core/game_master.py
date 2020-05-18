@@ -24,7 +24,7 @@ class GameMaster:
     async def fill_players_hand(self, player: Player):
         message = {
             "type": "PLAYER_HAND",
-            "cards": [card.__dict__ for card in self.white_deck.get_cards(8)]
+            "cards": [card.__dict__ for card in self.white_deck.get_cards(10)]
         }
         await player.send_json(message)
 
