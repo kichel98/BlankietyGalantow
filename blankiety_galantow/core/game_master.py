@@ -14,16 +14,24 @@ class GameMaster:
         self.white_deck = white_deck
         self.black_deck = black_deck
         self.players_hands = {}
+        self.black_card = black_deck.get_card()
 
     async def new_player(self, player: Player):
         self.players_hands[Player] = []
         await self.fill_players_hand(player)
+        await self.send_black_card(player)
 
     async def fill_players_hand(self, player: Player):
-
         message = {
             "type": "PLAYER_HAND",
             "cards": [card.__dict__ for card in self.white_deck.get_cards(8)]
+        }
+        await player.send_json(message)
+
+    async def send_black_card(self, player: Player):
+        message = {
+            "type": "BLACK_CARD",
+            "card": self.black_card.__dict__
         }
         await player.send_json(message)
 

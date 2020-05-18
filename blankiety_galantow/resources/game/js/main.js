@@ -204,6 +204,10 @@ const app = new Vue({
             { id: 27, text: "Śmieszny tekst 7" },
             { id: 28, text: "Śmieszny tekst 8" },
         ],
+        blackCard: {
+            id: 0,
+            text: "Kocham język Python ponieważ _____"
+        },
         chat: [
             { name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true },
             { name: "Gra", message: "Gracz Tomek zostaje mistrzem kart.", log: true },
@@ -238,8 +242,11 @@ socket.onmessage = function(event) {
         addMessageToChat(data.message);
     }
     if(data.type === "PLAYER_HAND" && data.cards) {
-        console.log(data)
         app.myCards = data.cards
+    }
+    if(data.type === "BLACK_CARD" && data.card) {
+        app.blackCard = data.card
+        app.numberOfCardsToSelect = parseInt(data.card.gap_count)
     }
     // TODO: add other types of messages
 };
