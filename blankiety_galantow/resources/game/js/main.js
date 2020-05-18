@@ -167,7 +167,9 @@ const app = new Vue({
     /* Mockup data */
     data: {
         tableId: 20965,
-        players: [{
+        players: [
+            // TODO: we should start with empty list of players
+            {
                 id: 1,
                 name: "Tomek",
                 score: 1,
@@ -247,6 +249,9 @@ socket.onmessage = function(event) {
     if(data.type === "BLACK_CARD" && data.card) {
         app.blackCard = data.card
         app.numberOfCardsToSelect = parseInt(data.card.gap_count)
+    }
+    if(data.type === "PLAYERS") {
+        app.players = data.players
     }
     // TODO: add other types of messages
 };

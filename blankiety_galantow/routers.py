@@ -1,4 +1,5 @@
 import codecs
+
 from fastapi import APIRouter, WebSocket
 from fastapi.responses import HTMLResponse
 
