@@ -34,6 +34,7 @@ def run():
     parser.add_argument("--port", default=80, type=int, help="Set port (default: 80)")
     parser.add_argument("--host", default="localhost", help="Set host (default: localhost)")
     parser.add_argument("--reload", default=False, type=bool, help="Enable auto reload (default: False)")
+    parser.add_argument("--log-level", default="info", help="Set log level: [info|debug|...] (default: info)")
 
     args = vars(parser.parse_args())
     uvicorn.run("blankiety_galantow.app:app", **args)
