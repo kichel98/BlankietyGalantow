@@ -6,6 +6,7 @@ class Player:
     def __init__(self, socket: WebSocket, username: str):
         self.name = username
         self.socket = socket
+        self.id = None
 
     async def receive_json(self):
         """Await for incoming message from the player."""
