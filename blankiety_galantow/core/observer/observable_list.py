@@ -1,19 +1,21 @@
-from .observable import Observable
-from .observer import Observer
+class ObservableList(list):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.append_callbacks = []
+        self.remove_callbacks = []
 
-class ObservableList(Observable):
-    def __init__(self):
-        super().__init__()
-        self.list = []
+    async def append(self, item):
+        super().append(item)
+        for callback in self.append_callbacks:
+            await callback(item)
 
-    async def add_item(self, item):
-        self.list.append(item)
-        await self.notify_change("ADD", item)
+    async def remove(self, item):
+        super().remove(item)
+        for callback in self.remove_callbacks:
+            await callback(item)
 
-    async def remove_item(self, item):
-        self.list.remove(item)
-        await self.notify_change("REMOVE", item)
+    def add_append_callback(self, callback):
+        self.append_callbacks.append(callback)
 
-    async def update_item(self, old_item, new_item):
-        self.list[self.list.index(old_item)]=new_item
-        await self.notify_change("UPDATE", old_item, new_item)
+    def add_remove_callback(self, callback):
+        self.remove_callbacks.append(callback)
