@@ -237,6 +237,10 @@ socket.onmessage = function(event) {
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);
     }
+    if(data.type === "PLAYER_HAND" && data.cards) {
+        console.log(data)
+        app.myCards = data.cards
+    }
     // TODO: add other types of messages
 };
 

@@ -2,6 +2,8 @@ from typing import Dict
 from fastapi.websockets import WebSocketDisconnect
 
 from .player import Player
+from .deck import Deck, WhiteCard, BlackCard
+from .game_master import GameMaster
 
 
 class Room:
@@ -11,6 +13,11 @@ class Room:
         self.open = True
         self.number_of_seats = 6
         self.players = []
+        # Loading card decks and initialization
+        white_deck = Deck(WhiteCard, "resources/game/decks/classic_white.csv")
+        black_deck = Deck(BlackCard, "resources/game/decks/classic_black.csv")
+        self.game_master = GameMaster(white_deck, black_deck) 
+
 
     @property
     def number_of_players(self):
@@ -19,6 +26,7 @@ class Room:
     async def add_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""
         self.players.append(player)
+        await self.game_master.new_player(player)
         await self.send_chat_message_from_system(f"Gracz '{player.name}' dołączył do pokoju.")
         await self.listen_to_player(player)
 
@@ -39,9 +47,13 @@ class Room:
             return
         if data["type"] == "ERROR" and "message" in data:
             print(f"ERROR: {data['message']}")
-        if data["type"] == "CHAT_MESSAGE" and "message" in data:
+        elif data["type"] == "CHAT_MESSAGE" and "message" in data:
             await self.send_chat_message_from_user(player.name, data["message"])
+        else:
+            # Handle game_master messages
+            self.game_master.process_message(player, data)
         # TODO: other types of messages
+        
 
     async def send_chat_message_from_user(self, sender_name: str, msg: str):
         """Send message from player to all players in this room."""
