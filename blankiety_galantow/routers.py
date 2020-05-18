@@ -24,8 +24,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, username: str):
     await websocket.accept()
 
     if app.server.room_exists(room_id):
-        player_id = app.server.generate_unique_player_id(room_id)
-        player = Player(websocket, username, player_id)
+        player = Player(websocket, username)
         await app.server.add_player_to_room(room_id, player)
     else:
         print(f"Connection to nonexistent room id = {room_id}")

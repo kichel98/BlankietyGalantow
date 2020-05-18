@@ -43,11 +43,3 @@ class Server:
             for key, room in self._rooms.items()
         ]
         return room_list
-
-    def generate_unique_player_id(self, room_id):
-        room = self._rooms[room_id]
-        id = get_random_string()
-        players_id = [player.id for player in room.players]
-        while id in players_id:
-            id = get_random_string()
-        return id

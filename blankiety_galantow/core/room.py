@@ -2,6 +2,7 @@ import random
 from typing import Dict
 from fastapi.websockets import WebSocketDisconnect
 
+from .helpers import get_random_string
 from .player import Player
 
 
@@ -20,12 +21,21 @@ class Room:
 
     async def add_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""
+        player.id = self.generate_unique_player_id()
         self.players.append(player)
+
         if self.admin is None:
             self.admin = player
         await self.send_chat_message_from_system(f"Gracz '{player.name}' dołączył do pokoju.")
         await self.send_players_update()
         await self.listen_to_player(player)
+
+    def generate_unique_player_id(self):
+        player_id = get_random_string()
+        players_id = [player.id for player in self.players]
+        while player_id in players_id:
+            player_id = get_random_string()
+        return player_id
 
     async def listen_to_player(self, player):
         """Constantly listen to player and take actions based on messages"""
