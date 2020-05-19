@@ -19,53 +19,52 @@
 
 <body>
     <div id="game">
+        <!-- Modal -->
+        <div class="w3-modal" :class="{'w3-show': showSettings}">
+            <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+
+                <div class="w3-center"><br>
+                    <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                    <h3>Ustawienia</h3>
+                </div>
+                <hr>
+                <div class="w3-container w3-margin">
+                    <p>
+                        <input name="is-open" class="w3-check" type="checkbox" checked="checked">
+                        <label>Zezwól na dołączenie nowych graczy</label>
+                    </p>
+                    <h4>Tryb gry</h4>
+                    <label>
+                        <input class="w3-radio" type="radio" name="game-type" value="default" checked="">
+                        Standardowy
+                    </label><br>
+                    <label>
+                        <input class="w3-radio" type="radio" name="game-type" value="nomercy">
+                        Bez litości
+                    </label><br>
+                    <label>
+                        <input class="w3-radio" type="radio" name="game-type" value="child">
+                        Dziecięcy
+                    </label><br>
+                    <label>
+                        <input class="w3-radio" type="radio" name="game-type" value="pwr">
+                        Prezentacja projektu
+                    </label><br>
+                    <h4>Limit czasu</h4>
+                    <input type="number" name="time-limit" id="time-limit" value="120"> sek.
+                </div>
+
+
+                <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                    <button @click="showSettings=false" type="button" class="w3-button w3-red">Cancel</button>
+                    <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right">Zapisz</button>
+                </div>
+
+            </div>
+        </div>
+        <!-- Modal -->
         <loader v-if="!gameReady"></loader>
         <div id="game-container" v-else class="w3-main w3-twothird">
-            <!-- Modal -->
-            <div class="w3-modal" :class="{'w3-show': showSettings}">
-                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-
-                    <div class="w3-center"><br>
-                        <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-                        <h3>Ustawienia</h3>
-                    </div>
-                    <hr>
-                    <div class="w3-container w3-margin">
-                        <p>
-                            <input name="is-open" class="w3-check" type="checkbox" checked="checked">
-                            <label>Zezwól na dołączenie nowych graczy</label>
-                        </p>
-                        <h4>Tryb gry</h4>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="default" checked="">
-                            Standardowy
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="nomercy">
-                            Bez litości
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="child">
-                            Dziecięcy
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="pwr">
-                            Prezentacja projektu
-                        </label><br>
-                        <h4>Limit czasu</h4>
-                        <input type="number" name="time-limit" id="time-limit" value="120"> sek.
-                    </div>
-
-
-                    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                        <button @click="showSettings=false" type="button" class="w3-button w3-red">Cancel</button>
-                        <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right">Zapisz</button>
-                    </div>
-
-                </div>
-            </div>
-            <!-- Modal -->
-
             <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-center">
                 <p>{{topInfo}}</p>
             </div>
