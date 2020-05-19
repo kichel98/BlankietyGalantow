@@ -50,16 +50,15 @@ class GameMaster:
         await player.send_json(message)
 
     async def send_played_cards(self):
-        every_one_selected_cards = True
+        everyone_selected_cards = True
         for cards in self.cards_selected.values():
             if len(cards) == 0:
                 every_one_selected_cards = False
-        if every_one_selected_cards:
+        if everyone_selected_cards:
             player_message = {
                 "type": "PLAYED_CARDS",
                 "cards": [{"playerCards": [{"id": card.card_id} for card in self.cards_selected[player]]} for player in self.players]
             }
-            print(player_message)
             master_message = {
                 "type": "PLAYED_CARDS_MASTER",
                 "cards": [{"playerCards": [{"id": card.card_id, "text": card.text} for card in self.cards_selected[player]]} for player in self.players]
@@ -84,6 +83,5 @@ class GameMaster:
                 else:
                     # TODO Handle error
                     pass
-
-            print(self.cards_selected)
+            # Sends played cards in this round if everybody selected their cards
             await self.send_played_cards()
