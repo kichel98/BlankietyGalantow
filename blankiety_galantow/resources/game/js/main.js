@@ -167,56 +167,11 @@ const app = new Vue({
             }, 500);
         }
     },
-    /* Mockup data */
     data: {
         tableId: 20965,
-        players: [
-            // TODO: we should start with empty list of players
-            {
-                id: 1,
-                name: "Tomek",
-                score: 1,
-                state: "ready",
-                admin: true
-            },
-            {
-                id: 2,
-                name: "Ala",
-                state: "master",
-                score: 0
-            },
-            {
-                id: 3,
-                name: "Michał",
-                state: "choosing",
-                score: 1
-            },
-            {
-                id: 4,
-                name: "Zuza",
-                state: "choosing",
-                score: 2,
-                me: true
-            }
-        ],
-        myCards: [
-            { id: 21, text: "Śmieszny tekst 1" },
-            { id: 22, text: "Śmieszny tekst 2" },
-            { id: 23, text: "Śmieszny tekst 3" },
-            { id: 24, text: "Śmieszny tekst 4" },
-            { id: 25, text: "Śmieszny tekst 5" },
-            { id: 26, text: "Śmieszny tekst 6" },
-            { id: 27, text: "Śmieszny tekst 7" },
-            { id: 28, text: "Śmieszny tekst 8" },
-        ],
-        chat: [
-            { name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true },
-            { name: "Gra", message: "Gracz Tomek zostaje mistrzem kart.", log: true },
-            { name: "Michał", message: "Kurcze nic mi nie pasuje :(" },
-            { name: "Ala", message: "Oo to będzie mocne!" },
-            { name: "Gra", message: "Gracz Zuza dostaje punkt.", log: true },
-            { name: "Zuza", message: "Chyba jednak nie było xD" },
-        ],
+        players: [],
+        myCards: [],
+        chat: [],
         newMessage: '',
         showPlayers: false,
         showChat: true,
