@@ -62,7 +62,7 @@ class Room:
             await self.send_chat_message_from_user(player.name, data["message"])
         else:
             # Handle game_master messages
-            self.game_master.process_message(player, data)
+            await self.game_master.process_message(player, data)
         # TODO: other types of messages
         
 

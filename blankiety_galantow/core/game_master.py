@@ -49,5 +49,41 @@ class GameMaster:
         }
         await player.send_json(message)
 
-    def process_message(self, player: Player, data: Dict):
-        pass  
+    async def send_played_cards(self):
+        every_one_selected_cards = True
+        for cards in self.cards_selected.values():
+            if len(cards) == 0:
+                every_one_selected_cards = False
+        if every_one_selected_cards:
+            player_message = {
+                "type": "PLAYED_CARDS",
+                "cards": [{"playerCards": [{"id": card.card_id} for card in self.cards_selected[player]]} for player in self.players]
+            }
+            print(player_message)
+            master_message = {
+                "type": "PLAYED_CARDS_MASTER",
+                "cards": [{"playerCards": [{"id": card.card_id, "text": card.text} for card in self.cards_selected[player]]} for player in self.players]
+            }
+
+            for player in self.players:
+                # TODO sprawdź czy gracz jest masterem i wyslij master_message
+                await player.send_json(player_message)
+
+    def get_player_card_by_id(self, player: Player, card_id: int):
+        for card in self.players_hands[player]:
+            if card.card_id == card_id:
+                return card
+        return None
+
+    async def process_message(self, player: Player, data: Dict):
+        if data["type"] == "CARDS_SELECT" and "cards" in data:
+            for card in data["cards"]:
+                player_card = self.get_player_card_by_id(player, card["id"])
+                if player_card != None:
+                    self.cards_selected[player].append(player_card)
+                else:
+                    # TODO Handle error
+                    pass
+
+            print(self.cards_selected)
+            await self.send_played_cards()
