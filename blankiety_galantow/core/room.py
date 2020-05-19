@@ -1,6 +1,7 @@
 import random
 from typing import Dict
 from fastapi.websockets import WebSocketDisconnect
+from fastapi.logger import logger
 
 from .helpers import get_random_string
 from .player import Player
@@ -53,10 +54,10 @@ class Room:
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
         if "type" not in data:
-            print(f"Received incorrect message: '{data}'")
+            logger.error(f"Received incorrect message: {data}")
             return
         if data["type"] == "ERROR" and "message" in data:
-            print(f"ERROR: {data['message']}")
+            logger.error(f"ERROR: {data}")
         elif data["type"] == "CHAT_MESSAGE" and "message" in data:
             await self.send_chat_message_from_user(player.name, data["message"])
         else:

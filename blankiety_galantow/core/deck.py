@@ -1,11 +1,11 @@
 import csv
 import random
 
-class Deck:
 
-    def __init__(self, CardType, path):     
+class Deck:
+    def __init__(self, card_type, path: str):
         self.cards = list()
-        self.CardType = CardType
+        self.card_type = card_type
         self.path = path
         self.load_from_file()
         self.shuffle_cards()
@@ -14,8 +14,8 @@ class Deck:
         with open(self.path, mode='r', encoding='utf-8') as deck_csv:
             deck_reader = csv.DictReader(deck_csv, delimiter=';')
             
-            for id, row in enumerate(deck_reader):
-                new_card = self.CardType(id, row)
+            for counter, row in enumerate(deck_reader):
+                new_card = self.card_type(counter, row)
                 self.cards.append(new_card)
 
     def get_card(self):
@@ -42,13 +42,13 @@ class Deck:
 
 
 class WhiteCard:
-    def __init__(self, card_id: int, deck_reader):
-        self.card_id: int = card_id
-        self.text: str = deck_reader["treść"]
+    def __init__(self, card_id: int, data):
+        self.id: int = card_id
+        self.text: str = data["treść"]
 
 
 class BlackCard:
-    def __init__(self, card_id, deck_reader):
-        self.card_id = card_id
-        self.text = deck_reader["treść"]
-        self.gap_count = deck_reader["luki"]
+    def __init__(self, card_id: int, data):
+        self.id: int = card_id
+        self.text: str = data["treść"]
+        self.gap_count: int = data["luki"]
