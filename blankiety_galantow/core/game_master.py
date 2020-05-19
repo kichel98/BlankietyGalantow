@@ -22,32 +22,16 @@ class GameMaster:
         self.cards_selected = {}
         self.black_card = self.black_deck.get_card()
         self.players = players
-        players.add_append_callback(self.append_callback)
-        players.add_remove_callback(self.remove_callback)
+        players.add_append_callback(self.handle_add_player)
+        players.add_remove_callback(self.handle_remove_player)
 
-    # ------------------------ TEST ------------------------
-    async def append_callback(self, player):
-        print(f"Added player {player.name}")
-
-    async def remove_callback(self, player):
-        # WARNING: player is already deleted from players.
-        # Don't try to send data via socket to that player!
-        print(f"Removed player {player.name}")
-    # ------------------------------------------------------
-
-    async def handle_players(self, *argv):
-        if argv[0] == "ADD":
-            await self.handle_new_player(argv[1])
-        if argv[0] == "REMOVE":
-            await self.handle_player_exit(argv[1])
-
-    async def handle_new_player(self, player):
+    async def handle_add_player(self, player):
         self.players_hands[player] = self.white_deck.get_cards(10)
         self.cards_selected[player] = []
         await self.fill_player_hand(player)
         await self.send_black_card(player)
     
-    async def handle_player_exit(self, player):
+    async def handle_remove_player(self, player):
         del self.players_hands[player]
         del self.cards_selected[player]
 
