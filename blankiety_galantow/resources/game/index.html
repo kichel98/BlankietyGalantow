@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../vendor/hover/hover-min.css">
     <link rel="stylesheet" href="../vendor/w3css/w3.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/loader.css">
+
 
     <script src="../vendor/vue/vue-dev.js"></script>
     <script src="js/components.js"></script>
@@ -17,8 +19,8 @@
 
 <body>
     <div id="game">
-        <div id="game-container" class="w3-main w3-twothird">
-
+        <loader v-if="!gameReady"></loader>
+        <div id="game-container" v-else class="w3-main w3-twothird">
             <!-- Modal -->
             <div class="w3-modal" :class="{'w3-show': showSettings}">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">

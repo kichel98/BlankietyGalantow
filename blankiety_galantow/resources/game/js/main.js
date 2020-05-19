@@ -112,6 +112,9 @@ const app = new Vue({
         me: function() {
             return this.players.filter((player)=>player.me)[0];
         },
+        gameReady: function() {
+            return this.players.length >= 2;
+        },
         readyToSubmit: function() {
             // Check if player is ready to submit his/her selected cards
             return this.me.state === "choosing" && this.selectedCards.length === this.numberOfCardsToSelect;
