@@ -1,9 +1,12 @@
 import random
 from typing import Dict
 from fastapi.websockets import WebSocketDisconnect
+from fastapi.logger import logger
 
 from .helpers import get_random_string
 from .player import Player
+from .game_master import GameMaster
+from .utils.observable_list import ObservableList
 
 
 class Room:
@@ -12,7 +15,8 @@ class Room:
         self.name = name
         self.open = True
         self.number_of_seats = 6
-        self.players = []
+        self.players = ObservableList()
+        self.game_master = GameMaster(self.players)
         self.admin = None
 
     @property
@@ -22,7 +26,7 @@ class Room:
     async def add_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""
         player.id = self.generate_unique_player_id()
-        self.players.append(player)
+        await self.players.append(player)
 
         if self.admin is None:
             self.admin = player
@@ -44,19 +48,23 @@ class Room:
                 msg = await player.receive_json()
                 await self.process_message(player, msg)
         except WebSocketDisconnect:
-            self.players.remove(player)
+            await self.players.remove(player)
             await self.handle_player_leaving(player)
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
         if "type" not in data:
-            print(f"Received incorrect message: '{data}'")
+            logger.error(f"Received incorrect message: {data}")
             return
         if data["type"] == "ERROR" and "message" in data:
-            print(f"ERROR: {data['message']}")
-        if data["type"] == "CHAT_MESSAGE" and "message" in data:
+            logger.error(f"ERROR: {data}")
+        elif data["type"] == "CHAT_MESSAGE" and "message" in data:
             await self.send_chat_message_from_user(player.name, data["message"])
+        else:
+            # Handle game_master messages
+            self.game_master.process_message(player, data)
         # TODO: other types of messages
+        
 
     async def send_chat_message_from_user(self, sender_name: str, msg: str):
         """Send message from player to all players in this room."""
@@ -87,7 +95,7 @@ class Room:
 
     def set_new_random_admin(self):
         """Choose random player as admin"""
-        if self.players:
+        if self.number_of_players>0:
             self.admin = random.choice(self.players)
         else:
             self.admin = None
