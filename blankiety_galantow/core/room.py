@@ -5,7 +5,7 @@ from fastapi.websockets import WebSocketDisconnect
 from .helpers import get_random_string
 from .player import Player
 from .game_master import GameMaster
-from .observer.observable_list import ObservableList
+from .utils.observable_list import ObservableList
 
 
 class Room:
@@ -16,7 +16,6 @@ class Room:
         self.number_of_seats = 6
         self.players = ObservableList()
         self.game_master = GameMaster(self.players)
-        # Chat should also be added as observer here
         self.admin = None
 
     @property

@@ -1,7 +1,7 @@
 import json
 
 from .deck import Deck, WhiteCard, BlackCard
-from .observer.observable_list import ObservableList
+from .utils.observable_list import ObservableList
 from .player import Player
 
 from typing import Dict, List
