@@ -81,3 +81,18 @@ Vue.component('card-stack', {
         </div>   
     `
 });
+
+Vue.component('loader', {
+    template: `
+        <div class="w3-twothird loader-container">
+            <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-center">
+                <p>Oczekiwanie na graczy</p>
+            </div>
+            <div class="loader">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+`})

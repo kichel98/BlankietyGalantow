@@ -43,12 +43,12 @@ class Deck:
 
 class WhiteCard:
     def __init__(self, card_id: int, data):
-        self.id: int = card_id
+        self.card_id: int = card_id
         self.text: str = data["treść"]
 
 
 class BlackCard:
     def __init__(self, card_id: int, data):
-        self.id: int = card_id
+        self.card_id: int = card_id
         self.text: str = data["treść"]
         self.gap_count: int = data["luki"]
