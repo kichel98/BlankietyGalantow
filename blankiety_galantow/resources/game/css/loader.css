@@ -37,7 +37,7 @@
     height: 80px;
     transform: translate(-50%, -50%) rotate(45deg) translate3d(0, 0, 0);
     animation: loader 1.2s infinite ease-in-out;
-    margin-top: 12em;
+    margin-top: 10em;
 }
 .loader span {
     position: absolute;
@@ -64,5 +64,9 @@
 .loader span:nth-child(4) {
     bottom: 0;
     right: 0;
+}
+
+.loader-container {
+    height: 350px;
 }
 
