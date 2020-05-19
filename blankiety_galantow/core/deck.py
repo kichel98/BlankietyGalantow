@@ -25,6 +25,15 @@ class Deck:
             
         return self.cards.pop(0)
     
+    def get_cards(self, cards_number):
+        if len(self.cards) < cards_number:
+            self.load_from_file()
+            self.shuffle_cards()
+        
+        cards_to_return = self.cards[0:cards_number]
+        self.cards = self.cards[cards_number:]
+        return cards_to_return
+
     def shuffle_cards(self):
         random.shuffle(self.cards)
 
@@ -33,13 +42,13 @@ class Deck:
 
 
 class WhiteCard:
-    def __init__(self, id, deck_reader):
-        self.id = id
-        self.text = deck_reader["treść"]
+    def __init__(self, card_id: int, deck_reader):
+        self.card_id: int = card_id
+        self.text: str = deck_reader["treść"]
 
 
 class BlackCard:
-    def __init__(self, id, deck_reader):
-        self.id = id
+    def __init__(self, card_id, deck_reader):
+        self.card_id = card_id
         self.text = deck_reader["treść"]
         self.gap_count = deck_reader["luki"]
