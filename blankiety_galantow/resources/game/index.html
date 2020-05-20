@@ -56,8 +56,9 @@
 
 
                 <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                    <button @click="showSettings=false" type="button" class="w3-button w3-red">Cancel</button>
-                    <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right">Zapisz</button>
+                    <button @click="showSettings=false" type="button" class="w3-button w3-red" :disabled="!me.admin">Cancel</button>
+                    <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right"
+                            :disabled="!me.admin">Zapisz</button>
                 </div>
 
             </div>
