@@ -1,5 +1,3 @@
-import json
-
 from .deck import Deck, WhiteCard, BlackCard
 from .utils.observable_list import ObservableList
 from .player import Player
@@ -38,14 +36,23 @@ class GameMaster:
     async def fill_player_hand(self, player: Player):
         message = {
             "type": "PLAYER_HAND",
-            "cards": [{"id": card.card_id, "text": card.text} for card in self.players_hands[player]]
+            "cards": [
+                {
+                    "id": card.card_id,
+                    "text": card.text
+                 } for card in self.players_hands[player]
+            ]
         }
         await player.send_json(message)
 
     async def send_black_card(self, player: Player):
         message = {
             "type": "BLACK_CARD",
-            "card": {"id": self.black_card.card_id, "text": self.black_card.text, "gap_count": self.black_card.gap_count}
+            "card": {
+                "id": self.black_card.card_id,
+                "text": self.black_card.text,
+                "gap_count": self.black_card.gap_count
+            }
         }
         await player.send_json(message)
 
@@ -57,7 +64,16 @@ class GameMaster:
         if everyone_selected_cards:
             message = {
                 "type": "PLAYED_CARDS",
-                "cards": [{"playerCards": [{"id": card.card_id, "text": card.text} for card in self.cards_selected[player]]} for player in self.players]
+                "cards": [
+                    {
+                        "playerCards": [
+                            {
+                                "id": card.card_id,
+                                "text": card.text
+                            } for card in self.cards_selected[player]
+                        ]
+                    } for player in self.players
+                ]
             }
             for player in self.players:
                 await player.send_json(message)
@@ -72,7 +88,7 @@ class GameMaster:
         if data["type"] == "CARDS_SELECT" and "cards" in data:
             for card in data["cards"]:
                 player_card = self.get_player_card_by_id(player, card["id"])
-                if player_card != None:
+                if player_card is not None:
                     self.cards_selected[player].append(player_card)
                 else:
                     await player.kick("Próba oszustwa")
