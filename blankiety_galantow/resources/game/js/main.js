@@ -222,7 +222,6 @@ socket.onmessage = function(event) {
     if(data.type === "ERROR") {
         app.errorMessage = data.message
         app.showError = true
-        app.players.remove(app.me())
     }
     // TODO: add other types of messages
 };
