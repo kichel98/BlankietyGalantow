@@ -18,6 +18,8 @@ class Room:
         self.players = ObservableList()
         self.game_master = GameMaster(self.players)
         self.admin = None
+        self.players.add_remove_callback(self.handle_player_leaving)
+
 
     @property
     def number_of_players(self):
@@ -49,7 +51,6 @@ class Room:
                 await self.process_message(player, msg)
         except WebSocketDisconnect:
             await self.players.remove(player)
-            await self.handle_player_leaving(player)
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""

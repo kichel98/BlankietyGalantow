@@ -53,7 +53,7 @@ class GameMaster:
         everyone_selected_cards = True
         for cards in self.cards_selected.values():
             if len(cards) == 0:
-                every_one_selected_cards = False
+                everyone_selected_cards = False
         if everyone_selected_cards:
             player_message = {
                 "type": "PLAYED_CARDS",
@@ -74,6 +74,25 @@ class GameMaster:
                 return card
         return None
 
+    async def kick_this_cheating_madafaka(self, player: Player, message: str):
+        error_message = {
+            "type": "ERROR",
+            "message": message
+        }
+        chat_message = {
+            "type": "CHAT_MESSAGE",
+            "message": {
+                "log": True,
+                "user": "Gra",
+                "text": message
+            }
+        }
+        await player.send_json(error_message)
+        for every_player in self.players:
+            await every_player.send_json(chat_message)
+        await self.players.remove(player)
+
+
     async def process_message(self, player: Player, data: Dict):
         if data["type"] == "CARDS_SELECT" and "cards" in data:
             for card in data["cards"]:
@@ -81,7 +100,7 @@ class GameMaster:
                 if player_card != None:
                     self.cards_selected[player].append(player_card)
                 else:
-                    # TODO Handle error
-                    pass
+                    await self.kick_this_cheating_madafaka(player, "Player '{}' kicked from room.".format(player.name))
+                    return
             # Sends played cards in this round if everybody selected their cards
             await self.send_played_cards()

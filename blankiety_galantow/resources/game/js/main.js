@@ -173,9 +173,11 @@ const app = new Vue({
         myCards: [],
         chat: [],
         newMessage: '',
+        errorMessage: '',
         showPlayers: false,
         showChat: true,
         showSettings: false,
+        showError: false,
         selectedCards: [],
         numberOfCardsToSelect: 3,
 
@@ -216,6 +218,10 @@ socket.onmessage = function(event) {
                 cards: data.cards[index].playerCards
             })
         }
+    }
+    if(data.type === "ERROR") {
+        app.errorMessage = data.message
+        app.showError = true
     }
     // TODO: add other types of messages
 };
