@@ -159,7 +159,7 @@ const app = new Vue({
             if(this.kicked) {
                 window.location.pathname = window.location.pathname.split("game/")[0];
             }
-            showError = false
+            this.showError = false
         }
     },
     watch: {
@@ -232,7 +232,7 @@ socket.onmessage = function(event) {
         app.kicked = true
     }
     if(data.type === "ERROR") {
-        app.errorMessage = data.message
+        app.errorMessage = data.message || data.error
         app.showError = true
     }
     // TODO: add other types of messages

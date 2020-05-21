@@ -55,43 +55,18 @@ class GameMaster:
             if len(cards) == 0:
                 everyone_selected_cards = False
         if everyone_selected_cards:
-            player_message = {
-                "type": "PLAYED_CARDS",
-                "cards": [{"playerCards": [{"id": card.card_id} for card in self.cards_selected[player]]} for player in self.players]
-            }
-            master_message = {
+            message = {
                 "type": "PLAYED_CARDS_MASTER",
                 "cards": [{"playerCards": [{"id": card.card_id, "text": card.text} for card in self.cards_selected[player]]} for player in self.players]
             }
-
             for player in self.players:
-                # TODO Check if player is master
-                await player.send_json(player_message)
+                await player.send_json(message)
 
     def get_player_card_by_id(self, player: Player, card_id: int):
         for card in self.players_hands[player]:
             if card.card_id == card_id:
                 return card
         return None
-
-    async def kick_player_from_room(self, player: Player, message: str):
-        error_message = {
-            "type": "KICK",
-            "message": "You were kicked from room :("
-        }
-        chat_message = {
-            "type": "CHAT_MESSAGE",
-            "message": {
-                "log": True,
-                "user": "Gra",
-                "text": message
-            }
-        }
-        await player.send_json(error_message)
-        for every_player in self.players:
-            await every_player.send_json(chat_message)
-        await self.players.remove(player)
-
 
     async def process_message(self, player: Player, data: Dict):
         if data["type"] == "CARDS_SELECT" and "cards" in data:
@@ -100,7 +75,7 @@ class GameMaster:
                 if player_card != None:
                     self.cards_selected[player].append(player_card)
                 else:
-                    await self.kick_player_from_room(player, "Player '{}' was kicked from room.".format(player.name))
+                    await player.kick("Zostałeś usunięty z pokoju")
                     return
             # Sends played cards in this round if everybody selected their cards
             await self.send_played_cards()
