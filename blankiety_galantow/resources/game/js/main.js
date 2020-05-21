@@ -75,6 +75,12 @@ const app = new Vue({
             //  temporarily we do it by hand
             this.playedCards = [];
         },
+        exit: function() {
+            window.location.pathname = "/";
+        },
+        clearError: function() {
+            this.errorMessage = "";
+        },
         // Use this function to fill playerCards with mockup data. Usefull for testing reactivity of webpage 
         tempFill: function() {
             this.playedCards = [
@@ -155,11 +161,8 @@ const app = new Vue({
                 }
             }
         },
-        onCloseErrorModal: function() {
-            if(this.kicked) {
-                window.location.pathname = window.location.pathname.split("game/")[0];
-            }
-            this.showError = false
+        errorOccured: function() {
+            return Boolean(this.errorMessage);
         }
     },
     watch: {
@@ -183,10 +186,8 @@ const app = new Vue({
         showPlayers: false,
         showChat: true,
         showSettings: false,
-        showError: false,
         selectedCards: [],
         numberOfCardsToSelect: 3,
-        kicked: false,
 
         // Card master variables
         playedCards: [],
@@ -227,13 +228,10 @@ socket.onmessage = function(event) {
         }
     }
     if(data.type === "KICK") {
-        app.errorMessage = data.message
-        app.showError = true
-        app.kicked = true
+        app.errorMessage = data.message;
     }
     if(data.type === "ERROR") {
         app.errorMessage = data.message || data.error
-        app.showError = true
     }
     // TODO: add other types of messages
 };
