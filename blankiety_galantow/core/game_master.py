@@ -65,7 +65,7 @@ class GameMaster:
             }
 
             for player in self.players:
-                # TODO sprawdź czy gracz jest masterem i wyslij master_message
+                # TODO Check if player is master
                 await player.send_json(player_message)
 
     def get_player_card_by_id(self, player: Player, card_id: int):
