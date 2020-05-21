@@ -56,7 +56,7 @@ class GameMaster:
                 everyone_selected_cards = False
         if everyone_selected_cards:
             message = {
-                "type": "PLAYED_CARDS_MASTER",
+                "type": "PLAYED_CARDS",
                 "cards": [{"playerCards": [{"id": card.card_id, "text": card.text} for card in self.cards_selected[player]]} for player in self.players]
             }
             for player in self.players:

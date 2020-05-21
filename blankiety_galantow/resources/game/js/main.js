@@ -216,7 +216,7 @@ socket.onmessage = function(event) {
     if(data.type === "PLAYERS") {
         app.players = data.players
     }
-    if(data.type === "PLAYED_CARDS" || data.type === "PLAYED_CARDS_MASTER") {
+    if(data.type === "PLAYED_CARDS") {
         // Message is weirdly parsed from JSON, that is why cards from data are extracted that way
         for(index in data.cards){
             app.playedCards.push({
