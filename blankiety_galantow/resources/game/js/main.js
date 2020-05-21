@@ -112,6 +112,9 @@ const app = new Vue({
         me: function() {
             return this.players.filter((player)=>player.me)[0];
         },
+        gameLoaded: function() {
+            return this.players.length > 0;
+        },
         gameReady: function() {
             return this.players.length >= 2;
         },
@@ -205,7 +208,7 @@ socket.onmessage = function(event) {
         app.numberOfCardsToSelect = parseInt(data.card.gap_count)
     }
     if(data.type === "PLAYERS") {
-        app.players = data.players
+        app.players = data.players;
     }
     // TODO: add other types of messages
 };
