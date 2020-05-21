@@ -9,14 +9,14 @@ class Player:
         self.socket = socket
         self.id = None
 
-    async def kick(self, message: str):
-        kick_message = {
+    async def kick(self, reason: str):
+        kick_reason = {
             "type": "KICK",
-            "message": message
+            "message": f"Zostałeś wyrzucony z pokoju. Powód: {reason}"
         }
-        await self.send_json(kick_message)
+        await self.send_json(kick_reason)
         await self.socket.close()
-        raise KickException(f"Gracz '{self.name}'' został wyrzucony z pokoju.")
+        raise KickException(f"Gracz '{self.name}'' został wyrzucony z pokoju. Powód: {reason}")
 
     async def receive_json(self):
         """Await for incoming message from the player."""

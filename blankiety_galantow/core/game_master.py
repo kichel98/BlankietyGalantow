@@ -75,7 +75,7 @@ class GameMaster:
                 if player_card != None:
                     self.cards_selected[player].append(player_card)
                 else:
-                    await player.kick("Zostałeś usunięty z pokoju")
+                    await player.kick("Próba oszustwa")
                     return
             # Sends played cards in this round if everybody selected their cards
             await self.send_played_cards()
