@@ -76,8 +76,8 @@ class GameMaster:
 
     async def kick_player_from_room(self, player: Player, message: str):
         error_message = {
-            "type": "ERROR",
-            "message": message
+            "type": "KICK",
+            "message": "You were kicked from room :("
         }
         chat_message = {
             "type": "CHAT_MESSAGE",
@@ -100,7 +100,7 @@ class GameMaster:
                 if player_card != None:
                     self.cards_selected[player].append(player_card)
                 else:
-                    await self.kick_player_from_room(player, "Player '{}' kicked from room.".format(player.name))
+                    await self.kick_player_from_room(player, "Player '{}' was kicked from room.".format(player.name))
                     return
             # Sends played cards in this round if everybody selected their cards
             await self.send_played_cards()

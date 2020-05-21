@@ -154,6 +154,12 @@ const app = new Vue({
                     return "Odsłoń karty nadesłane przez graczy";
                 }
             }
+        },
+        onCloseErrorModal: function() {
+            if(this.kicked) {
+                window.location.pathname = window.location.pathname.split("game/")[0];
+            }
+            showError = false
         }
     },
     watch: {
@@ -180,6 +186,7 @@ const app = new Vue({
         showError: false,
         selectedCards: [],
         numberOfCardsToSelect: 3,
+        kicked: false,
 
         // Card master variables
         playedCards: [],
@@ -218,6 +225,11 @@ socket.onmessage = function(event) {
                 cards: data.cards[index].playerCards
             })
         }
+    }
+    if(data.type === "KICK") {
+        app.errorMessage = data.message
+        app.showError = true
+        app.kicked = true
     }
     if(data.type === "ERROR") {
         app.errorMessage = data.message
