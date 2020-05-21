@@ -199,3 +199,12 @@ __Oznaczenia__
 }
 ```
 
+### &#x1F4D8; Kick gracza
+
+```js
+{
+  type: "KICK",
+  message: String
+}
+```
+
