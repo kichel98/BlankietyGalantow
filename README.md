@@ -9,7 +9,7 @@ $ python -m blankiety_galantow
 ```
 ### Dostępne opcje
 ```
-usage: blankiety_galantow [-h] [--port PORT] [--host HOST]
+usage: blankiety_galantow [-h] [--port PORT] [--host HOST] [--reload] [--log-level LOG_LEVEL]
 
 Run the app
 
