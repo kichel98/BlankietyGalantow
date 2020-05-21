@@ -1,7 +1,7 @@
 from json import JSONDecodeError
 from fastapi import WebSocket
 from fastapi.websockets import WebSocketDisconnect
-
+from .kick_exception import KickException
 
 class Player:
     def __init__(self, socket: WebSocket, username: str):
@@ -16,7 +16,7 @@ class Player:
         }
         await self.send_json(kick_message)
         await self.socket.close()
-        raise WebSocketDisconnect(f"Gracz '{self.name}'' został wyrzucony z pokoju.")
+        raise KickException(f"Gracz '{self.name}'' został wyrzucony z pokoju.")
 
     async def receive_json(self):
         """Await for incoming message from the player."""

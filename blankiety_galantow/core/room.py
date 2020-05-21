@@ -7,6 +7,7 @@ from .helpers import get_random_string
 from .player import Player
 from .game_master import GameMaster
 from .utils.observable_list import ObservableList
+from .kick_exception import KickException
 
 
 class Room:
@@ -48,9 +49,12 @@ class Room:
             while True:
                 msg = await player.receive_json()
                 await self.process_message(player, msg)
-        except WebSocketDisconnect as ex:
+        except WebSocketDisconnect:
             await self.players.remove(player)
-            await self.handle_player_leaving(player, message=ex.args[0])
+            await self.handle_player_leaving(player)
+        except KickException as ex:
+            await self.players.remove(player)
+            await self.handle_player_leaving(player, message=ex.message)
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
