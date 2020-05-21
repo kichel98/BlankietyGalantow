@@ -16,7 +16,7 @@ class Player:
         }
         await self.send_json(kick_message)
         await self.socket.close()
-        raise WebSocketDisconnect()
+        raise WebSocketDisconnect(f"Gracz '{self.name}'' został wyrzucony z pokoju.")
 
     async def receive_json(self):
         """Await for incoming message from the player."""
