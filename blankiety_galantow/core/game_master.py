@@ -30,11 +30,7 @@ class GameMaster:
     async def send_black_card(self, player: Player):
         message = {
             "type": "BLACK_CARD",
-            "card": {
-                "id": self.black_card.id,
-                "text": self.black_card.text,
-                "gap_count": self.black_card.gap_count
-            }
+            "card": self.black_card.__dict__
         }
         await player.send_json(message)
 
@@ -48,11 +44,8 @@ class GameMaster:
                 "type": "PLAYED_CARDS",
                 "cards": [
                     {
-                        "playerCards": [
-                            {
-                                "id": card.id,
-                                "text": card.text
-                            } for card in player.selected_cards
+                        "playerCards":[
+                            card.__dict__ for card in player.selected_cards
                         ]
                     } for player in self.players
                 ]
@@ -64,9 +57,9 @@ class GameMaster:
     async def process_message(self, player: Player, data: Dict):
         if data["type"] == "CARDS_SELECT" and "cards" in data:
             for card in data["cards"]:
-                player_card = player.get_card_by_id(card["id"])
-                if player_card is not None:
-                    player_card.selected = True
+                card = player.get_card_by_id(card["id"])
+                if card in player.hand:
+                    card.selected = True
                 else:
                     await player.kick("Próba oszustwa")
                     return

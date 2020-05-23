@@ -36,10 +36,7 @@ class Player:
         message = {
             "type": "PLAYER_HAND",
             "cards": [
-                {
-                    "id": card.id,
-                    "text": card.text
-                 } for card in self.hand
+                card.__dict__ for card in self.hand
             ]
         }
         await self.send_json(message)
