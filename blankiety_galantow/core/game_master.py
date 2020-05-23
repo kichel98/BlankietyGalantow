@@ -42,10 +42,8 @@ class GameMaster:
     
     def set_new_random_master(self):
         """Choose random player as master"""
-        if self.master is not None:
-            self.master.state = PlayerState.choosing
         if len(self.players) > 0:
-            self.master = random.choice([player for player in self.players if player is not self.master])
+            self.master = random.choice(self.players)
             self.master.state = PlayerState.master
         else:
             self.master = None
@@ -76,6 +74,12 @@ class GameMaster:
             for player in self.players:
                 await player.send_json(message)
 
+    def set_new_master(self):
+        index = (self.players.index(self.master) + 1) % len(self.players)
+        self.master.state = PlayerState.choosing
+        self.master = self.players[index]
+        self.master.state = PlayerState.master
+
     async def process_message(self, player: Player, data: Dict):
         # FIXME: podzielić to na funkcje. Funkcja process_message robi za dużo rzeczy.
         if data["type"] == "CARDS_SELECT" and "cards" in data:
@@ -104,7 +108,7 @@ class GameMaster:
             await self.refill_players_hand(cards_number)
 
             # Select new master
-            self.set_new_random_master()
+            self.set_new_master()
 
             # Sends empty played cards
             await self.send_empty_played_cards()
