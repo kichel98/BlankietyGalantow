@@ -16,16 +16,9 @@ class Player:
         self.name = username
         self.socket = socket
         self.id = None
-        self.player_state = PlayerState.choosing
+        self.state = PlayerState.choosing
         self.hand = []
         self.points = 0
-
-    @property
-    def state(self):
-        return self.player_state
-
-    def set_player_state(self, state: PlayerState):
-        self.player_state = state
 
     @property
     def selected_cards(self):

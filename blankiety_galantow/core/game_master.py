@@ -33,7 +33,7 @@ class GameMaster:
         await self.send_black_card(player)
         if self.master is None:
             self.master = player
-            player.set_player_state(PlayerState.master)
+            player.state = PlayerState.master
     
     async def handle_player_leave(self, player):
         if player is self.master:
@@ -42,10 +42,10 @@ class GameMaster:
     def set_new_random_master(self):
         """Choose random player as master"""
         if self.master is not None:
-            self.master.set_player_state(PlayerState.choosing)
-        if len(self.players)>0:
+            self.master.state = PlayerState.choosing
+        if len(self.players) > 0:
             self.master = random.choice([player for player in self.players if player is not self.master])
-            self.master.set_player_state(PlayerState.master)
+            self.master.state = PlayerState.master
         else:
             self.master = None
 
@@ -110,7 +110,7 @@ class GameMaster:
                     await player.kick("Próba oszustwa")
                     return
             # Sends played cards in this round if everybody selected their cards
-            player.set_player_state(PlayerState.ready)
+            player.state = PlayerState.ready
             await self.send_played_cards()
             await self.players_update_callback()
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
