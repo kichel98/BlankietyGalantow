@@ -3,6 +3,7 @@ from typing import Dict
 from fastapi.websockets import WebSocketDisconnect
 from fastapi.logger import logger
 
+from .chat import Chat
 from .helpers import get_random_string
 from .player import Player
 from .game_master import GameMaster
@@ -17,9 +18,9 @@ class Room:
         self.open = True
         self.number_of_seats = 6
         self.players = ObservableList()
-        self.game_master = GameMaster(self.players)
+        self.chat = Chat(self.players)
+        self.game_master = GameMaster(self.players, self.chat)
         self.admin = None
-
 
     @property
     def number_of_players(self):
@@ -32,7 +33,7 @@ class Room:
 
         if self.admin is None:
             self.admin = player
-        await self.send_chat_message_from_system(f"Gracz '{player.name}' dołączył do pokoju.")
+        await self.chat.send_message_from_system(f"Gracz '{player.name}' dołączył do pokoju.")
         await self.send_players_update()
         await self.listen_to_player(player)
 
@@ -64,40 +65,19 @@ class Room:
         if data["type"] == "ERROR" and "message" in data:
             logger.error(f"ERROR: {data}")
         elif data["type"] == "CHAT_MESSAGE" and "message" in data:
-            await self.send_chat_message_from_user(player.name, data["message"])
+            await self.chat.send_message_from_player(player, data["message"])
         else:
             # Handle game_master messages
             await self.game_master.process_message(player, data)
         # TODO: other types of messages
-        
-
-    async def send_chat_message_from_user(self, sender_name: str, msg: str):
-        """Send message from player to all players in this room."""
-        await self.send_chat_message(sender=sender_name, message=msg)
-
-    async def send_chat_message_from_system(self, msg: str):
-        """Send chat message from the system to all players."""
-        await self.send_chat_message(sender="Gra", message=msg, as_system=True)
-
-    async def send_chat_message(self, sender, message, as_system=False):
-        """Send chat message to all players."""
-        data = {
-            "type": "CHAT_MESSAGE",
-            "message": {
-                "log": as_system,
-                "user": sender,
-                "text": message
-            }
-        }
-        await self.send_json_to_all_players(data)
 
     async def handle_player_leaving(self, player, message=None):
         """Does all needed operations after player leaves a room"""
-        if message == None:
+        if message is None:
             message = f"Gracz '{player.name}' opuścił pokój."
         if player == self.admin:
             self.set_new_random_admin()
-        await self.send_chat_message_from_system(message)
+        await self.chat.send_message_from_system(message)
         await self.send_players_update()
 
     def set_new_random_admin(self):
@@ -135,8 +115,3 @@ class Room:
             }
             players_info.append(player_info)
         return players_info
-
-    async def send_json_to_all_players(self, json):
-        """Send json (given as Python dictionary) to all players"""
-        for player in self.players:
-            await player.send_json(json)
