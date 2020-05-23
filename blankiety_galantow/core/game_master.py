@@ -114,7 +114,7 @@ class GameMaster:
             await self.send_played_cards()
             await self.players_update_callback()
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
-            self.add_points(data["cards"])
+            await self.add_points(data["cards"])
             
             # Select new black card
             cards_number:int = int(self.black_card.gap_count)
@@ -123,7 +123,7 @@ class GameMaster:
                 await self.send_black_card(player)
 
             # Refill players hands
-            self.refill_players_hand(cards_number)
+            await self.refill_players_hand(cards_number)
 
             # Select new master
             self.set_new_random_master()
