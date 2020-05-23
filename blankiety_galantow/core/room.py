@@ -96,7 +96,7 @@ class Room:
             self.admin = None
 
     def set_new_random_master(self):
-        """Choose random player as admin"""
+        """Choose random player as master"""
         if self.number_of_players>0:
             self.master = random.choice(self.players)
             self.master.set_player_state(PlayerState.master)
