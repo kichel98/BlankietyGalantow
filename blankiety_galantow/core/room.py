@@ -19,7 +19,7 @@ class Room:
         self.number_of_seats = 6
         self.players = ObservableList()
         self.chat = Chat(self.players)
-        self.game_master = GameMaster(self.players, self.chat)
+        self.game_master = GameMaster(self.players, self.chat, self.send_players_update)
         self.admin = None
 
     @property

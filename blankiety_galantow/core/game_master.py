@@ -14,7 +14,7 @@ class GameMaster:
     black_deck: Deck
     black_card: BlackCard
 
-    def __init__(self, players: ObservableList, chat: Chat):
+    def __init__(self, players: ObservableList, chat: Chat, players_update_callback):
         self.players = players
         self.chat = chat
         self.white_deck = Deck(WhiteCard, "resources/game/decks/classic_white.csv")
@@ -23,6 +23,7 @@ class GameMaster:
         self.cards_selected = {}
         self.black_card = self.black_deck.get_card()
         self.master = None
+        self.players_update_callback = players_update_callback
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
 
@@ -85,4 +86,4 @@ class GameMaster:
             # Sends played cards in this round if everybody selected their cards
             player.set_player_state(PlayerState.ready)
             await self.send_played_cards()
-            return "PLAYER_UPDATE"
+            await self.players_update_callback()
