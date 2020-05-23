@@ -36,7 +36,7 @@ class GameMaster:
             player.set_player_state(PlayerState.master)
     
     async def handle_player_leave(self, player):
-        if self.master is player:
+        if player is self.master:
             self.set_new_random_master()
     
     def set_new_random_master(self):
