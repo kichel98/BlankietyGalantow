@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="../vendor/fontello/css/fontello.css">
     <link rel="stylesheet" href="../vendor/hover/hover-min.css">
     <link rel="stylesheet" href="../vendor/w3css/w3.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/loader.css">
+    <link rel="stylesheet" href="css/main.css?v=1.0">
+    <link rel="stylesheet" href="css/loader.css?v=1.0">
 
 
     <script src="../vendor/vue/vue-dev.js"></script>
@@ -19,163 +19,170 @@
 
 <body>
     <div id="game">
-        <!-- Error Modal -->
-        <div class="w3-modal" :class="{'w3-show': errorOccured}">
-            <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div id="loader-container" class="w3-twothird" v-bind:class="{hidden: gameLoaded}">
+            <div class="loader">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <!-- Game App Content -->
+        <template v-if="gameLoaded">
+            <!-- Error Modal -->
+            <div class="w3-modal" :class="{'w3-show': errorOccured}">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                    <div class="w3-center"><br>
+                        <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <h3>Błąd</h3>
+                        <hr>
+                        <h4 >{{errorMessage}}</h4>
+                    </div>
+                    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                        <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <!-- Settings Modal -->
+            <div class="w3-modal" :class="{'w3-show': showSettings}">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
 
-                <div class="w3-center"><br>
-                    <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-                    <h3>Błąd</h3>
+                    <div class="w3-center"><br>
+                        <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <h3>Ustawienia</h3>
+                    </div>
                     <hr>
-                    <h4 >{{errorMessage}}</h4>
+                    <div class="w3-container w3-margin">
+                        <p>
+                            <input name="is-open" class="w3-check" type="checkbox" checked="checked" :disabled="!me.admin">
+                            <label>Zezwól na dołączenie nowych graczy</label>
+                        </p>
+                        <h4>Tryb gry</h4>
+                        <label>
+                            <input class="w3-radio" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
+                            Standardowy
+                        </label><br>
+                        <label>
+                            <input class="w3-radio" type="radio" name="game-type" value="nomercy" :disabled="!me.admin">
+                            Bez litości
+                        </label><br>
+                        <label>
+                            <input class="w3-radio" type="radio" name="game-type" value="child" :disabled="!me.admin">
+                            Dziecięcy
+                        </label><br>
+                        <label>
+                            <input class="w3-radio" type="radio" name="game-type" value="pwr" :disabled="!me.admin">
+                            Prezentacja projektu
+                        </label><br>
+                        <h4>Limit czasu</h4>
+                        <input type="number" name="time-limit" id="time-limit" value="120" :disabled="!me.admin"> sek.
+                    </div>
+                    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                        <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
+                        <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right"
+                                :disabled="!me.admin">Zapisz</button>
+                    </div>
                 </div>
-                <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                    <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
-                </div>
-
             </div>
-        </div>
-        <!-- Modal -->
-        <!-- Settings Modal -->
-        <div class="w3-modal" :class="{'w3-show': showSettings}">
-            <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+            <!-- Modal -->
 
-                <div class="w3-center"><br>
-                    <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-                    <h3>Ustawienia</h3>
-                </div>
-                <hr>
-                <div class="w3-container w3-margin">
-                    <p>
-                        <input name="is-open" class="w3-check" type="checkbox" checked="checked" :disabled="!me.admin">
-                        <label>Zezwól na dołączenie nowych graczy</label>
-                    </p>
-                    <h4>Tryb gry</h4>
-                    <label>
-                        <input class="w3-radio" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
-                        Standardowy
-                    </label><br>
-                    <label>
-                        <input class="w3-radio" type="radio" name="game-type" value="nomercy" :disabled="!me.admin">
-                        Bez litości
-                    </label><br>
-                    <label>
-                        <input class="w3-radio" type="radio" name="game-type" value="child" :disabled="!me.admin">
-                        Dziecięcy
-                    </label><br>
-                    <label>
-                        <input class="w3-radio" type="radio" name="game-type" value="pwr" :disabled="!me.admin">
-                        Prezentacja projektu
-                    </label><br>
-                    <h4>Limit czasu</h4>
-                    <input type="number" name="time-limit" id="time-limit" value="120" :disabled="!me.admin"> sek.
+            <loader v-if="!gameReady"></loader>
+            <div v-else id="game-container" class="w3-main w3-twothird">
+                <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-center">
+                    <p>{{topInfo}}</p>
                 </div>
 
+                <div class="table">
+                    <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
+                        <p>{{blackCard.text}}</p>
+                    </div>
 
-                <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                    <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
-                    <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right"
-                            :disabled="!me.admin">Zapisz</button>
-                </div>
-
-            </div>
-        </div>
-        <!-- Modal -->
-        <loader v-if="!gameReady"></loader>
-        <div id="game-container" v-else class="w3-main w3-twothird">
-            <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-center">
-                <p>{{topInfo}}</p>
-            </div>
-
-            <div class="table">
-                <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
-                    <p>{{blackCard.text}}</p>
-                </div>
-
-                <!-- Player cards -->
-                <template v-if="selectingStage">
-                    <template v-for="player in players">
-                        <card-player-me v-if="player.me"
-                                        v-bind:key="player.id"
-                                        v-bind:player="player"
-                                        v-bind:ready-to-submit="readyToSubmit"
-                                        v-on:click.native="confirmSelectedCards()">
-                        </card-player-me>
-                        <card-player v-else v-bind:key="player.id"
-                                     v-bind:player="player">
-                        </card-player>
+                    <!-- Player cards -->
+                    <template v-if="selectingStage">
+                        <template v-for="player in players">
+                            <card-player-me v-if="player.me"
+                                            v-bind:key="player.id"
+                                            v-bind:player="player"
+                                            v-bind:ready-to-submit="readyToSubmit"
+                                            v-on:click.native="confirmSelectedCards()">
+                            </card-player-me>
+                            <card-player v-else v-bind:key="player.id"
+                                         v-bind:player="player">
+                            </card-player>
+                        </template>
                     </template>
-                </template>
 
-                <!-- Card stacks -->
-                <template v-if="readingStage">
-                    <card-stack v-for="(stack, id) in playedCards"
-                                v-bind:key="id"
-                                v-bind:stack="stack"
-                                v-on:click.native="onStackClick(stack)"
-                                v-bind:class="{glow: selectingWinnerMode}">
-                    </card-stack>
-                </template>
-            </div>
+                    <!-- Card stacks -->
+                    <template v-if="readingStage">
+                        <card-stack v-for="(stack, id) in playedCards"
+                                    v-bind:key="id"
+                                    v-bind:stack="stack"
+                                    v-on:click.native="onStackClick(stack)"
+                                    v-bind:class="{glow: selectingWinnerMode}">
+                        </card-stack>
+                    </template>
+                </div>
 
-            <!-- Choose winner button -->
-            <div class="choose-winner" v-if="allStacksRevealed && me.state === 'master'">
-                <button class="w3-button w3-green w3-card w3-round-medium "
-                        v-bind:class="{'w3-gray': selectingWinnerMode}"
-                        v-bind:class="{'select-animation': !selectingWinnerMode}"
-                        v-on:click="selectingWinnerMode = !selectingWinnerMode">
-                    <i class="icon-trophy w3-xlarge"></i> <br>
-                    <strong>Wybierz zwycięzcę</strong>
-                </button>
-            </div>
+                <!-- Choose winner button -->
+                <div class="choose-winner" v-if="allStacksRevealed && me.state === 'master'">
+                    <button class="w3-button w3-green w3-card w3-round-medium "
+                            v-bind:class="{'w3-gray': selectingWinnerMode}"
+                            v-bind:class="{'select-animation': !selectingWinnerMode}"
+                            v-on:click="selectingWinnerMode = !selectingWinnerMode">
+                        <i class="icon-trophy w3-xlarge"></i> <br>
+                        <strong>Wybierz zwycięzcę</strong>
+                    </button>
+                </div>
 
-            <hr>
+                <hr>
 
-            <div class="hand" v-bind:class="{faded: (me.state==='master')}">
-                <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float" 
-                    v-for="card in myCards" 
-                    v-bind:class="{selected: selectedCards.includes(card)}" 
-                    v-on:click="selectCard(card)">
-                    <p>{{card.text}}</p>
-                    <div class="order-bubble w3-round-xxlarge"
-                        v-if="selectedCards.indexOf(card)>=0">
-                        {{selectedCards.indexOf(card)+1}}
+                <div class="hand" v-bind:class="{faded: (me.state==='master')}">
+                    <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float"
+                        v-for="card in myCards"
+                        v-bind:class="{selected: selectedCards.includes(card)}"
+                        v-on:click="selectCard(card)">
+                        <p>{{card.text}}</p>
+                        <div class="order-bubble w3-round-xxlarge"
+                            v-if="selectedCards.indexOf(card)>=0">
+                            {{selectedCards.indexOf(card)+1}}
+                        </div>
+
                     </div>
-
                 </div>
             </div>
-        </div>
 
-        <div class="w3-third">
-            <div id="sidebar" class="w3-card w3-bar-block">
-                <div class="w3-container w3-bar-item" style="display: flex;">
-                    <h2 style="width: 100%;">Stół: {{ tableId }}</h2>
-                    <button class="w3-button" style="width: 100px;" @click="showSettings=true"><i class="icon-cog w3-xxxlarge"></i></button>
-                </div>
-                <button class="w3-button w3-bar-item w3-light-grey" @click="showPlayers = !showPlayers">Gracze <i class="icon-down-dir"></i></button>
-                <div id="player-list" v-show="showPlayers">
-
-                    <div class="player-info w3-padding" v-for="player in players">
-                        <p><strong>{{player.name}} <i class="icon-star" v-if="player.admin"></i></strong>
-                            <span v-if="player.id === me.id">(ty)</span></p>
-                        <p>punkty: {{player.score}}</p>
+            <div class="w3-third">
+                <div id="sidebar" class="w3-card w3-bar-block">
+                    <div class="w3-container w3-bar-item" style="display: flex;">
+                        <h2 style="width: 100%;">Stół: {{ tableId }}</h2>
+                        <button class="w3-button" style="width: 100px;" @click="showSettings=true"><i class="icon-cog w3-xxxlarge"></i></button>
                     </div>
+                    <button class="w3-button w3-bar-item w3-light-grey" @click="showPlayers = !showPlayers">Gracze <i class="icon-down-dir"></i></button>
+                    <div id="player-list" v-show="showPlayers">
 
-                </div>
-                <button class="w3-button w3-bar-item w3-light-grey" @click="showChat = !showChat">Czat <i class="icon-down-dir"></i></button>
-                <div id="chat-content" class="w3-padding" v-show="showChat">
+                        <div class="player-info w3-padding" v-for="player in players">
+                            <p><strong>{{player.name}} <i class="icon-star" v-if="player.admin"></i></strong>
+                                <span v-if="player.id === me.id">(ty)</span></p>
+                            <p>punkty: {{player.score}}</p>
+                        </div>
 
-                    <p v-for="(msg, idx) in chat" :class="{'user-bot': msg.log}">
-                        <strong>{{msg.name}}: </strong> {{msg.message}}
-                    </p>
+                    </div>
+                    <button class="w3-button w3-bar-item w3-light-grey" @click="showChat = !showChat">Czat <i class="icon-down-dir"></i></button>
+                    <div id="chat-content" class="w3-padding" v-show="showChat">
 
-                </div>
-                <div id="chat-input-area" class="w3-border-top" v-show="showChat">
-                    <input type="text" name="message" id="chat-input" autocomplete="off" v-model="newMessage" @keyup.enter="sendMessage">
-                    <button @click="sendMessage"><i class="icon-send"></i></button>
+                        <p v-for="(msg, idx) in chat" :class="{'user-bot': msg.log}">
+                            <strong>{{msg.name}}: </strong> {{msg.message}}
+                        </p>
+
+                    </div>
+                    <div id="chat-input-area" class="w3-border-top" v-show="showChat">
+                        <input type="text" name="message" id="chat-input" autocomplete="off" v-model="newMessage" @keyup.enter="sendMessage">
+                        <button @click="sendMessage"><i class="icon-send"></i></button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
     <!-- game -->
 
