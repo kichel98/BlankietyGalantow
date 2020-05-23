@@ -23,7 +23,7 @@ class Player:
 
     def get_card_by_id(self, card_id: int):
         for card in self.hand:
-            if card.card_id == card_id:
+            if card.id == card_id:
                 return card
         return None
 
@@ -37,7 +37,7 @@ class Player:
             "type": "PLAYER_HAND",
             "cards": [
                 {
-                    "id": card.card_id,
+                    "id": card.id,
                     "text": card.text
                  } for card in self.hand
             ]

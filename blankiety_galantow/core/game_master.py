@@ -31,7 +31,7 @@ class GameMaster:
         message = {
             "type": "BLACK_CARD",
             "card": {
-                "id": self.black_card.card_id,
+                "id": self.black_card.id,
                 "text": self.black_card.text,
                 "gap_count": self.black_card.gap_count
             }
@@ -50,7 +50,7 @@ class GameMaster:
                     {
                         "playerCards": [
                             {
-                                "id": card.card_id,
+                                "id": card.id,
                                 "text": card.text
                             } for card in player.selected_cards
                         ]
