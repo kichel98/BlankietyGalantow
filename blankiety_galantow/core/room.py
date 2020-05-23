@@ -5,7 +5,7 @@ from fastapi.logger import logger
 
 from .chat import Chat
 from .helpers import get_random_string
-from .player import Player
+from .player import Player, PlayerState
 from .game_master import GameMaster
 from .utils.observable_list import ObservableList
 from .kick_exception import KickException
@@ -21,6 +21,7 @@ class Room:
         self.chat = Chat(self.players)
         self.game_master = GameMaster(self.players, self.chat)
         self.admin = None
+        self.master = None
 
     @property
     def number_of_players(self):
@@ -33,6 +34,9 @@ class Room:
 
         if self.admin is None:
             self.admin = player
+        if self.master is None:
+            self.master = player
+            player.set_player_state(PlayerState.master)
         await self.chat.send_message_from_system(f"Gracz '{player.name}' dołączył do pokoju.")
         await self.send_players_update()
         await self.listen_to_player(player)
@@ -68,7 +72,9 @@ class Room:
             await self.chat.send_message_from_player(player, data["message"])
         else:
             # Handle game_master messages
-            await self.game_master.process_message(player, data)
+            info = await self.game_master.process_message(player, data)
+            if(info == "PLAYER_UPDATE"):
+                await self.send_players_update()
         # TODO: other types of messages
 
     async def handle_player_leaving(self, player, message=None):
@@ -77,6 +83,8 @@ class Room:
             message = f"Gracz '{player.name}' opuścił pokój."
         if player == self.admin:
             self.set_new_random_admin()
+        if player == self.master:
+            self.set_new_random_master()
         await self.chat.send_message_from_system(message)
         await self.send_players_update()
 
@@ -86,6 +94,14 @@ class Room:
             self.admin = random.choice(self.players)
         else:
             self.admin = None
+
+    def set_new_random_master(self):
+        """Choose random player as admin"""
+        if self.number_of_players>0:
+            self.master = random.choice(self.players)
+            self.master.set_player_state(PlayerState.master)
+        else:
+            self.master = None
 
     async def send_players_update(self):
         """Send info about players in room to all of them."""
@@ -109,7 +125,7 @@ class Room:
             player_info = {
                 "id": player.id,
                 "name": player.name,
-                "state": "ready",  # Needs to be changed
+                "state": player.state,
                 "score": 0,  # Needs to be changed
                 "admin": player == self.admin
             }

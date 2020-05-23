@@ -6,6 +6,11 @@ from enum import Enum
 
 from typing import List
 
+class PlayerState(Enum):
+    master = 1
+    choosing = 2
+    ready = 3
+
 class Player:
     def __init__(self, socket: WebSocket, username: str):
         self.name = username
@@ -14,7 +19,13 @@ class Player:
         self.player_state = PlayerState.choosing
         self.hand = []
 
-    
+    @property
+    def state(self):
+        return self.player_state.name
+
+    def set_player_state(self, state: PlayerState):
+        self.player_state = state
+
     @property
     def selected_cards(self):
         selected_cards = []
@@ -42,13 +53,6 @@ class Player:
             ]
         }
         await self.send_json(message)
-
-    def set_player_state(self, state: PlayerState):
-        self.player_state = state
-
-    @property
-    def state(self):
-        return self.state.name
         
     async def kick(self, reason: str):
         kick_reason = {
@@ -73,8 +77,3 @@ class Player:
     async def send_json(self, data):
         """Send JSON data to the player via socket."""
         await self.socket.send_json(data)
-
-class PlayerState(Enum):
-    master = 1
-    choosing = 2
-    ready = 3

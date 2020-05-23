@@ -1,7 +1,7 @@
 from .chat import Chat
 from .deck import Deck, WhiteCard, BlackCard
 from .utils.observable_list import ObservableList
-from .player import Player
+from .player import Player, PlayerState
 
 from typing import Dict, List
 
@@ -37,7 +37,7 @@ class GameMaster:
     async def send_played_cards(self):
         everyone_selected_cards = True
         for player in self.players:
-            if len(player.selected_cards) == 0:
+            if player.state == "choosing":
                 everyone_selected_cards = False
         if everyone_selected_cards:
             message = {
@@ -64,4 +64,6 @@ class GameMaster:
                     await player.kick("Próba oszustwa")
                     return
             # Sends played cards in this round if everybody selected their cards
+            player.set_player_state(PlayerState.ready)
             await self.send_played_cards()
+            return "PLAYER_UPDATE"
