@@ -41,10 +41,8 @@ class GameMaster:
     
     def set_new_random_master(self):
         """Choose random player as master"""
-        if self.master is not None:
-            self.master.state = PlayerState.choosing
         if len(self.players) > 0:
-            self.master = random.choice([player for player in self.players if player is not self.master])
+            self.master = random.choice(self.players)
             self.master.state = PlayerState.master
         else:
             self.master = None
@@ -100,6 +98,12 @@ class GameMaster:
             if player is not self.master:
                 await player.fill_player_hand(self.white_deck.get_cards(cards_number))
 
+    def set_new_master(self):
+        index = (self.players.index(self.master) + 1) % len(self.players)
+        self.master.state = PlayerState.choosing
+        self.master = self.players[index]
+        self.master.state = PlayerState.master
+
     async def process_message(self, player: Player, data: Dict):
         if data["type"] == "CARDS_SELECT" and "cards" in data:
             for card in data["cards"]:
@@ -126,7 +130,7 @@ class GameMaster:
             await self.refill_players_hand(cards_number)
 
             # Select new master
-            self.set_new_random_master()
+            self.set_new_master()
 
             # Sends empty played cards
             await self.send_empty_played_cards()
