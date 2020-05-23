@@ -45,6 +45,7 @@ class WhiteCard:
     def __init__(self, card_id: int, data):
         self.card_id: int = card_id
         self.text: str = data["treść"]
+        self.selected: bool = False
 
 
 class BlackCard:
