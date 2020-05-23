@@ -64,3 +64,12 @@ class Player:
     async def send_json(self, data):
         """Send JSON data to the player via socket."""
         await self.socket.send_json(data)
+
+    async def kill(self, error_msg: str):
+        """Disconnect player with an error message"""
+        error_data = {
+            "type": "ERROR",
+            "message": error_msg
+        }
+        await self.send_json(error_data)
+        await self.socket.close()
