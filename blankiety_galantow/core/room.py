@@ -68,9 +68,8 @@ class Room:
             await self.chat.send_message_from_player(player, data["message"])
         else:
             # Handle game_master messages
-            info = await self.game_master.process_message(player, data)
-            if(info == "PLAYER_UPDATE"):
-                await self.send_players_update()
+            await self.game_master.process_message(player, data)
+            
         # TODO: other types of messages
 
     async def handle_player_leaving(self, player, message=None):
