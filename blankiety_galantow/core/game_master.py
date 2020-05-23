@@ -1,3 +1,5 @@
+import random
+
 from .chat import Chat
 from .deck import Deck, WhiteCard, BlackCard
 from .utils.observable_list import ObservableList
@@ -20,12 +22,29 @@ class GameMaster:
         self.players_hands = {}
         self.cards_selected = {}
         self.black_card = self.black_deck.get_card()
+        self.master = None
         players.add_append_callback(self.handle_add_player)
+        players.add_remove_callback(self.handle_player_leave)
+
 
     async def handle_add_player(self, player):
         await player.fill_player_hand(self.white_deck.get_cards(10))
         await self.send_black_card(player)
+        if self.master is None:
+            self.master = player
+            player.set_player_state(PlayerState.master)
     
+    async def handle_player_leave(self, player):
+        if self.master is player:
+            self.set_new_random_master()
+    
+    def set_new_random_master(self):
+        """Choose random player as master"""
+        if len(self.players)>0:
+            self.master = random.choice(self.players)
+            self.master.set_player_state(PlayerState.master)
+        else:
+            self.master = None
 
     async def send_black_card(self, player: Player):
         message = {

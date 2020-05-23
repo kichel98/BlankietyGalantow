@@ -21,7 +21,7 @@ class Player:
 
     @property
     def state(self):
-        return self.player_state.name
+        return self.player_state
 
     def set_player_state(self, state: PlayerState):
         self.player_state = state
