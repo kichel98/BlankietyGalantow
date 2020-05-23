@@ -25,7 +25,7 @@ class Deck:
             
         return self.cards.pop(0)
     
-    def get_cards(self, cards_number):
+    def get_cards(self, cards_number: int):
         if len(self.cards) < cards_number:
             self.load_from_file()
             self.shuffle_cards()

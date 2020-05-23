@@ -212,15 +212,18 @@ socket.onmessage = function(event) {
     }
     if(data.type === "PLAYER_HAND" && data.cards) {
         app.myCards = data.cards
+        app.selectedCards = []
     }
     if(data.type === "BLACK_CARD" && data.card) {
         app.blackCard = data.card
         app.numberOfCardsToSelect = parseInt(data.card.gap_count)
+        app.selectingWinnerMode = false
     }
     if(data.type === "PLAYERS") {
         app.players = data.players;
     }
     if(data.type === "PLAYED_CARDS") {
+        app.playedCards = []
         // Message is weirdly parsed from JSON, that is why cards from data are extracted that way
         for(index in data.cards){
             app.playedCards.push({

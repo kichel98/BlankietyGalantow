@@ -18,6 +18,7 @@ class Player:
         self.id = None
         self.player_state = PlayerState.choosing
         self.hand = []
+        self.points = 0
 
     @property
     def state(self):

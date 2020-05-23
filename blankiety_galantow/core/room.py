@@ -111,7 +111,7 @@ class Room:
                 "id": player.id,
                 "name": player.name,
                 "state": player.state.name,
-                "score": 0,  # Needs to be changed
+                "score": player.points,
                 "admin": player == self.admin
             }
             players_info.append(player_info)
