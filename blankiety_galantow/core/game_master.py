@@ -14,6 +14,7 @@ class GameMaster:
     black_deck: Deck
     black_card: BlackCard
 
+    # FIXME: Zrezygnować z callbacku na rzecz czegoś "ładniejszego"
     def __init__(self, players: ObservableList, chat: Chat, players_update_callback):
         self.players = players
         self.chat = chat
@@ -29,7 +30,7 @@ class GameMaster:
 
 
     async def handle_add_player(self, player):
-        await player.fill_player_hand(self.white_deck.get_cards(10))
+        await player.add_cards(self.white_deck.get_cards(10))
         await self.send_black_card(player)
         if self.master is None:
             self.master = player
@@ -74,33 +75,9 @@ class GameMaster:
             }
             for player in self.players:
                 await player.send_json(message)
-            
-
-    async def send_empty_played_cards(self):
-        message = {
-            "type": "PLAYED_CARDS",
-            "cards": []
-        }
-        for player in self.players:
-            await player.send_json(message)
-
-    async def add_points(self, cards):
-        # TODO: Think if we want to validate that all winning cards are in player hand
-        # Add points
-        for card in cards:
-            for winning_player in self.players:
-                winning_card = winning_player.get_card_by_id(card["id"])
-                if winning_card is not None:
-                    winning_player.points += 1
-                    return
-
-    async def refill_players_hand(self, cards_number):
-        # Refill players hands with n cards where n = cards_number
-        for player in self.players:
-            if player is not self.master:
-                await player.fill_player_hand(self.white_deck.get_cards(cards_number))
 
     async def process_message(self, player: Player, data: Dict):
+        # FIXME: podzielić to na funkcje. Funkcja process_message robi za dużo rzeczy.
         if data["type"] == "CARDS_SELECT" and "cards" in data:
             for card in data["cards"]:
                 card = player.get_card_by_id(card["id"])
@@ -114,7 +91,8 @@ class GameMaster:
             await self.send_played_cards()
             await self.players_update_callback()
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
-            await self.add_points(data["cards"])
+            winner = self.get_cards_owner(data["cards"])
+            winner.points += 1
             
             # Select new black card
             cards_number:int = int(self.black_card.gap_count)
@@ -131,3 +109,28 @@ class GameMaster:
             # Sends empty played cards
             await self.send_empty_played_cards()
             await self.players_update_callback()
+
+    def get_cards_owner(self, cards):
+        """
+        Get the owner of a set of cards.
+        All cards must belong to the same player.
+        """
+        for card in cards:
+            for player in self.players:
+                if player.has_card_with_id(card["id"]):
+                    return player
+        return None
+
+    async def refill_players_hand(self, cards_number):
+        # Refill players hands with n cards where n = cards_number
+        for player in self.players:
+            if player is not self.master:
+                await player.add_cards(self.white_deck.get_cards(cards_number))
+
+    async def send_empty_played_cards(self):
+        message = {
+            "type": "PLAYED_CARDS",
+            "cards": []
+        }
+        for player in self.players:
+            await player.send_json(message)
