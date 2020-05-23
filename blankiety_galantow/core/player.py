@@ -2,17 +2,30 @@ from json import JSONDecodeError
 from fastapi import WebSocket
 from fastapi.websockets import WebSocketDisconnect
 from .kick_exception import KickException
+from enum import Enum
 
 from typing import List
+
+class PlayerState(Enum):
+    master = 1
+    choosing = 2
+    ready = 3
 
 class Player:
     def __init__(self, socket: WebSocket, username: str):
         self.name = username
         self.socket = socket
         self.id = None
+        self.player_state = PlayerState.choosing
         self.hand = []
 
-    
+    @property
+    def state(self):
+        return self.player_state
+
+    def set_player_state(self, state: PlayerState):
+        self.player_state = state
+
     @property
     def selected_cards(self):
         selected_cards = []
@@ -40,7 +53,7 @@ class Player:
             ]
         }
         await self.send_json(message)
-
+        
     async def kick(self, reason: str):
         kick_reason = {
             "type": "KICK",

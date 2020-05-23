@@ -5,7 +5,7 @@ from fastapi.logger import logger
 
 from .chat import Chat
 from .helpers import get_random_string
-from .player import Player
+from .player import Player, PlayerState
 from .game_master import GameMaster
 from .utils.observable_list import ObservableList
 from .kick_exception import KickException
@@ -19,7 +19,7 @@ class Room:
         self.number_of_seats = 6
         self.players = ObservableList()
         self.chat = Chat(self.players)
-        self.game_master = GameMaster(self.players, self.chat)
+        self.game_master = GameMaster(self.players, self.chat, self.send_players_update)
         self.admin = None
 
     @property
@@ -69,6 +69,7 @@ class Room:
         else:
             # Handle game_master messages
             await self.game_master.process_message(player, data)
+            
         # TODO: other types of messages
 
     async def handle_player_leaving(self, player, message=None):
@@ -109,7 +110,7 @@ class Room:
             player_info = {
                 "id": player.id,
                 "name": player.name,
-                "state": "ready",  # Needs to be changed
+                "state": player.state.name,
                 "score": 0,  # Needs to be changed
                 "admin": player == self.admin
             }

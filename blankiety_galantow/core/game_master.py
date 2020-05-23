@@ -1,7 +1,9 @@
+import random
+
 from .chat import Chat
 from .deck import Deck, WhiteCard, BlackCard
 from .utils.observable_list import ObservableList
-from .player import Player
+from .player import Player, PlayerState
 
 from typing import Dict, List
 
@@ -12,7 +14,7 @@ class GameMaster:
     black_deck: Deck
     black_card: BlackCard
 
-    def __init__(self, players: ObservableList, chat: Chat):
+    def __init__(self, players: ObservableList, chat: Chat, players_update_callback):
         self.players = players
         self.chat = chat
         self.white_deck = Deck(WhiteCard, "resources/game/decks/classic_white.csv")
@@ -20,12 +22,30 @@ class GameMaster:
         self.players_hands = {}
         self.cards_selected = {}
         self.black_card = self.black_deck.get_card()
+        self.master = None
+        self.players_update_callback = players_update_callback
         players.add_append_callback(self.handle_add_player)
+        players.add_remove_callback(self.handle_player_leave)
+
 
     async def handle_add_player(self, player):
         await player.fill_player_hand(self.white_deck.get_cards(10))
         await self.send_black_card(player)
+        if self.master is None:
+            self.master = player
+            player.set_player_state(PlayerState.master)
     
+    async def handle_player_leave(self, player):
+        if self.master is player:
+            self.set_new_random_master()
+    
+    def set_new_random_master(self):
+        """Choose random player as master"""
+        if len(self.players)>0:
+            self.master = random.choice(self.players)
+            self.master.set_player_state(PlayerState.master)
+        else:
+            self.master = None
 
     async def send_black_card(self, player: Player):
         message = {
@@ -37,7 +57,7 @@ class GameMaster:
     async def send_played_cards(self):
         everyone_selected_cards = True
         for player in self.players:
-            if len(player.selected_cards) == 0:
+            if player.state == PlayerState.choosing:
                 everyone_selected_cards = False
         if everyone_selected_cards:
             message = {
@@ -64,4 +84,6 @@ class GameMaster:
                     await player.kick("Próba oszustwa")
                     return
             # Sends played cards in this round if everybody selected their cards
+            player.set_player_state(PlayerState.ready)
             await self.send_played_cards()
+            await self.players_update_callback()
