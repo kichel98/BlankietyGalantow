@@ -29,7 +29,22 @@
         </div>
         <!-- Game App Content -->
         <template v-if="gameLoaded">
+            <!-- Error Modal -->
+            <div class="w3-modal" :class="{'w3-show': errorOccured}">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                    <div class="w3-center"><br>
+                        <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <h3>Błąd</h3>
+                        <hr>
+                        <h4 >{{errorMessage}}</h4>
+                    </div>
+                    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                        <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
+                    </div>
+                </div>
+            </div>
             <!-- Modal -->
+            <!-- Settings Modal -->
             <div class="w3-modal" :class="{'w3-show': showSettings}">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
 
@@ -40,36 +55,34 @@
                     <hr>
                     <div class="w3-container w3-margin">
                         <p>
-                            <input name="is-open" class="w3-check" type="checkbox" checked="checked">
+                            <input name="is-open" class="w3-check" type="checkbox" checked="checked" :disabled="!me.admin">
                             <label>Zezwól na dołączenie nowych graczy</label>
                         </p>
                         <h4>Tryb gry</h4>
                         <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="default" checked="">
+                            <input class="w3-radio" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
                             Standardowy
                         </label><br>
                         <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="nomercy">
+                            <input class="w3-radio" type="radio" name="game-type" value="nomercy" :disabled="!me.admin">
                             Bez litości
                         </label><br>
                         <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="child">
+                            <input class="w3-radio" type="radio" name="game-type" value="child" :disabled="!me.admin">
                             Dziecięcy
                         </label><br>
                         <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="pwr">
+                            <input class="w3-radio" type="radio" name="game-type" value="pwr" :disabled="!me.admin">
                             Prezentacja projektu
                         </label><br>
                         <h4>Limit czasu</h4>
-                        <input type="number" name="time-limit" id="time-limit" value="120"> sek.
+                        <input type="number" name="time-limit" id="time-limit" value="120" :disabled="!me.admin"> sek.
                     </div>
-
-
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                        <button @click="showSettings=false" type="button" class="w3-button w3-red">Cancel</button>
-                        <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right">Zapisz</button>
+                        <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
+                        <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right"
+                                :disabled="!me.admin">Zapisz</button>
                     </div>
-
                 </div>
             </div>
             <!-- Modal -->

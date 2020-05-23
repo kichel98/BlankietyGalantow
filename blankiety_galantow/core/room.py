@@ -7,6 +7,7 @@ from .helpers import get_random_string
 from .player import Player
 from .game_master import GameMaster
 from .utils.observable_list import ObservableList
+from .kick_exception import KickException
 
 
 class Room:
@@ -18,6 +19,7 @@ class Room:
         self.players = ObservableList()
         self.game_master = GameMaster(self.players)
         self.admin = None
+
 
     @property
     def number_of_players(self):
@@ -50,6 +52,9 @@ class Room:
         except WebSocketDisconnect:
             await self.players.remove(player)
             await self.handle_player_leaving(player)
+        except KickException as ex:
+            await self.players.remove(player)
+            await self.handle_player_leaving(player, message=ex.message)
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
@@ -62,7 +67,7 @@ class Room:
             await self.send_chat_message_from_user(player.name, data["message"])
         else:
             # Handle game_master messages
-            self.game_master.process_message(player, data)
+            await self.game_master.process_message(player, data)
         # TODO: other types of messages
         
 
@@ -86,11 +91,13 @@ class Room:
         }
         await self.send_json_to_all_players(data)
 
-    async def handle_player_leaving(self, player):
+    async def handle_player_leaving(self, player, message=None):
         """Does all needed operations after player leaves a room"""
+        if message == None:
+            message = f"Gracz '{player.name}' opuścił pokój."
         if player == self.admin:
             self.set_new_random_admin()
-        await self.send_chat_message_from_system(f"Gracz '{player.name}' opuścił pokój.")
+        await self.send_chat_message_from_system(message)
         await self.send_players_update()
 
     def set_new_random_admin(self):
