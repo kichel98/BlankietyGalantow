@@ -56,7 +56,7 @@ class GameMaster:
     async def send_played_cards(self):
         everyone_selected_cards = True
         for player in self.players:
-            if player.state == "choosing":
+            if player.state == PlayerState.choosing:
                 everyone_selected_cards = False
         if everyone_selected_cards:
             message = {
