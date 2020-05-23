@@ -56,7 +56,7 @@ class GameMaster:
         }
         await player.send_json(message)
 
-    async def send_played_cards(self, send_empty_played_cards = False):
+    async def send_played_cards(self):
         everyone_selected_cards = True
         for player in self.players:
             if player.state == PlayerState.choosing:
@@ -74,15 +74,31 @@ class GameMaster:
             }
             for player in self.players:
                 await player.send_json(message)
+            
 
-        if send_empty_played_cards:
-            message = {
-                "type": "PLAYED_CARDS",
-                "cards": []
-            }
-            for player in self.players:
-                await player.send_json(message)
+    async def send_empty_played_cards(self):
+        message = {
+            "type": "PLAYED_CARDS",
+            "cards": []
+        }
+        for player in self.players:
+            await player.send_json(message)
 
+    async def add_points(self, cards):
+        # TODO: Think if we want to validate that all winning cards are in player hand
+        # Add points
+        for card in cards:
+            for winning_player in self.players:
+                winning_card = winning_player.get_card_by_id(card["id"])
+                if winning_card is not None:
+                    winning_player.points += 1
+                    return
+
+    async def refill_players_hand(self, cards_number):
+        # Refill players hands with n cards where n = cards_number
+        for player in self.players:
+            if player is not self.master:
+                await player.fill_player_hand(self.white_deck.get_cards(cards_number))
 
     async def process_message(self, player: Player, data: Dict):
         if data["type"] == "CARDS_SELECT" and "cards" in data:
@@ -98,29 +114,20 @@ class GameMaster:
             await self.send_played_cards()
             await self.players_update_callback()
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
-             # TODO: Think if we want to validate that all winning cards are in player hand
-            # Add points
-            for card in data["cards"]:
-                for winning_player in self.players:
-                    winning_card = winning_player.get_card_by_id(card["id"])
-                    if winning_card is not None:
-                        winning_player.points += 1
-                        break
-            
+            self.add_points(data["cards"])
             
             # Select new black card
             cards_number:int = int(self.black_card.gap_count)
             self.black_card = self.black_deck.get_card()
-            
-            # Refill players hands with n cards where n = gap count
             for player in self.players:
                 await self.send_black_card(player)
-                if player is not self.master:
-                    await player.fill_player_hand(self.white_deck.get_cards(cards_number))
+
+            # Refill players hands
+            self.refill_players_hand(cards_number)
 
             # Select new master
             self.set_new_random_master()
 
             # Sends empty played cards
-            await self.send_played_cards(send_empty_played_cards=True)
+            await self.send_empty_played_cards()
             await self.players_update_callback()
