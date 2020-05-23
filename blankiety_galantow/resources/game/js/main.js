@@ -209,6 +209,9 @@ socket.onmessage = function(event) {
             })
         }
     }
+    if(data.type === "SETTINGS") {
+        app.settings = data.settings;
+    }
     if(data.type === "KICK") {
         app.errorMessage = data.message;
     }

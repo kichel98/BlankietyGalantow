@@ -101,6 +101,8 @@ class Room:
             # TODO: dedicated class for managing settings instead of single functions
         except KeyError:
             logger.error(f"Received invalid settings: {settings}")
+        else:
+            await self.send_settings_to_players()
 
     async def set_open_setting(self, open_setting):
         if self.open != open_setting:
@@ -111,6 +113,15 @@ class Room:
                 msg = f"Admin {self.admin.name} zamknął pokój."
             await self.chat.send_message_from_system(msg)
         # FIXME: create dedicated RoomSettings class
+
+    async def send_settings_to_players(self):
+        settings_data = {
+            "type": "SETTINGS",
+            "settings": {
+                "open": self.open
+            }
+        }
+        await self.send_json_to_all_players(settings_data)
 
     def is_admin(self, player: Player):
         return self.admin == player
@@ -143,3 +154,8 @@ class Room:
             }
             players_info.append(player_info)
         return players_info
+
+    async def send_json_to_all_players(self, json):
+        """Send json (given as Python dictionary) to all players"""
+        for player in self.players:
+            await player.send_json(json)

@@ -56,7 +56,7 @@
                     </div>
                     <hr>
                     <div class="w3-container w3-margin">
-                        <div v-id="!me.admin" style="text-align: center;">
+                        <div v-if="!me.admin" style="text-align: center;">
                             <p style="color: red; font-style: italic; margin-top: 0">
                                 Tylko właściciel pokoju może zmieniać ustawienia.
                             </p>
