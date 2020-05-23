@@ -1,5 +1,3 @@
-import json
-
 from .deck import Deck, WhiteCard, BlackCard
 from .utils.observable_list import ObservableList
 from .player import Player
@@ -38,16 +36,62 @@ class GameMaster:
     async def fill_player_hand(self, player: Player):
         message = {
             "type": "PLAYER_HAND",
-            "cards": [{"id": card.card_id, "text": card.text} for card in self.players_hands[player]]
+            "cards": [
+                {
+                    "id": card.card_id,
+                    "text": card.text
+                 } for card in self.players_hands[player]
+            ]
         }
         await player.send_json(message)
 
     async def send_black_card(self, player: Player):
         message = {
             "type": "BLACK_CARD",
-            "card": {"id": self.black_card.card_id, "text": self.black_card.text, "gap_count": self.black_card.gap_count}
+            "card": {
+                "id": self.black_card.card_id,
+                "text": self.black_card.text,
+                "gap_count": self.black_card.gap_count
+            }
         }
         await player.send_json(message)
 
-    def process_message(self, player: Player, data: Dict):
-        pass  
+    async def send_played_cards(self):
+        everyone_selected_cards = True
+        for cards in self.cards_selected.values():
+            if len(cards) == 0:
+                everyone_selected_cards = False
+        if everyone_selected_cards:
+            message = {
+                "type": "PLAYED_CARDS",
+                "cards": [
+                    {
+                        "playerCards": [
+                            {
+                                "id": card.card_id,
+                                "text": card.text
+                            } for card in self.cards_selected[player]
+                        ]
+                    } for player in self.players
+                ]
+            }
+            for player in self.players:
+                await player.send_json(message)
+
+    def get_player_card_by_id(self, player: Player, card_id: int):
+        for card in self.players_hands[player]:
+            if card.card_id == card_id:
+                return card
+        return None
+
+    async def process_message(self, player: Player, data: Dict):
+        if data["type"] == "CARDS_SELECT" and "cards" in data:
+            for card in data["cards"]:
+                player_card = self.get_player_card_by_id(player, card["id"])
+                if player_card is not None:
+                    self.cards_selected[player].append(player_card)
+                else:
+                    await player.kick("Próba oszustwa")
+                    return
+            # Sends played cards in this round if everybody selected their cards
+            await self.send_played_cards()
