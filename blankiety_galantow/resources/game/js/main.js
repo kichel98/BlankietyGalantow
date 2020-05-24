@@ -77,37 +77,13 @@ const app = new Vue({
         clearError: function() {
             this.errorMessage = "";
         },
-        // Use this function to fill playerCards with mockup data. Usefull for testing reactivity of webpage 
-        tempFill: function() {
-            this.playedCards = [
-                {
-                    revealed: false,
-                    currentCard: 0,
-                    cards: [
-                        {id: 21, text: "Śmieszny tekst 1"},
-                        {id: 22, text: "Śmieszny tekst 2"},
-                        {id: 23, text: "Śmieszny tekst 3"}
-                    ]
-                },
-                {
-                    revealed: false,
-                    currentCard: 0,
-                    cards: [
-                        { id: 24, text: "Śmieszny tekst 4"},
-                        { id: 25, text: "Śmieszny tekst 5"},
-                        { id: 26, text: "Śmieszny tekst 6"}
-                    ]
-                },
-                {
-                    revealed: false,
-                    currentCard: 0,
-                    cards: [
-                        { id: 27, text: "Śmieszny tekst 7"},
-                        { id: 28, text: "Śmieszny tekst 8"},
-                        { id: 29, text: "Śmieszny tekst 9"}
-                    ]
-                }
-            ];
+        submitSettings: function() {
+            const data = {
+                type: "SETTINGS",
+                settings: this.settings
+            };
+            socket.send(JSON.stringify(data));
+            this.showSettings = false  // close settings modal
         }
     },
     computed: {
@@ -182,6 +158,9 @@ const app = new Vue({
         chat: [],
         newMessage: '',
         errorMessage: '',
+        settings: {
+            open: true
+        },
         showPlayers: false,
         showChat: true,
         showSettings: false,
@@ -228,6 +207,9 @@ socket.onmessage = function(event) {
                 cards: card.playerCards
             })
         }
+    }
+    if(data.type === "SETTINGS") {
+        app.settings = data.settings;
     }
     if(data.type === "KICK") {
         app.errorMessage = data.message;

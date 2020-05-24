@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../vendor/hover/hover-min.css">
     <link rel="stylesheet" href="../vendor/w3css/w3.css">
     <link rel="stylesheet" href="css/main.css?v=1.0">
-    <link rel="stylesheet" href="css/loader.css?v=1.0">
+    <link rel="stylesheet" href="css/loader.css?v=1.1">
 
 
     <script src="../vendor/vue/vue-dev.js"></script>
@@ -27,36 +27,45 @@
                 <span></span>
             </div>
         </div>
-        <!-- Game App Content -->
-        <template v-if="gameLoaded">
-            <!-- Error Modal -->
-            <div class="w3-modal" :class="{'w3-show': errorOccured}">
-                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-                    <div class="w3-center"><br>
-                        <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-                        <h3>Błąd</h3>
-                        <hr>
-                        <h4 >{{errorMessage}}</h4>
-                    </div>
-                    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                        <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
-                    </div>
+
+        <!-- Error Modal -->
+        <div class="w3-modal" :class="{'w3-show': errorOccured}">
+            <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                <div class="w3-center"><br>
+                    <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                    <h3>Błąd</h3>
+                    <hr>
+                    <h4 >{{errorMessage}}</h4>
+                </div>
+                <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                    <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Game App Content -->
+        <template v-if="gameLoaded">
             <!-- Modal -->
             <!-- Settings Modal -->
             <div class="w3-modal" :class="{'w3-show': showSettings}">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
 
                     <div class="w3-center"><br>
-                        <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Zamknij">×</span>
                         <h3>Ustawienia</h3>
                     </div>
                     <hr>
                     <div class="w3-container w3-margin">
+                        <div v-if="!me.admin" style="text-align: center;">
+                            <p style="color: red; font-style: italic; margin-top: 0">
+                                Tylko właściciel pokoju może zmieniać ustawienia.
+                            </p>
+                        </div>
                         <p>
-                            <input name="is-open" class="w3-check" type="checkbox" checked="checked" :disabled="!me.admin">
-                            <label>Zezwól na dołączenie nowych graczy</label>
+                            <input id="is-open" name="is-open" class="w3-check" type="checkbox"
+                                   :disabled="!me.admin"
+                                   v-model="settings.open">
+                            <label for="is-open">Zezwól na dołączenie nowych graczy</label>
                         </p>
                         <h4>Tryb gry</h4>
                         <label>
@@ -80,7 +89,7 @@
                     </div>
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
-                        <button @click="showSettings=false" type="button" class="w3-button w3-green w3-right"
+                        <button @click="submitSettings" type="button" class="w3-button w3-green w3-right"
                                 :disabled="!me.admin">Zapisz</button>
                     </div>
                 </div>

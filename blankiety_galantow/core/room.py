@@ -28,6 +28,11 @@ class Room:
 
     async def add_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""
+        if not self.open:
+            await player.kill("Pokój jest zamknięty.")
+            logger.error(f"Player '{player}' tried to join a closed server '{self.name}'")
+            return
+
         player.id = self.generate_unique_player_id()
         await self.players.append(player)
 
@@ -64,6 +69,8 @@ class Room:
             return
         if data["type"] == "ERROR" and "message" in data:
             logger.error(f"ERROR: {data}")
+        elif data["type"] == "SETTINGS" and "settings" in data and self.is_admin(player):
+            await self.change_settings(data["settings"])
         elif data["type"] == "CHAT_MESSAGE" and "message" in data:
             await self.chat.send_message_from_player(player, data["message"])
         else:
@@ -87,6 +94,38 @@ class Room:
             self.admin = random.choice(self.players)
         else:
             self.admin = None
+
+    async def change_settings(self, settings):
+        try:
+            await self.set_open_setting(settings["open"])
+            # TODO: other types of settings
+            # TODO: dedicated class for managing settings instead of single functions
+        except KeyError:
+            logger.error(f"Received invalid settings: {settings}")
+        else:
+            await self.send_settings_to_players()
+
+    async def set_open_setting(self, open_setting):
+        if self.open != open_setting:
+            self.open = open_setting
+            if open_setting:
+                msg = f"Admin {self.admin.name} otworzył pokój."
+            else:
+                msg = f"Admin {self.admin.name} zamknął pokój."
+            await self.chat.send_message_from_system(msg)
+        # FIXME: create dedicated RoomSettings class
+
+    async def send_settings_to_players(self):
+        settings_data = {
+            "type": "SETTINGS",
+            "settings": {
+                "open": self.open
+            }
+        }
+        await self.send_json_to_all_players(settings_data)
+
+    def is_admin(self, player: Player):
+        return self.admin == player
 
     async def send_players_update(self):
         """Send info about players in room to all of them."""
@@ -116,3 +155,8 @@ class Room:
             }
             players_info.append(player_info)
         return players_info
+
+    async def send_json_to_all_players(self, json):
+        """Send json (given as Python dictionary) to all players"""
+        for player in self.players:
+            await player.send_json(json)
