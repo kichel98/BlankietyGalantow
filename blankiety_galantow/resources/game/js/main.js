@@ -70,10 +70,6 @@ const app = new Vue({
                 cards: stack.cards
             };
             socket.send(JSON.stringify(data));
-
-            // TODO: If winner is correct then server sends empty playedCards
-            //  temporarily we do it by hand
-            this.playedCards = [];
         },
         exit: function() {
             window.location.pathname = "/";

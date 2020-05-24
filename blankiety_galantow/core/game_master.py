@@ -39,7 +39,24 @@ class GameMaster:
     async def handle_player_leave(self, player):
         if player is self.master:
             self.set_new_random_master()
-    
+
+    async def process_message(self, player: Player, data: Dict):
+        if data["type"] == "CARDS_SELECT" and "cards" in data:
+            await self.handle_selecting_cards(player, data)
+        if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
+            await self.handle_choosing_winner(data)
+
+    def get_cards_owner(self, cards):
+        """
+        Get the owner of a set of cards.
+        All cards must belong to the same player.
+        """
+        for card in cards:
+            for player in self.players:
+                if player.has_card_with_id(card["id"]):
+                    return player
+        return None
+
     def set_new_random_master(self):
         """Choose random player as master"""
         if len(self.players) > 0:
@@ -48,6 +65,89 @@ class GameMaster:
         else:
             self.master = None
 
+    def set_new_master(self):
+        """Set next player in order to be new master"""
+        index = (self.players.index(self.master) + 1) % len(self.players)
+        self.master = self.players[index]
+        self.master.state = PlayerState.master
+
+    def reset_players_state(self):
+        """Set every player state, except master, to 'choosing'"""
+        for player in self.players:
+            if player is not self.master:
+                player.state = PlayerState.choosing
+    
+    
+
+    def validate_cards(self, player, cards):
+        """Send True if player hand has all cards, send False if any card is not in player hand"""
+        for card in cards:
+            card = player.get_card_by_id(card["id"])
+            if card not in player.hand:
+                return False
+        return True
+
+    def select_cards(self, player, cards):
+        """Set cards.selected = True for every card"""
+        for card in cards:
+            card = player.get_card_by_id(card["id"])
+            # To save order of selected cards, card is removed from player.hand, and then added at the end in right order
+            player.hand.remove(card)
+            player.hand.append(card)
+            card.selected = True
+        
+    async def handle_selecting_cards(self, player, data):
+        """
+        Method for handling CARDS_SELECT message
+        """
+        if not self.validate_cards(player, data["cards"]):
+                await player.kick("Próba oszustwa")
+                return
+        self.select_cards(player, data["cards"])    
+        # Sends played cards in this round if everybody selected their cards
+        player.state = PlayerState.ready
+        await self.send_played_cards()
+        await self.players_update_callback()
+
+    async def handle_choosing_winner(self, data):
+        """
+        Method for handling CHOOSE_WINNING_CARDS message
+        """
+        await self.add_point_to_cards_owner(data["cards"])
+        cards_number:int = int(self.black_card.gap_count)
+        await self.select_new_black_card()
+        await self.refill_players_hand(cards_number)
+        self.set_new_master()
+        self.reset_players_state()
+        await self.send_empty_played_cards()
+        await self.players_update_callback()
+
+    async def add_point_to_cards_owner(self, cards):
+        """Add points to card owner and send chat message about it"""
+        winner = self.get_cards_owner(cards)
+        winner.points += 1
+        await self.chat.send_message_from_system(f"Gracz '{winner.name}' wygrał rundę. +1 punkt zwycięstwa.")
+
+    async def select_new_black_card(self):
+        """Select new black card and send it to all players"""
+        self.black_card = self.black_deck.get_card()
+        for player in self.players:
+            await self.send_black_card(player)
+
+    async def refill_players_hand(self, cards_number):
+        """Refill players hands with n cards where n = cards_number"""
+        for player in self.players:
+            if player is not self.master:
+                await player.add_cards(self.white_deck.get_cards(cards_number))
+
+    async def send_empty_played_cards(self):
+        message = {
+            "type": "PLAYED_CARDS",
+            "cards": []
+        }
+        for player in self.players:
+            await player.send_json(message)
+    
     async def send_black_card(self, player: Player):
         message = {
             "type": "BLACK_CARD",
@@ -73,68 +173,3 @@ class GameMaster:
             }
             for player in self.players:
                 await player.send_json(message)
-
-    def set_new_master(self):
-        index = (self.players.index(self.master) + 1) % len(self.players)
-        self.master.state = PlayerState.choosing
-        self.master = self.players[index]
-        self.master.state = PlayerState.master
-
-    async def process_message(self, player: Player, data: Dict):
-        # FIXME: podzielić to na funkcje. Funkcja process_message robi za dużo rzeczy.
-        if data["type"] == "CARDS_SELECT" and "cards" in data:
-            for card in data["cards"]:
-                card = player.get_card_by_id(card["id"])
-                if card in player.hand:
-                    card.selected = True
-                else:
-                    await player.kick("Próba oszustwa")
-                    return
-            # Sends played cards in this round if everybody selected their cards
-            player.state = PlayerState.ready
-            await self.send_played_cards()
-            await self.players_update_callback()
-        if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
-            winner = self.get_cards_owner(data["cards"])
-            winner.points += 1
-            
-            # Select new black card
-            cards_number:int = int(self.black_card.gap_count)
-            self.black_card = self.black_deck.get_card()
-            for player in self.players:
-                await self.send_black_card(player)
-
-            # Refill players hands
-            await self.refill_players_hand(cards_number)
-
-            # Select new master
-            self.set_new_master()
-
-            # Sends empty played cards
-            await self.send_empty_played_cards()
-            await self.players_update_callback()
-
-    def get_cards_owner(self, cards):
-        """
-        Get the owner of a set of cards.
-        All cards must belong to the same player.
-        """
-        for card in cards:
-            for player in self.players:
-                if player.has_card_with_id(card["id"]):
-                    return player
-        return None
-
-    async def refill_players_hand(self, cards_number):
-        # Refill players hands with n cards where n = cards_number
-        for player in self.players:
-            if player is not self.master:
-                await player.add_cards(self.white_deck.get_cards(cards_number))
-
-    async def send_empty_played_cards(self):
-        message = {
-            "type": "PLAYED_CARDS",
-            "cards": []
-        }
-        for player in self.players:
-            await player.send_json(message)
