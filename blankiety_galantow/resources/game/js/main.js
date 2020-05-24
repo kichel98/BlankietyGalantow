@@ -70,10 +70,6 @@ const app = new Vue({
                 cards: stack.cards
             };
             socket.send(JSON.stringify(data));
-
-            // TODO: If winner is correct then server sends empty playedCards
-            //  temporarily we do it by hand
-            this.playedCards = [];
         },
         exit: function() {
             window.location.pathname = "/";
@@ -211,22 +207,25 @@ socket.onmessage = function(event) {
         addMessageToChat(data.message);
     }
     if(data.type === "PLAYER_HAND" && data.cards) {
-        app.myCards = data.cards
+        app.myCards = data.cards;
+        app.selectedCards = []
     }
     if(data.type === "BLACK_CARD" && data.card) {
-        app.blackCard = data.card
-        app.numberOfCardsToSelect = parseInt(data.card.gap_count)
+        app.blackCard = data.card;
+        app.numberOfCardsToSelect = parseInt(data.card.gap_count);
+        app.selectingWinnerMode = false
     }
     if(data.type === "PLAYERS") {
         app.players = data.players;
     }
     if(data.type === "PLAYED_CARDS") {
+        app.playedCards = [];
         // Message is weirdly parsed from JSON, that is why cards from data are extracted that way
-        for(index in data.cards){
+        for(const card of data.cards){
             app.playedCards.push({
                 revealed: false,
                 currentCard: 0,
-                cards: data.cards[index].playerCards
+                cards: card.playerCards
             })
         }
     }

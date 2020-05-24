@@ -6,25 +6,21 @@ from enum import Enum
 
 from typing import List
 
+
 class PlayerState(Enum):
     master = 1
     choosing = 2
     ready = 3
+
 
 class Player:
     def __init__(self, socket: WebSocket, username: str):
         self.name = username
         self.socket = socket
         self.id = None
-        self.player_state = PlayerState.choosing
+        self.state = PlayerState.choosing
         self.hand = []
-
-    @property
-    def state(self):
-        return self.player_state
-
-    def set_player_state(self, state: PlayerState):
-        self.player_state = state
+        self.points = 0
 
     @property
     def selected_cards(self):
@@ -40,7 +36,10 @@ class Player:
                 return card
         return None
 
-    async def fill_player_hand(self, cards: List):
+    def has_card_with_id(self, card_id: int):
+        return self.get_card_by_id(card_id) is not None
+
+    async def add_cards(self, cards: List):
         self.hand = [card for card in self.hand if not card.selected]
         self.hand = self.hand + cards
         await self.send_player_hand()

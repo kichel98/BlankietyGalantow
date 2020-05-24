@@ -31,7 +31,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, username: str):
         logger.error(f"Connection to nonexistent room id = {room_id}")
         await websocket.send_json({
             "type": "ERROR",
-            "error": "Invalid server id"
+            "error": "Ten pokój nie istnieje."
         })
         await websocket.close(code=1000)
 
