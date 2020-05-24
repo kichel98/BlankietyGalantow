@@ -4,7 +4,7 @@ from fastapi import APIRouter, WebSocket
 from fastapi.responses import HTMLResponse
 from fastapi.logger import logger
 
-import blankiety_galantow.app as app
+from blankiety_galantow import app
 from .core.player import Player
 
 router = APIRouter()
