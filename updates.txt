@@ -1,4 +1,37 @@
 -------------------------------------------
+24-06-2020: Implementacja mechanik rozgrywki
+Zrobiono:
+ - Dodano wypisywanie loggów w trakcie działania serwera.
+ - Zaimplementowano wybieranie karty do zagrania.
+ - Zaimplementowano wybieranie zwycięskiej karty.
+ - Zaimplementowano tworzenie nowego pokoju.
+ - Zaimplementowano wysyłanie kart do graczy.
+ - Dodano moduł Chat.
+ - Dodano moduł GameMaster.
+ - Dodano ekran ładowanie aplikacji.
+ - Dodano ekran oczekiwania na graczy.
+ - Zaimplementowano podstawowe mechaniki rozgrywki.
+ - Dodano funkcję kickowania graczy przez serwer.
+ - Dodano możliwość zmiany ustawień pokoju w czasie rzeczywistym.
+ - Zaimplementowano zamykanie i otwieranie pokoju.
+ - Refaktoryzacja starych komponentów.
+ - Zaimplementowano naliczanie punktów zwycięskim graczom.
+ - Dodano wykrywanie prób oszustwa.
+ - Przeprowadzono pierwsze testy gry na serwerze zdalnym.
+Nie zrobiono:
+ -
+Planujemy:
+ - Rozbudować GUI, aby wyświetlał więcej przydatnych informacji.
+ - Zastąpić mockowe dane w interfejsie prawdziwymi.
+ - Dodać więcej kart do gry.
+ - Obsługiwać więcej sytuacji bugogennych.
+ - Skupić się na testowaniu i wykrywaniu błędów.
+ - Skupić się na naprawie błędów.
+ - Przeprowadzić refaktoryzację niektórych fragmentów aplikacji.
+Problemy:
+ - 
+
+-------------------------------------------
 15-06-2020: Praca z WebSocketami i rozwój interfejsu
 Zrobiono:
  - Założono projekt Python FastAPI.
