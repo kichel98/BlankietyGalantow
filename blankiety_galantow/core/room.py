@@ -143,7 +143,6 @@ class Room:
 
     def get_players_info(self):
         """Get list of player info"""
-        # TODO: Fill player info with correct state and score
         players_info = []
         for player in self.players:
             player_info = {

@@ -9,7 +9,7 @@ from typing import Dict
 
 
 class GameMaster:
-    """GameManager is responsible for handling game logic"""
+    """GameMaster is responsible for handling game logic"""
     white_deck: Deck
     black_deck: Deck
     black_card: BlackCard
