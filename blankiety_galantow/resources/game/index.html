@@ -108,29 +108,31 @@
                     </div>
 
                     <!-- Player cards -->
-                    <template v-if="selectingStage">
-                        <template v-for="player in players">
-                            <card-player-me v-if="player.me"
-                                            v-bind:key="player.id"
-                                            v-bind:player="player"
-                                            v-bind:ready-to-submit="readyToSubmit"
-                                            v-on:click.native="confirmSelectedCards()">
-                            </card-player-me>
-                            <card-player v-else v-bind:key="player.id"
-                                         v-bind:player="player">
-                            </card-player>
+                    <transition-group name="bounce">
+                        <template v-if="selectingStage">
+                            <template v-for="player in players">
+                                <card-player-me v-if="player.me"
+                                                v-bind:key="player.id"
+                                                v-bind:player="player"
+                                                v-bind:ready-to-submit="readyToSubmit"
+                                                v-on:click.native="confirmSelectedCards()">
+                                </card-player-me>
+                                <card-player v-else v-bind:key="player.id"
+                                            v-bind:player="player">
+                                </card-player>
+                            </template>
                         </template>
-                    </template>
 
                     <!-- Card stacks -->
-                    <template v-if="readingStage">
-                        <card-stack v-for="(stack, id) in playedCards"
-                                    v-bind:key="id"
-                                    v-bind:stack="stack"
-                                    v-on:click.native="onStackClick(stack)"
-                                    v-bind:class="{glow: selectingWinnerMode}">
-                        </card-stack>
-                    </template>
+                        <template v-else-if="readingStage">
+                            <card-stack v-for="(stack, id) in playedCards"
+                                        v-bind:key="id"
+                                        v-bind:stack="stack"
+                                        v-on:click.native="onStackClick(stack)"
+                                        v-bind:class="{glow: selectingWinnerMode}">
+                            </card-stack>
+                        </template>
+                    </transition-group>
                 </div>
 
                 <!-- Choose winner button -->
