@@ -5,7 +5,7 @@ from .deck import Deck, WhiteCard, BlackCard
 from .utils.observable_list import ObservableList
 from .player import Player, PlayerState
 
-from typing import Dict, List
+from typing import Dict
 
 
 class GameMaster:
@@ -28,7 +28,6 @@ class GameMaster:
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
 
-
     async def handle_add_player(self, player):
         await player.add_cards(self.white_deck.get_cards(10))
         await self.send_black_card(player)
@@ -46,6 +45,77 @@ class GameMaster:
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
             await self.handle_choosing_winner(data)
 
+    async def handle_selecting_cards(self, player, data):
+        """
+        Method for handling CARDS_SELECT message
+        """
+        if not self.player_owns_cards(player, data["cards"]):
+            await player.kick("Próba oszustwa")
+            return
+        self.select_cards(player, data["cards"])
+        # Sends played cards in this round if everybody selected their cards
+        player.state = PlayerState.ready
+        if self.all_players_ready():
+            await self.send_played_cards()
+        await self.players_update_callback()
+
+    def player_owns_cards(self, player, cards):
+        """Send True if player hand has all cards, send False if any card is not in player hand"""
+        for card in cards:
+            card = player.get_card_by_id(card["id"])
+            if card not in player.hand:
+                return False
+        return True
+
+    def select_cards(self, player, cards):
+        """Set cards.selected = True for every card"""
+        for card in cards:
+            card = player.get_card_by_id(card["id"])
+            # To save order of selected cards, card is removed from
+            # player.hand, and then added at the end in right order
+            player.hand.remove(card)
+            player.hand.append(card)
+            card.selected = True
+
+    def all_players_ready(self):
+        for player in self.players:
+            if player.state == PlayerState.choosing:
+                return False
+        return True
+
+    async def send_played_cards(self):
+        message = {
+            "type": "PLAYED_CARDS",
+            "cards": [
+                {
+                    "playerCards": [
+                        card.__dict__ for card in player.selected_cards
+                    ]
+                } for player in self.players if player is not self.master
+            ]
+        }
+        for player in self.players:
+            await player.send_json(message)
+
+    async def handle_choosing_winner(self, data):
+        """
+        Method for handling CHOOSE_WINNING_CARDS message
+        """
+        await self.add_point_to_cards_owner(data["cards"])
+        cards_number: int = int(self.black_card.gap_count)
+        await self.select_new_black_card()
+        await self.refill_players_hand(cards_number)
+        self.set_new_master()
+        self.reset_players_state()
+        await self.send_empty_played_cards()
+        await self.players_update_callback()
+
+    async def add_point_to_cards_owner(self, cards):
+        """Add points to card owner and send chat message about it"""
+        winner = self.get_cards_owner(cards)
+        winner.points += 1
+        await self.chat.send_message_from_system(f"Gracz '{winner.name}' wygrał rundę. +1 punkt zwycięstwa.")
+
     def get_cards_owner(self, cards):
         """
         Get the owner of a set of cards.
@@ -56,6 +126,25 @@ class GameMaster:
                 if player.has_card_with_id(card["id"]):
                     return player
         return None
+
+    async def select_new_black_card(self):
+        """Select new black card and send it to all players"""
+        self.black_card = self.black_deck.get_card()
+        for player in self.players:
+            await self.send_black_card(player)
+
+    async def send_black_card(self, player: Player):
+        message = {
+            "type": "BLACK_CARD",
+            "card": self.black_card.__dict__
+        }
+        await player.send_json(message)
+
+    async def refill_players_hand(self, cards_number):
+        """Refill players hands with n cards where n = cards_number"""
+        for player in self.players:
+            if player is not self.master:
+                await player.add_cards(self.white_deck.get_cards(cards_number))
 
     def set_new_random_master(self):
         """Choose random player as master"""
@@ -77,67 +166,6 @@ class GameMaster:
             if player is not self.master:
                 player.state = PlayerState.choosing
 
-    def validate_cards(self, player, cards):
-        """Send True if player hand has all cards, send False if any card is not in player hand"""
-        for card in cards:
-            card = player.get_card_by_id(card["id"])
-            if card not in player.hand:
-                return False
-        return True
-
-    def select_cards(self, player, cards):
-        """Set cards.selected = True for every card"""
-        for card in cards:
-            card = player.get_card_by_id(card["id"])
-            # To save order of selected cards, card is removed from player.hand, and then added at the end in right order
-            player.hand.remove(card)
-            player.hand.append(card)
-            card.selected = True
-        
-    async def handle_selecting_cards(self, player, data):
-        """
-        Method for handling CARDS_SELECT message
-        """
-        if not self.validate_cards(player, data["cards"]):
-            await player.kick("Próba oszustwa")
-            return
-        self.select_cards(player, data["cards"])    
-        # Sends played cards in this round if everybody selected their cards
-        player.state = PlayerState.ready
-        await self.send_played_cards()
-        await self.players_update_callback()
-
-    async def handle_choosing_winner(self, data):
-        """
-        Method for handling CHOOSE_WINNING_CARDS message
-        """
-        await self.add_point_to_cards_owner(data["cards"])
-        cards_number:int = int(self.black_card.gap_count)
-        await self.select_new_black_card()
-        await self.refill_players_hand(cards_number)
-        self.set_new_master()
-        self.reset_players_state()
-        await self.send_empty_played_cards()
-        await self.players_update_callback()
-
-    async def add_point_to_cards_owner(self, cards):
-        """Add points to card owner and send chat message about it"""
-        winner = self.get_cards_owner(cards)
-        winner.points += 1
-        await self.chat.send_message_from_system(f"Gracz '{winner.name}' wygrał rundę. +1 punkt zwycięstwa.")
-
-    async def select_new_black_card(self):
-        """Select new black card and send it to all players"""
-        self.black_card = self.black_deck.get_card()
-        for player in self.players:
-            await self.send_black_card(player)
-
-    async def refill_players_hand(self, cards_number):
-        """Refill players hands with n cards where n = cards_number"""
-        for player in self.players:
-            if player is not self.master:
-                await player.add_cards(self.white_deck.get_cards(cards_number))
-
     async def send_empty_played_cards(self):
         message = {
             "type": "PLAYED_CARDS",
@@ -145,29 +173,3 @@ class GameMaster:
         }
         for player in self.players:
             await player.send_json(message)
-    
-    async def send_black_card(self, player: Player):
-        message = {
-            "type": "BLACK_CARD",
-            "card": self.black_card.__dict__
-        }
-        await player.send_json(message)
-
-    async def send_played_cards(self):
-        everyone_selected_cards = True
-        for player in self.players:
-            if player.state == PlayerState.choosing:
-                everyone_selected_cards = False
-        if everyone_selected_cards:
-            message = {
-                "type": "PLAYED_CARDS",
-                "cards": [
-                    {
-                        "playerCards":[
-                            card.__dict__ for card in player.selected_cards
-                        ]
-                    } for player in self.players if player is not self.master
-                ]
-            }
-            for player in self.players:
-                await player.send_json(message)
