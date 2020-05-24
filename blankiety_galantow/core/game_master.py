@@ -76,8 +76,6 @@ class GameMaster:
         for player in self.players:
             if player is not self.master:
                 player.state = PlayerState.choosing
-    
-    
 
     def validate_cards(self, player, cards):
         """Send True if player hand has all cards, send False if any card is not in player hand"""
@@ -101,8 +99,8 @@ class GameMaster:
         Method for handling CARDS_SELECT message
         """
         if not self.validate_cards(player, data["cards"]):
-                await player.kick("Próba oszustwa")
-                return
+            await player.kick("Próba oszustwa")
+            return
         self.select_cards(player, data["cards"])    
         # Sends played cards in this round if everybody selected their cards
         player.state = PlayerState.ready
