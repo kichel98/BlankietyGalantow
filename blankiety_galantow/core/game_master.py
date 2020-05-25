@@ -48,6 +48,8 @@ class GameMaster:
             self.count_down(PlayerState.choosing)
     
     async def handle_player_leave(self, player):
+        if len(self.players) < 2:
+            self.timer.cancel()
         if player is self.master:
             self.set_new_random_master()
             await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
