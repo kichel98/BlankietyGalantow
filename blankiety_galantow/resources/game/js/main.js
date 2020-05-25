@@ -190,7 +190,7 @@ const app = new Vue({
 });
 
 setInterval(()=>{
-    if(app.timer > 0){
+    if(app.timer > 0 && app.players.length > 1){
         app.timer = app.timer - 1;
     }
 }, 1000)
