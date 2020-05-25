@@ -24,6 +24,7 @@ class GameMaster:
         self.cards_selected = {}
         self.black_card = self.black_deck.get_card()
         self.master = None
+        self.selecting_time = 60
         self.players_update_callback = players_update_callback
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
@@ -46,6 +47,9 @@ class GameMaster:
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
             await self.handle_choosing_winner(data)
 
+    def update_selecting_time(self, new_selecting_time: int):
+        self.selecting_time = new_selecting_time
+        
     async def handle_selecting_cards(self, player, data):
         """
         Method for handling CARDS_SELECT message
