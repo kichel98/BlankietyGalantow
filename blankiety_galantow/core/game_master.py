@@ -54,6 +54,7 @@ class GameMaster:
             self.set_new_random_master()
             await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
             self.count_down(PlayerState.master)
+        if self.all_players_ready():
             await self.send_played_cards()
 
     async def process_message(self, player: Player, data: Dict):

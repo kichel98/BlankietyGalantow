@@ -62,7 +62,7 @@ Vue.component('card-stack', {
             <div v-for="(card, order) in stack.cards" 
                  v-bind:key="card.id"
                  class="player-card w3-card w3-round-large w3-hover-shadow w3-center w3-white" 
-                 v-bind:class="{'on-top': stack.revealed && order == stack.currentCard}"
+                 v-bind:class="{'on-top-card': stack.revealed && order == stack.currentCard}"
                  v-bind:style="{ 
                     left: '-' + (stack.cards.indexOf(card))*10 + 'px',
                     top: '-' + (stack.cards.indexOf(card))*10 + 'px' 
