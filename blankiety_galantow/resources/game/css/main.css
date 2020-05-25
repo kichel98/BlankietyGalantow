@@ -1,8 +1,11 @@
 .faded {
     opacity: 0.2;
 }
-.on-top {
+.on-top-card {
     z-index: 3;
+}
+.on-top-modal {
+    z-index: 5;
 }
 
 .card {

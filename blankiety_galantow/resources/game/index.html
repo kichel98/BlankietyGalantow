@@ -29,7 +29,7 @@
         </div>
 
         <!-- Error Modal -->
-        <div class="w3-modal" :class="{'w3-show': errorOccured}">
+        <div class="w3-modal on-top-modal" :class="{'w3-show': errorOccured}">
             <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
                 <div class="w3-center"><br>
                     <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
@@ -47,7 +47,7 @@
         <template v-if="gameLoaded">
             <!-- Modal -->
             <!-- Settings Modal -->
-            <div class="w3-modal" :class="{'w3-show': showSettings}">
+            <div class="w3-modal on-top-modal" :class="{'w3-show': showSettings}">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
 
                     <div class="w3-center"><br>

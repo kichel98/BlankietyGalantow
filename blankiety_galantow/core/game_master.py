@@ -38,6 +38,8 @@ class GameMaster:
     async def handle_player_leave(self, player):
         if player is self.master:
             self.set_new_random_master()
+        if self.all_players_ready():
+            await self.send_played_cards()
 
     async def process_message(self, player: Player, data: Dict):
         if data["type"] == "CARDS_SELECT" and "cards" in data:
