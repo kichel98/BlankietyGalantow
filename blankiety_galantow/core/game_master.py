@@ -38,6 +38,7 @@ class GameMaster:
     async def handle_player_leave(self, player):
         if player is self.master:
             self.set_new_random_master()
+            await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
 
     async def process_message(self, player: Player, data: Dict):
         if data["type"] == "CARDS_SELECT" and "cards" in data:
@@ -106,6 +107,7 @@ class GameMaster:
         await self.select_new_black_card()
         await self.refill_players_hand(cards_number)
         self.set_new_master()
+        await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
         self.reset_players_state()
         await self.send_empty_played_cards()
         await self.players_update_callback()

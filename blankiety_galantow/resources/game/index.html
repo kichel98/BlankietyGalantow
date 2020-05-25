@@ -101,7 +101,12 @@
                 <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-center">
                     <p>{{topInfo}}</p>
                 </div>
-
+                <!-- Timer -->
+                <div class="timer w3-panel w3-center">
+                    <div>
+                        <p><h2 class="w3-border w3-round-large" :key="formatedTimer" :class="{'final-countdown': finalCountdown }">{{formatedTimer}}</h2></p>
+                    </div>
+                </div>
                 <div class="table">
                     <transition name="bounce">
                         <div id="black-card" :key="blackCard.text" class="card w3-card w3-round-large w3-black w3-hover-shadow">
@@ -146,7 +151,20 @@
                         <strong>Wybierz zwycięzcę</strong>
                     </button>
                 </div>
+                
+                <!-- Show who is Card Master -->
+                <div id="card-master-info" class="w3-leftbar" 
+                    :class="{
+                        'w3-border-yellow': me.state != 'master',
+                        'w3-border-green': me.state == 'master',
+                        'w3-pale-yellow': me.state != 'master',
+                        'w3-pale-green': me.state == 'master',
+                    }">
+                    <p v-if="me.state != 'master'"> <i class="icon-eye"></i> Mistrz Kart: <strong>{{master.name}}</strong></p>
+                    <p v-if="me.state == 'master'"> <i class="icon-eye"></i> <strong>Ty</strong> jesteś Mistrzem Kart</p>
+                </div>
 
+                
                 <hr>
 
                 <div class="hand" v-bind:class="{faded: (me.state==='master')}">
@@ -174,8 +192,14 @@
                     <div id="player-list" v-show="showPlayers">
 
                         <div class="player-info w3-padding" v-for="player in players">
-                            <p><strong>{{player.name}} <i class="icon-star" v-if="player.admin"></i></strong>
-                                <span v-if="player.id === me.id">(ty)</span></p>
+                            <p>
+                                <strong>
+                                    <i class="icon-star" v-if="player.admin"></i>
+                                    {{player.name}} 
+                                    <i class="icon-eye" v-if="player.state == 'master'"></i>
+                                </strong>
+                                <span v-if="player.id === me.id">(ty)</span>
+                            </p>
                             <p>punkty: {{player.score}}</p>
                         </div>
 

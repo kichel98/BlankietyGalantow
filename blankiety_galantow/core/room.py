@@ -16,6 +16,7 @@ class Room:
     def __init__(self, name):
         self.name = name
         self.open = True
+        self.selecting_time = 120
         self.number_of_seats = 6
         self.players = ObservableList()
         self.chat = Chat(self.players)
@@ -85,6 +86,7 @@ class Room:
             message = f"Gracz '{player.name}' opuścił pokój."
         if player == self.admin:
             self.set_new_random_admin()
+            await self.chat.send_message_from_system(f"Gracz '{self.admin.name}' zostaje adminem stołu.")
         await self.chat.send_message_from_system(message)
         await self.send_players_update()
 

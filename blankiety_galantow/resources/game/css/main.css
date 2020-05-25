@@ -94,7 +94,6 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    padding-top: 40px;
 }
 
 .hand {
@@ -102,6 +101,17 @@
     justify-content: center;
     flex-wrap: wrap;
 }
+
+.timer{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.timer h2{
+    padding: 0.2em 0.5em;
+}
+
 
 #sidebar {
     font-size: 1.1em;
@@ -137,6 +147,10 @@
 #chat-input {
     width: 100%;
 }
+#card-master-info {
+    padding: 0 0.5em;
+    width: fit-content;
+}
 
 /* FONTELLO FIX */
 i[class^="icon-"]:before, i[class*=" icon-"]:before {
@@ -165,6 +179,14 @@ i {
     animation-iteration-count: infinite;
     animation-direction: alternate;
     background: #c8eec6;
+}
+
+.final-countdown {
+    animation-duration: 0.5s;
+    animation-name: changesize;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    color: red;
 }
 
 .bounce-enter-active {

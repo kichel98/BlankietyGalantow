@@ -84,11 +84,21 @@ const app = new Vue({
             };
             socket.send(JSON.stringify(data));
             this.showSettings = false  // close settings modal
+            setInterval
+        },
+        syncTimer: function() {
+
+        },
+        updateTimer: function() {
+            this.timer = this.settings.selectingTime;
         }
     },
     computed: {
         me: function() {
             return this.players.filter((player)=>player.me)[0];
+        },
+        master: function() {
+            return this.players.filter((player)=>player.state == 'master')[0];
         },
         gameLoaded: function() {
             return this.players.length > 0;
@@ -138,6 +148,14 @@ const app = new Vue({
         },
         errorOccured: function() {
             return Boolean(this.errorMessage);
+        },
+        formatedTimer: function() {
+            let minutes = Math.floor(this.timer/60);
+            let seconds = this.timer%60;
+            return `${minutes}`.padStart(2,'0') + ':' + `${seconds}`.padStart(2,'0')
+        } ,
+        finalCountdown: function() {
+            return this.timer < 10 && this.timer > 0;
         }
     },
     watch: {
@@ -149,7 +167,7 @@ const app = new Vue({
                 const element = document.getElementById("chat-content");
                 element.scrollTop = element.scrollHeight + 9999;
             }, 500);
-        }
+        },
     },
     data: {
         tableId: 20965,
@@ -159,19 +177,27 @@ const app = new Vue({
         newMessage: '',
         errorMessage: '',
         settings: {
-            open: true
+            open: true,
+            selectingTime: 15
         },
         showPlayers: false,
         showChat: true,
         showSettings: false,
         selectedCards: [],
         numberOfCardsToSelect: 3,
+        timer: 0,
 
         // Card master variables
         playedCards: [],
         selectingWinnerMode: false,
     }
 });
+
+setInterval(()=>{
+    if(app.timer > 0){
+        app.timer = app.timer - 1;
+    }
+}, 1000)
 
 
 // Receive message from websocket
@@ -190,9 +216,10 @@ socket.onmessage = function(event) {
         app.selectedCards = []
     }
     if(data.type === "BLACK_CARD" && data.card) {
+        app.updateTimer()
         app.blackCard = data.card;
         app.numberOfCardsToSelect = parseInt(data.card.gap_count);
-        app.selectingWinnerMode = false
+        app.selectingWinnerMode = false;
     }
     if(data.type === "PLAYERS") {
         app.players = data.players;
@@ -206,6 +233,9 @@ socket.onmessage = function(event) {
                 currentCard: 0,
                 cards: card.playerCards
             })
+        }
+        if(app.playedCards.length > 0){
+            app.timer = 0;
         }
     }
     if(data.type === "SETTINGS") {
