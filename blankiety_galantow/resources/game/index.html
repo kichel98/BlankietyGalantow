@@ -103,10 +103,11 @@
                 </div>
 
                 <div class="table">
-                    <div id="black-card" class="card w3-card w3-round-large w3-black w3-hover-shadow">
-                        <p>{{blackCard.text}}</p>
-                    </div>
-
+                    <transition name="bounce">
+                        <div id="black-card" :key="blackCard.text" class="card w3-card w3-round-large w3-black w3-hover-shadow">
+                            <p>{{blackCard.text}}</p>
+                        </div>
+                    </transition>
                     <!-- Player cards -->
                     <transition-group name="bounce">
                         <template v-if="selectingStage">
