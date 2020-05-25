@@ -85,7 +85,7 @@
                             Prezentacja projektu
                         </label><br>
                         <h4>Limit czasu</h4>
-                        <input type="number" name="time-limit" id="time-limit" value="120" :disabled="!me.admin"> sek.
+                        <input type="number" v-model.number="settings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.
                     </div>
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>

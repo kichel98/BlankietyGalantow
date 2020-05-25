@@ -100,6 +100,8 @@ class Room:
     async def change_settings(self, settings):
         try:
             await self.set_open_setting(settings["open"])
+            self.game_master.update_selecting_time(settings["time"])
+            self.selecting_time = settings["time"]
             # TODO: other types of settings
             # TODO: dedicated class for managing settings instead of single functions
         except KeyError:
@@ -121,7 +123,8 @@ class Room:
         settings_data = {
             "type": "SETTINGS",
             "settings": {
-                "open": self.open
+                "open": self.open,
+                "time": self.selecting_time
             }
         }
         await self.send_json_to_all_players(settings_data)

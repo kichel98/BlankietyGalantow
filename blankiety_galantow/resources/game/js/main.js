@@ -84,13 +84,9 @@ const app = new Vue({
             };
             socket.send(JSON.stringify(data));
             this.showSettings = false  // close settings modal
-            setInterval
-        },
-        syncTimer: function() {
-
         },
         updateTimer: function() {
-            this.timer = this.settings.selectingTime;
+            this.timer = this.settings.time;
         }
     },
     computed: {
@@ -178,7 +174,7 @@ const app = new Vue({
         errorMessage: '',
         settings: {
             open: true,
-            selectingTime: 15
+            time: 60
         },
         showPlayers: false,
         showChat: true,
@@ -216,7 +212,6 @@ socket.onmessage = function(event) {
         app.selectedCards = []
     }
     if(data.type === "BLACK_CARD" && data.card) {
-        app.updateTimer()
         app.blackCard = data.card;
         app.numberOfCardsToSelect = parseInt(data.card.gap_count);
         app.selectingWinnerMode = false;
@@ -234,9 +229,10 @@ socket.onmessage = function(event) {
                 cards: card.playerCards
             })
         }
-        if(app.playedCards.length > 0){
-            app.timer = 0;
-        }
+        app.updateTimer();
+    }
+    if(data.type === "TIMER") {
+        app.timer = data.timer
     }
     if(data.type === "SETTINGS") {
         app.settings = data.settings;
