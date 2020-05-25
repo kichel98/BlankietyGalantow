@@ -40,6 +40,7 @@ class Room:
 
         if self.admin is None:
             self.admin = player
+        await self.send_settings_to_players()
         await self.chat.send_message_from_system(f"Gracz '{player.name}' dołączył do pokoju.")
         await self.send_players_update()
         await self.listen_to_player(player)

@@ -43,7 +43,6 @@ class GameMaster:
         if self.master is None:
             self.master = player
             player.state = PlayerState.master
-        await self.send_timer_message(player)
         if len(self.players) == 2:
             self.count_down(PlayerState.choosing)
     
@@ -51,9 +50,10 @@ class GameMaster:
         if len(self.players) < 2:
             self.timer.cancel()
         if player is self.master:
-            self.set_new_random_master()
-            await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
-            self.count_down(PlayerState.master)
+            if len(self.players) > 0:
+                self.set_new_random_master()
+                await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
+                self.count_down(PlayerState.master)
         if self.all_players_ready():
             await self.send_played_cards()
 
