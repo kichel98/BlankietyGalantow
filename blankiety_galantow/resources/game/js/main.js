@@ -231,6 +231,11 @@ socket.onmessage = function(event) {
         }
         app.updateTimer();
     }
+    if(data.type === "SELECT_RANDOM_CARDS") {
+        for(const card of data.cards){
+            app.selectCard(app.myCards.filter((myCard) => myCard.id === card.id)[0])
+        }
+    }
     if(data.type === "TIMER") {
         app.timer = data.timer
     }

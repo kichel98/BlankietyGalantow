@@ -6,7 +6,7 @@ from .deck import Deck, WhiteCard, BlackCard
 from .utils.observable_list import ObservableList
 from .utils.timer import Timer
 from .player import Player, PlayerState
-
+from .game_state import GameState
 from typing import Dict
 
 
@@ -28,9 +28,9 @@ class GameMaster:
         self.master = None
         self.selecting_time = 60
         self.new_selecting_time = 60
-        self.timer_start = 0
+        self.timer_start_time = 0
         self.timer = None
-        self.player_to_kick_on_timeout = PlayerState.choosing
+        self.game_state = GameState.selecting_cards
         self.players_update_callback = players_update_callback
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
@@ -44,7 +44,7 @@ class GameMaster:
             self.master = player
             player.state = PlayerState.master
         if len(self.players) == 2:
-            self.count_down(PlayerState.choosing)
+            self.timer_start()
     
     async def handle_player_leave(self, player):
         if len(self.players) < 2:
@@ -53,7 +53,7 @@ class GameMaster:
             if len(self.players) > 0:
                 self.set_new_random_master()
                 await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
-                self.count_down(PlayerState.master)
+                self.timer_start()
         if self.all_players_ready():
             await self.send_played_cards()
 
@@ -66,28 +66,66 @@ class GameMaster:
     def update_selecting_time(self, new_selecting_time: int):
         self.new_selecting_time = new_selecting_time
 
-    def count_down(self, player_state):
+    def timer_start(self):
         if self.new_selecting_time != self.selecting_time:
             self.selecting_time = self.new_selecting_time
-        self.player_to_kick_on_timeout = player_state
-        self.timer_start = time.time()
+        self.timer_start_time = time.time()
         if self.timer is not None:
             self.timer.cancel()
         self.timer = Timer(self.selecting_time, self.handle_timeout)
         
     async def handle_timeout(self):
-        self.timer_start = 0
-        await self.send_played_cards()
+        self.timer_start_time = 0
         for player in self.players:
-            if player.state == self.player_to_kick_on_timeout:
-                await player.kick("Zbyt długi czas nieaktywności.")
+            if self.game_state == GameState.selecting_cards:
+                if player.state == PlayerState.choosing:
+                    await self.select_random_player_cards(player)
+                if self.all_players_ready():
+                    break
+            elif self.game_state == GameState.choosing_winner:
+                await self.choose_random_winner()
+                break
+
+    async def select_random_player_cards(self, player):
+        cards = random.choices(player.hand, k=int(self.black_card.gap_count))
+        print(f"{player.name}: {cards}")
+        await self.send_select_random_cards_message(player, cards)
+        data = {
+            "cards": [
+                {
+                    "id": card.id
+                } for card in cards
+            ]
+        }
+        await self.handle_selecting_cards(player, data)
+
+    async def send_select_random_cards_message(self, player, cards):
+        message = {
+            "type": "SELECT_RANDOM_CARDS",
+            "cards": [
+                card.__dict__ for card in cards
+            ]
+        }
+        await player.send_json(message)
+
+    async def choose_random_winner(self):
+        random_winner = random.choice([some_player for some_player in self.players if some_player.state != PlayerState.master])
+        print(f"Random winner: {random_winner.selected_cards}")
+        data = {
+            "cards": [
+                {
+                    "id": card.id
+                } for card in random_winner.selected_cards
+            ]
+        }
+        await self.handle_choosing_winner(data)
 
     async def send_timer_message(self, player):
-        temp_time = time.time()
-        delta_time = int(temp_time - self.timer_start)
+        current_time = time.time()
+        time_passed = int(current_time - self.timer_start_time)
         timer = self.selecting_time
-        if self.timer_start != 0:
-            timer = self.selecting_time - delta_time
+        if self.timer_start_time != 0:
+            timer = self.selecting_time - time_passed
         message = {
             "type": "TIMER",
             "timer": timer
@@ -106,13 +144,15 @@ class GameMaster:
         player.state = PlayerState.ready
         if self.all_players_ready():
             await self.send_played_cards()
-            self.count_down(PlayerState.master)
+            self.game_state = GameState.choosing_winner
+            self.timer_start()
         await self.players_update_callback()
 
     def player_owns_cards(self, player, cards):
         """Send True if player hand has all cards, send False if any card is not in player hand"""
         for card in cards:
             card = player.get_card_by_id(card["id"])
+            print(card)
             if card not in player.hand:
                 return False
         return True
@@ -120,12 +160,15 @@ class GameMaster:
     def select_cards(self, player, cards):
         """Set cards.selected = True for every card"""
         for card in cards:
-            card = player.get_card_by_id(card["id"])
-            # To save order of selected cards, card is removed from
-            # player.hand, and then added at the end in right order
-            player.hand.remove(card)
-            player.hand.append(card)
-            card.selected = True
+            self.select_player_card(player, card["id"])
+
+    def select_player_card(self, player, card_id):
+        card = player.get_card_by_id(card_id)
+        # To save order of selected cards, card is removed from
+        # player.hand, and then added at the end in right order
+        player.hand.remove(card)
+        player.hand.append(card)
+        card.selected = True
 
     def all_players_ready(self):
         for player in self.players:
@@ -160,7 +203,8 @@ class GameMaster:
         self.reset_players_state()
         await self.send_empty_played_cards()
         await self.players_update_callback()
-        self.count_down(PlayerState.choosing)
+        self.game_state = GameState.selecting_cards
+        self.timer_start()
 
     async def add_point_to_cards_owner(self, cards):
         """Add points to card owner and send chat message about it"""
