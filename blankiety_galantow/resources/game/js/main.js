@@ -5,15 +5,30 @@ const app = new Vue({
     methods: {
         selectCard: function(card) {
             if(this.me.state === "choosing") {
-                if(card.selected) {
-                    // Deselect the card
-                    this.selectedCards.splice(this.selectedCards.indexOf(card),1);
+                if(this.customTextIsSet && this.customCardsUsed < this.settings.customCards) {
+                    card.text = this.customText;
+                    this.customText = "";
+                    this.customCardsUsed++;
+                    const data = {
+                        type: "CUSTOM_CARD",
+                        card: card
+                    };
+                    
+                    // Send selected cards via websocket.
+                    socket.send(JSON.stringify(data));
                 }
-                else {
-                    // Add card to the list of selected
-                    this.selectedCards.push(card);
+                else
+                {
+                    if(card.selected) {
+                        // Deselect the card
+                        this.selectedCards.splice(this.selectedCards.indexOf(card),1);
+                    }
+                    else {
+                        // Add card to the list of selected
+                        this.selectedCards.push(card);
+                    }
+                    card.selected = !card.selected;
                 }
-                card.selected = !card.selected;
             }
         },
         confirmSelectedCards: function() {
@@ -102,6 +117,9 @@ const app = new Vue({
         gameReady: function() {
             return this.players.length >= 2;
         },
+        customTextIsSet: function() {
+            return this.customText.length > 0;
+        },
         readyToSubmit: function() {
             // Check if player is ready to submit his/her selected cards
             return this.me.state === "choosing" && this.selectedCards.length === this.numberOfCardsToSelect;
@@ -173,8 +191,9 @@ const app = new Vue({
         newMessage: '',
         errorMessage: '',
         settings: {
+            customCards: 5,
             open: true,
-            time: 60
+            time: 60,
         },
         showPlayers: false,
         showChat: true,
@@ -183,6 +202,8 @@ const app = new Vue({
         numberOfCardsToSelect: 3,
         timer: 0,
 
+        customCardsUsed: 0,
+        customText: "",
         // Card master variables
         playedCards: [],
         selectingWinnerMode: false,

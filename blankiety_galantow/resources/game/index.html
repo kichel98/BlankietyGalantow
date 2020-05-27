@@ -86,6 +86,8 @@
                         </label><br>
                         <h4>Limit czasu</h4>
                         <input type="number" v-model.number="settings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.
+                        <h4>Liczba własnych kart</h4>
+                        <input type="number" v-model.number="settings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
                     </div>
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
@@ -177,12 +179,23 @@
                 <div class="hand" v-bind:class="{faded: (me.state==='master')}">
                     <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float"
                         v-for="card in myCards"
-                        v-bind:class="{selected: selectedCards.includes(card)}"
+                        v-bind:class="{selected: selectedCards.includes(card),
+                                        glow: customTextIsSet}"
                         v-on:click="selectCard(card)">
                         <p>{{card.text}}</p>
                         <div class="order-bubble w3-round-xxlarge"
                             v-if="selectedCards.indexOf(card)>=0">
                             {{selectedCards.indexOf(card)+1}}
+                        </div>
+
+                    </div>
+                    <div v-if="settings.customCards > customCardsUsed" class="card w3-card w3-container w3-round-large w3-hover-shadow w3-center hvr-float">
+                        <form class="w3-container">
+                            <input class="w3-input" id="custom-text" type="text" v-model="customText" value="customText">
+                            <label>Własny tekst</label>
+                        </form>
+                        <div class="order-bubble w3-round-xxlarge">
+                            {{settings.customCards - customCardsUsed}}
                         </div>
 
                     </div>
