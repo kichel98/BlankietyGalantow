@@ -16,11 +16,13 @@ class Room:
     def __init__(self, name):
         self.name = name
         self.open = True
+        self.selecting_time = 60
         self.number_of_seats = 6
         self.players = ObservableList()
         self.chat = Chat(self.players)
         self.game_master = GameMaster(self.players, self.chat, self.send_players_update)
         self.admin = None
+
 
     @property
     def number_of_players(self):
@@ -44,6 +46,7 @@ class Room:
 
         if self.admin is None:
             self.admin = player
+        await self.send_settings_to_players()
         await self.chat.send_message_from_system(f"Gracz '{player.name}' dołączył do pokoju.")
         await self.send_players_update()
         await self.listen_to_player(player)
@@ -104,6 +107,8 @@ class Room:
     async def change_settings(self, settings):
         try:
             await self.set_open_setting(settings["open"])
+            self.game_master.update_selecting_time(settings["time"])
+            self.selecting_time = settings["time"]
             # TODO: other types of settings
             # TODO: dedicated class for managing settings instead of single functions
         except KeyError:
@@ -125,7 +130,8 @@ class Room:
         settings_data = {
             "type": "SETTINGS",
             "settings": {
-                "open": self.open
+                "open": self.open,
+                "time": self.selecting_time
             }
         }
         await self.send_json_to_all_players(settings_data)

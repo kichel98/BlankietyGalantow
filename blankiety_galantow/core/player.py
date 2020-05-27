@@ -21,6 +21,7 @@ class Player:
         self.state = PlayerState.choosing
         self.hand = []
         self.points = 0
+        self.rounds_without_activity = 0
 
     def __str__(self):
         return f"id: {self.id}, name: {self.name}"
