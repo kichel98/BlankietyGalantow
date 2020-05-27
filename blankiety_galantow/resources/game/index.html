@@ -162,18 +162,20 @@
                 </div>
                 
                 <!-- Show who is Card Master -->
-                <div id="card-master-info" class="w3-leftbar" 
+                <div class="info-box w3-leftbar" 
                     :class="{
                         'w3-border-yellow': me.state != 'master',
                         'w3-border-green': me.state == 'master',
                         'w3-pale-yellow': me.state != 'master',
                         'w3-pale-green': me.state == 'master',
                     }">
-                    <p v-if="me.state != 'master'"> <i class="icon-eye"></i> Mistrz Kart: <strong>{{master.name}}</strong></p>
-                    <p v-if="me.state == 'master'"> <i class="icon-eye"></i> <strong>Ty</strong> jesteś Mistrzem Kart</p>
+                    <div v-if="me.state != 'master'"> <i class="icon-eye"></i> Mistrz Kart: <strong>{{master.name}}</strong></div>
+                    <div v-if="me.state == 'master'"> <i class="icon-eye"></i> <strong>Ty</strong> jesteś Mistrzem Kart</div>
                 </div>
-
-                
+                <!-- Info about custom cards -->
+                <div v-if="customTextIsSet" class="info-box w3-leftbar w3-border-blue w3-pale-blue">
+                    <div>Wybierz kartę, której tekst ma być zmieniony.</div>
+                </div>
                 <hr>
 
                 <div class="hand" v-bind:class="{faded: (me.state==='master')}">
