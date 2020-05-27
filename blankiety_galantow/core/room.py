@@ -19,6 +19,7 @@ class Room:
         self.selecting_time = 60
         self.number_of_seats = 6
         self.custom_cards = 5
+        self.game_type = "default"
         self.players = ObservableList()
         self.chat = Chat(self.players)
         self.game_master = GameMaster(self.players, self.chat, self.send_players_update)
@@ -110,6 +111,7 @@ class Room:
             await self.set_open_setting(settings["open"])
             await self.set_custom_cards_setting(settings["customCards"])
             await self.set_selecting_time_setting(settings["time"])
+            await self.set_game_type_setting(settings["gameType"])
             # TODO: other types of settings
             # TODO: dedicated class for managing settings instead of single functions
         except KeyError:
@@ -140,13 +142,22 @@ class Room:
             self.game_master.update_custom_cards_count(custom_cards)
             await self.chat.send_message_from_system(f"Admin {self.admin.name} zmienił liczbę własnych kart na {self.custom_cards}.")
 
+    async def set_game_type_setting(self, game_type):
+        if self.game_type != game_type:
+            self.game_type = game_type
+            if self.game_type == "default":
+                await self.chat.send_message_from_system(f"Admin {self.admin.name} zmienił tryb gry na Standardowy.")
+            elif self.game_type == "customcards":
+                await self.chat.send_message_from_system(f"Admin {self.admin.name} zmienił tryb gry na Mydełko.")
+
     async def send_settings_to_players(self):
         settings_data = {
             "type": "SETTINGS",
             "settings": {
                 "open": self.open,
                 "time": self.selecting_time,
-                "customCards": self.custom_cards
+                "customCards": self.custom_cards,
+                "gameType": self.game_type
             }
         }
         await self.send_json_to_all_players(settings_data)

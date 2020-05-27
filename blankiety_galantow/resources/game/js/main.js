@@ -194,6 +194,7 @@ const app = new Vue({
             customCards: 5,
             open: true,
             time: 60,
+            gameType: "default"
         },
         showPlayers: false,
         showChat: true,

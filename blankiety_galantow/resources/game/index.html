@@ -69,8 +69,12 @@
                         </p>
                         <h4>Tryb gry</h4>
                         <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
+                            <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
                             Standardowy
+                        </label><br>
+                        <label>
+                            <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="customcards" :disabled="!me.admin">
+                            Mydełko: <i>Gracz może ustaloną liczbę razy zmienić tekst białej karty na dowolny wpisany przez siebie.</i>
                         </label><br>
                         <label>
                             <input class="w3-radio" type="radio" name="game-type" value="nomercy" :disabled="!me.admin">
@@ -86,8 +90,9 @@
                         </label><br>
                         <h4>Limit czasu</h4>
                         <input type="number" v-model.number="settings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.
-                        <h4>Liczba własnych kart</h4>
-                        <input type="number" v-model.number="settings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
+                        <div v-if="settings.gameType == 'customcards'"><h4>Liczba własnych kart</h4>
+                            <input type="number" v-model.number="settings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
+                        </div>
                     </div>
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
@@ -191,7 +196,7 @@
                         </div>
 
                     </div>
-                    <div v-if="settings.customCards > customCardsUsed" class="card w3-card w3-container w3-round-large w3-hover-shadow w3-center hvr-float">
+                    <div v-if="settings.customCards > customCardsUsed && settings.gameType == 'customcards'" class="card w3-card w3-container w3-round-large w3-hover-shadow w3-center hvr-float">
                         <form class="w3-container">
                             <input class="w3-input" id="custom-text" type="text" v-model="customText" value="customText">
                             <label>Własny tekst</label>
