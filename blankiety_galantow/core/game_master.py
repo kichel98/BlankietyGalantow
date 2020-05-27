@@ -89,7 +89,7 @@ class GameMaster:
                 player.rounds_without_activity = player.rounds_without_activity + 1
                 if player.rounds_without_activity > 2:
                     await player.kick("Brak aktywności.")
-            else:
+            elif player.state == PlayerState.ready:
                 player.rounds_without_activity = 0
 
     async def select_random_player_cards(self, player):
