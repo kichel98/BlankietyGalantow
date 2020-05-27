@@ -93,7 +93,6 @@ class GameMaster:
 
     async def select_random_player_cards(self, player):
         cards = random.choices(player.hand, k=int(self.black_card.gap_count))
-        print(f"{player.name}: {cards}")
         await self.send_select_random_cards_message(player, cards)
         data = {
             "cards": [
@@ -161,7 +160,6 @@ class GameMaster:
         """Send True if player hand has all cards, send False if any card is not in player hand"""
         for card in cards:
             card = player.get_card_by_id(card["id"])
-            print(card)
             if card not in player.hand:
                 return False
         return True

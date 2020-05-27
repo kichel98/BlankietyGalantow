@@ -104,7 +104,14 @@
                 <!-- Timer -->
                 <div class="timer w3-panel w3-center">
                     <div>
-                        <p><h2 class="w3-border w3-round-large" :key="formatedTimer" :class="{'final-countdown': finalCountdown }">{{formatedTimer}}</h2></p>
+                        <p>
+                            <h2 
+                            class="w3-border w3-round-large" 
+                            :key="formatedTimer" 
+                            class="{'final-countdown': finalCountdown }">
+                                {{formatedTimer}}
+                            </h2>
+                        </p>
                     </div>
                 </div>
                 <div class="table">
