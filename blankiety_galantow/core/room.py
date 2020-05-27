@@ -33,6 +33,12 @@ class Room:
             logger.error(f"Player '{player}' tried to join a closed server '{self.name}'")
             return
 
+        is_room_full = self.number_of_players == self.number_of_seats
+        if is_room_full:
+            await player.kill("Pokój jest pełny.")
+            logger.error(f"Player '{player}' tried to join a full server '{self.name}'")
+            return
+
         player.id = self.generate_unique_player_id()
         await self.players.append(player)
 

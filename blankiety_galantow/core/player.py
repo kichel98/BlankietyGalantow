@@ -22,6 +22,9 @@ class Player:
         self.hand = []
         self.points = 0
 
+    def __str__(self):
+        return f"id: {self.id}, name: {self.name}"
+
     @property
     def selected_cards(self):
         selected_cards = []
