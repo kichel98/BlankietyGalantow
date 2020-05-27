@@ -76,20 +76,21 @@ class GameMaster:
         
     async def handle_timeout(self):
         self.timer_start_time = 0
+        if self.game_state == GameState.selecting_cards:
+            await self.verify_players_activity()
+        elif self.game_state == GameState.choosing_winner:
+            await self.start_new_round_without_winner()
+                
+
+    async def verify_players_activity(self):
         for player in self.players:
-            if self.game_state == GameState.selecting_cards:
-                if player.state == PlayerState.choosing:
-                    await self.select_random_player_cards(player)
-                    player.rounds_without_activity = player.rounds_without_activity + 1
-                    if player.rounds_without_activity > 2:
-                        await player.kick("Brak aktywności.")
-                else:
-                    player.rounds_without_activity = 0
-                if self.all_players_ready():
-                    break
-            elif self.game_state == GameState.choosing_winner:
-                await self.start_new_round_without_winner()
-                break
+            if player.state == PlayerState.choosing:
+                await self.select_random_player_cards(player)
+                player.rounds_without_activity = player.rounds_without_activity + 1
+                if player.rounds_without_activity > 2:
+                    await player.kick("Brak aktywności.")
+            else:
+                player.rounds_without_activity = 0
 
     async def select_random_player_cards(self, player):
         cards = random.choices(player.hand, k=int(self.black_card.gap_count))
