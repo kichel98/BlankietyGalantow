@@ -25,6 +25,7 @@ class GameMaster:
         self.black_card = self.black_deck.get_card()
         self.master = None
         self.players_update_callback = players_update_callback
+        self.stacks_revealed = []
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
 
@@ -46,6 +47,10 @@ class GameMaster:
             await self.handle_selecting_cards(player, data)
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
             await self.handle_choosing_winner(data)
+        if data["type"] == "CARD_REVEALED" and "stack_id" in data:
+            self.stacks_revealed.append(data["stack_id"])
+            await self.send_played_cards()
+
 
     async def handle_selecting_cards(self, player, data):
         """
@@ -92,8 +97,10 @@ class GameMaster:
                 {
                     "playerCards": [
                         card.__dict__ for card in player.selected_cards
-                    ]
-                } for player in self.players if player is not self.master
+                    ],
+                    "revealed": True if idx in self.stacks_revealed else False,
+                    "player": idx
+                } for idx, player in enumerate(self.players) if player is not self.master
             ]
         }
         for player in self.players:
@@ -161,6 +168,7 @@ class GameMaster:
         index = (self.players.index(self.master) + 1) % len(self.players)
         self.master = self.players[index]
         self.master.state = PlayerState.master
+        self.stacks_revealed = []
 
     def reset_players_state(self):
         """Set every player state, except master, to 'choosing'"""

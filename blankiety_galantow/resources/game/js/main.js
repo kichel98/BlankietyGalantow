@@ -44,7 +44,7 @@ const app = new Vue({
 
             this.newMessage = ''; // Clear the input element.
         },
-        onStackClick: function(stack) {
+        onStackClick: function(stack, id) {
             // You can't reveal the stack if you're not a card master
             if(this.me.state !== "master")
                 return;
@@ -62,6 +62,12 @@ const app = new Vue({
             // TODO: instead of revealing the stack by hand and changing the current
             //  card we can send that info  to the server so it notifies other players
             //  and cards are changed for all players.
+
+            const data = {
+                type: "CARD_REVEALED",
+                stack_id: id
+            };
+            socket.send(JSON.stringify(data));
         },
         selectWinner: function(stack) {
             // Sending CHOOSE_WINNING_CARDS message to server
@@ -202,9 +208,10 @@ socket.onmessage = function(event) {
         // Message is weirdly parsed from JSON, that is why cards from data are extracted that way
         for(const card of data.cards){
             app.playedCards.push({
-                revealed: false,
+                revealed: card.revealed,
                 currentCard: 0,
-                cards: card.playerCards
+                cards: card.playerCards,
+                player: card.player
             })
         }
     }
