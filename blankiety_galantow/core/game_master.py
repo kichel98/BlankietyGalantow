@@ -47,7 +47,7 @@ class GameMaster:
             self.timer_start()
     
     async def handle_player_leave(self, player):
-        if len(self.players) < 2:
+        if len(self.players) < 2 and self.timer is not None:
             self.timer.cancel()
         if player is self.master:
             if len(self.players) > 0:
