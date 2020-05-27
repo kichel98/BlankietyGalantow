@@ -80,10 +80,15 @@ class GameMaster:
             if self.game_state == GameState.selecting_cards:
                 if player.state == PlayerState.choosing:
                     await self.select_random_player_cards(player)
+                    player.rounds_without_activity = player.rounds_without_activity + 1
+                    if player.rounds_without_activity > 2:
+                        await player.kick("Brak aktywności.")
+                else:
+                    player.rounds_without_activity = 0
                 if self.all_players_ready():
                     break
             elif self.game_state == GameState.choosing_winner:
-                await self.choose_random_winner()
+                await self.start_new_round_without_winner()
                 break
 
     async def select_random_player_cards(self, player):
@@ -108,17 +113,21 @@ class GameMaster:
         }
         await player.send_json(message)
 
-    async def choose_random_winner(self):
-        random_winner = random.choice([some_player for some_player in self.players if some_player.state != PlayerState.master])
-        print(f"Random winner: {random_winner.selected_cards}")
-        data = {
-            "cards": [
-                {
-                    "id": card.id
-                } for card in random_winner.selected_cards
-            ]
-        }
-        await self.handle_choosing_winner(data)
+    async def start_new_round_without_winner(self):
+        """
+        Method for starting new selecting cards round without choosing winner
+        """
+        cards_number: int = int(self.black_card.gap_count)
+        await self.select_new_black_card()
+        await self.refill_players_hand(cards_number)
+        self.set_new_master()
+        await self.chat.send_message_from_system(f"W tej rundzie nikt nie został zwycięzcą :(")
+        await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
+        self.reset_players_state()
+        await self.send_empty_played_cards()
+        await self.players_update_callback()
+        self.game_state = GameState.selecting_cards
+        self.timer_start()
 
     async def send_timer_message(self, player):
         current_time = time.time()

@@ -21,6 +21,7 @@ class Player:
         self.state = PlayerState.choosing
         self.hand = []
         self.points = 0
+        self.rounds_without_activity = 0
 
     @property
     def selected_cards(self):
