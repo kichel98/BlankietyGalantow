@@ -44,7 +44,7 @@ const app = new Vue({
 
             this.newMessage = ''; // Clear the input element.
         },
-        onStackClick: function(stack, id) {
+        onStackClick: function(stack) {
             // You can't reveal the stack if you're not a card master
             if(this.me.state !== "master")
                 return;
@@ -63,9 +63,14 @@ const app = new Vue({
             //  card we can send that info  to the server so it notifies other players
             //  and cards are changed for all players.
 
+            let card_ids = [];
+            for(const card of stack.cards){
+                card_ids.push(card.id);
+            }
+
             const data = {
-                type: "CARD_REVEALED",
-                stack_id: id
+                type: "CARDS_REVEAL",
+                cards: card_ids
             };
             socket.send(JSON.stringify(data));
         },
@@ -208,10 +213,9 @@ socket.onmessage = function(event) {
         // Message is weirdly parsed from JSON, that is why cards from data are extracted that way
         for(const card of data.cards){
             app.playedCards.push({
-                revealed: card.revealed,
+                revealed: false,
                 currentCard: 0,
                 cards: card.playerCards,
-                player: card.player
             })
         }
     }
@@ -223,6 +227,16 @@ socket.onmessage = function(event) {
     }
     if(data.type === "ERROR") {
         app.errorMessage = data.message || data.error
+    }
+    if(data.type === "CARDS_REVEAL"){
+        for(const stack of app.playedCards){
+            for(const card of stack.cards){
+                if(!data.cards.includes(card.id)){
+                    break;
+                }
+                stack.revealed = true;
+            }
+        }
     }
     // TODO: add other types of messages
 };

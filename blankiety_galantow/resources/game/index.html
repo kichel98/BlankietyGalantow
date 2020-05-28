@@ -127,9 +127,9 @@
                     <!-- Card stacks -->
                         <template v-else-if="readingStage">
                             <card-stack v-for="(stack, id) in playedCards"
-                                        v-bind:key="stack.player"
+                                        v-bind:key="id"
                                         v-bind:stack="stack"
-                                        v-on:click.native="onStackClick(stack, stack.player)"
+                                        v-on:click.native="onStackClick(stack)"
                                         v-bind:class="{glow: selectingWinnerMode}">
                             </card-stack>
                         </template>

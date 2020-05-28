@@ -25,7 +25,7 @@ class GameMaster:
         self.black_card = self.black_deck.get_card()
         self.master = None
         self.players_update_callback = players_update_callback
-        self.stacks_revealed = []
+        self.shuffle = True
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
 
@@ -47,9 +47,21 @@ class GameMaster:
             await self.handle_selecting_cards(player, data)
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
             await self.handle_choosing_winner(data)
-        if data["type"] == "CARD_REVEALED" and "stack_id" in data:
-            self.stacks_revealed.append(data["stack_id"])
-            await self.send_played_cards()
+        if data["type"] == "CARDS_REVEAL" and "cards" in data:
+            await self.handle_cards_reveal(data)
+
+    async def handle_cards_reveal(self, data):
+        player = self.get_cards_owner_by_id(data["cards"])
+        if player is None:
+            await player.kick("Próba oszustwa")
+            return
+        message = {
+            "type": "CARDS_REVEAL",
+            "cards": data["cards"]
+        }
+
+        for player in self.players:
+            await player.send_json(message)
 
 
     async def handle_selecting_cards(self, player, data):
@@ -98,11 +110,11 @@ class GameMaster:
                     "playerCards": [
                         card.__dict__ for card in player.selected_cards
                     ],
-                    "revealed": True if idx in self.stacks_revealed else False,
-                    "player": idx
-                } for idx, player in enumerate(self.players) if player is not self.master
+
+                } for player in self.players if player is not self.master
             ]
         }
+
         for player in self.players:
             await player.send_json(message)
 
@@ -133,6 +145,13 @@ class GameMaster:
         for card in cards:
             for player in self.players:
                 if player.has_card_with_id(card["id"]):
+                    return player
+        return None
+
+    def get_cards_owner_by_id(self, card_ids):
+        for card_id in card_ids:
+            for player in self.players:
+                if player.has_card_with_id(card_id):
                     return player
         return None
 
@@ -169,6 +188,7 @@ class GameMaster:
         self.master = self.players[index]
         self.master.state = PlayerState.master
         self.stacks_revealed = []
+        self.shuffle = True
 
     def reset_players_state(self):
         """Set every player state, except master, to 'choosing'"""
