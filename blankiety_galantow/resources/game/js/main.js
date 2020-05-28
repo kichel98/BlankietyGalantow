@@ -60,10 +60,6 @@ const app = new Vue({
             this.newMessage = ''; // Clear the input element.
         },
         onStackClick: function(stack) {
-            // You can't reveal the stack if you're not a card master
-            if(this.me.state !== "master")
-                return;
-
             if(this.selectingWinnerMode) {
                 this.selectWinner(stack);
                 return;
@@ -72,11 +68,23 @@ const app = new Vue({
             if (stack.revealed)
                 stack.currentCard = (stack.currentCard + 1) % stack.cards.length;
 
+            // You can't reveal the stack if you're not a card master
+            if(this.me.state !== "master")
+                return;
+
             // First click reveals the stack
             stack.revealed = true;
-            // TODO: instead of revealing the stack by hand and changing the current
-            //  card we can send that info  to the server so it notifies other players
-            //  and cards are changed for all players.
+
+            let card_ids = [];
+            for(const card of stack.cards){
+                card_ids.push(card.id);
+            }
+
+            const data = {
+                type: "CARDS_REVEAL",
+                cards: card_ids
+            };
+            socket.send(JSON.stringify(data));
         },
         selectWinner: function(stack) {
             // Sending CHOOSE_WINNING_CARDS message to server
@@ -248,7 +256,7 @@ socket.onmessage = function(event) {
             app.playedCards.push({
                 revealed: false,
                 currentCard: 0,
-                cards: card.playerCards
+                cards: card.playerCards,
             })
         }
         app.updateTimer();
@@ -270,6 +278,16 @@ socket.onmessage = function(event) {
     }
     if(data.type === "ERROR") {
         app.errorMessage = data.message || data.error
+    }
+    if(data.type === "CARDS_REVEAL"){
+        for(const stack of app.playedCards){
+            for(const card of stack.cards){
+                if(!data.cards.includes(card.id)){
+                    break;
+                }
+                stack.revealed = true;
+            }
+        }
     }
     // TODO: add other types of messages
 };
