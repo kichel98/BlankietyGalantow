@@ -26,7 +26,6 @@ class GameMaster:
         self.cards_selected = {}
         self.black_card = self.black_deck.get_card()
         self.master = None
-        self.shuffle = True
         self.selecting_time = 60
         self.new_selecting_time = 60
         self.timer_start_time = 0
@@ -210,9 +209,7 @@ class GameMaster:
             ]
         }
 
-        if self.shuffle:
-            random.shuffle(message["cards"])
-            self.shuffle = False
+        random.shuffle(message["cards"])
 
         for player in self.players:
             await player.send_json(message)
@@ -289,7 +286,6 @@ class GameMaster:
         index = (self.players.index(self.master) + 1) % len(self.players)
         self.master = self.players[index]
         self.master.state = PlayerState.master
-        self.shuffle = True
 
     def reset_players_state(self):
         """Set every player state, except master, to 'choosing'"""
