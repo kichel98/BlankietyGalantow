@@ -45,10 +45,6 @@ const app = new Vue({
             this.newMessage = ''; // Clear the input element.
         },
         onStackClick: function(stack) {
-            // You can't reveal the stack if you're not a card master
-            if(this.me.state !== "master")
-                return;
-
             if(this.selectingWinnerMode) {
                 this.selectWinner(stack);
                 return;
@@ -56,6 +52,10 @@ const app = new Vue({
 
             if (stack.revealed)
                 stack.currentCard = (stack.currentCard + 1) % stack.cards.length;
+
+            // You can't reveal the stack if you're not a card master
+            if(this.me.state !== "master")
+                return;
 
             // First click reveals the stack
             stack.revealed = true;
