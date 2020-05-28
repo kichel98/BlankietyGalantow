@@ -59,9 +59,6 @@ const app = new Vue({
 
             // First click reveals the stack
             stack.revealed = true;
-            // TODO: instead of revealing the stack by hand and changing the current
-            //  card we can send that info  to the server so it notifies other players
-            //  and cards are changed for all players.
 
             let card_ids = [];
             for(const card of stack.cards){
