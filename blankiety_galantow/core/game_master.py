@@ -74,6 +74,8 @@ class GameMaster:
             "type": "CARDS_REVEAL",
             "cards": data["cards"]
         }
+        for player in self.players:
+            await player.send_json(message)
 
     def update_selecting_time(self, new_selecting_time: int):
         self.new_selecting_time = new_selecting_time
