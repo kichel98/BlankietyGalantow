@@ -270,6 +270,9 @@ socket.onmessage = function(event) {
     // TODO: add other types of messages
 };
 
+socket.onclose = () => {
+    app.errorMessage = "Połączenie z serwerem zostało przerwane."
+};
 
 function addMessageToChat(message) {
     if(message.user && message.text) {
