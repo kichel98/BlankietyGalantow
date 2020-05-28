@@ -25,7 +25,6 @@ class GameMaster:
         self.black_card = self.black_deck.get_card()
         self.master = None
         self.players_update_callback = players_update_callback
-        self.shuffle = True
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
 
@@ -187,8 +186,6 @@ class GameMaster:
         index = (self.players.index(self.master) + 1) % len(self.players)
         self.master = self.players[index]
         self.master.state = PlayerState.master
-        self.stacks_revealed = []
-        self.shuffle = True
 
     def reset_players_state(self):
         """Set every player state, except master, to 'choosing'"""
