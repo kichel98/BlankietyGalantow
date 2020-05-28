@@ -35,7 +35,6 @@ class GameMaster:
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
 
-
     async def handle_add_player(self, player):
         await player.add_cards(self.white_deck.get_cards(10))
         await self.send_black_card(player)
@@ -62,6 +61,20 @@ class GameMaster:
             await self.handle_selecting_cards(player, data)
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
             await self.handle_choosing_winner(data)
+        if data["type"] == "CARDS_REVEAL" and "cards" in data:
+            await self.handle_cards_reveal(data)
+
+    async def handle_cards_reveal(self, data):
+        player = self.get_cards_owner_by_id(data["cards"])
+        if player is None:
+            await player.kick("Próba oszustwa")
+            return
+        message = {
+            "type": "CARDS_REVEAL",
+            "cards": data["cards"]
+        }
+        for player in self.players:
+            await player.send_json(message)
 
     def update_selecting_time(self, new_selecting_time: int):
         self.new_selecting_time = new_selecting_time
@@ -195,6 +208,9 @@ class GameMaster:
                 } for player in self.players if player is not self.master and player.state == PlayerState.ready
             ]
         }
+
+        random.shuffle(message["cards"])
+
         for player in self.players:
             await player.send_json(message)
 
@@ -228,6 +244,13 @@ class GameMaster:
         for card in cards:
             for player in self.players:
                 if player.has_card_with_id(card["id"]):
+                    return player
+        return None
+
+    def get_cards_owner_by_id(self, card_ids):
+        for card_id in card_ids:
+            for player in self.players:
+                if player.has_card_with_id(card_id):
                     return player
         return None
 
