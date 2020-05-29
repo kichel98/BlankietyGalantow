@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="css/main.css">
 
     <script src="vendor/vue/vue-dev.js"></script>
-    <script src="js/components.js"></script>
+    <script type="module" src="js/components.js"></script>
 </head>
 
 <body>
@@ -73,14 +73,14 @@
                         v-for="room in rooms"
                         v-bind:key="room.id"
                         v-bind:room="room"
-                        @click.native="connect(room.id)">
+                        @click.native="canRoomAcceptNewPlayer(room) ? connect(room.id) : null">
                     </room-item>
                 </ul>
             </div>
         </div>
     </main>
 
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

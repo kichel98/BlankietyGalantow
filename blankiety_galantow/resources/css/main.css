@@ -44,9 +44,14 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
     background: #fff;
     padding: 8px 16px;
 }
-.room-item:hover {
+.pointer:hover {
     cursor: pointer;
 }
+
+.not-allowed:hover {
+    cursor: not-allowed;
+}
+
 .room-item.hvr-radial-out:before {
     background: #3f75d9;
 }
