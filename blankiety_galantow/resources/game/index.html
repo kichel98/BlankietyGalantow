@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../vendor/fontello/css/fontello.css">
     <link rel="stylesheet" href="../vendor/hover/hover-min.css">
     <link rel="stylesheet" href="../vendor/w3css/w3.css">
-    <link rel="stylesheet" href="css/main.css?v=1.0">
+    <link rel="stylesheet" href="css/main.css?v=1.1">
     <link rel="stylesheet" href="css/loader.css?v=1.1">
 
 
@@ -196,11 +196,13 @@
                         </div>
 
                     </div>
-                    <div v-if="settings.customCards > customCardsUsed && settings.gameType == 'customcards'" class="card w3-card w3-container w3-round-large w3-hover-shadow w3-center hvr-float">
-                        <form class="w3-container">
-                            <input class="w3-input" id="custom-text" type="text" v-model="customText" value="customText">
-                            <label>Własny tekst</label>
-                        </form>
+                    <div v-if="settings.customCards > customCardsUsed && settings.gameType == 'customcards'"
+                         class="card w3-card w3-container w3-round-large w3-hover-shadow w3-center hvr-float"
+                         onclick="document.getElementById('custom-card-text').innerHTML=''; document.getElementById('custom-card-text').focus();"
+                         v-on:click="customText = ''">
+                        <p id="custom-card-text" contenteditable="true" style="cursor: text"
+                           @input="customText = $event.target.innerHTML;">Własny tekst</p>
+                        <p class="w3-small w3-text-gray">Wpisz swoją treść</p>
                         <div class="order-bubble w3-round-xxlarge">
                             {{settings.customCards - customCardsUsed}}
                         </div>
