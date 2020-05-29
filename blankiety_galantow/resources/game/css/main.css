@@ -34,6 +34,18 @@
     border:1px solid black
 }
 
+.card.glow {
+    -webkit-box-shadow: 0 0 10px 4px rgba(145,204,255,1);
+    -moz-box-shadow: 0 0 10px 4px rgba(145,204,255,1);
+    box-shadow: 0 0 10px 4px rgba(145,204,255,1);
+}
+
+.card.glow:hover {
+    -webkit-box-shadow: 0 0 10px 4px rgba(255,255,0,1);
+    -moz-box-shadow: 0 0 10px 4px rgba(255,255,0,1);
+    box-shadow: 0 0 10px 4px rgba(255,255,0,1);
+}
+
 /*master cards stylesheet*/
 
 .player-stack.glow .player-card {
@@ -150,9 +162,13 @@
 #chat-input {
     width: 100%;
 }
-#card-master-info {
-    padding: 0 0.5em;
+.info-box {
+    margin-top: 0.3em;
+    padding: 0.1em 0.3em;
     width: fit-content;
+    -webkit-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.6);
+    -moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.6);
+    box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.6);
 }
 
 /* FONTELLO FIX */

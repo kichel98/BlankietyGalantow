@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../vendor/fontello/css/fontello.css">
     <link rel="stylesheet" href="../vendor/hover/hover-min.css">
     <link rel="stylesheet" href="../vendor/w3css/w3.css">
-    <link rel="stylesheet" href="css/main.css?v=1.0">
+    <link rel="stylesheet" href="css/main.css?v=1.1">
     <link rel="stylesheet" href="css/loader.css?v=1.1">
 
 
@@ -69,8 +69,12 @@
                         </p>
                         <h4>Tryb gry</h4>
                         <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
+                            <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
                             Standardowy
+                        </label><br>
+                        <label>
+                            <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="customcards" :disabled="!me.admin">
+                            Mydełko: <i>Gracz może ustaloną liczbę razy zmienić tekst białej karty na dowolny wpisany przez siebie.</i>
                         </label><br>
                         <label>
                             <input class="w3-radio" type="radio" name="game-type" value="nomercy" :disabled="!me.admin">
@@ -86,6 +90,9 @@
                         </label><br>
                         <h4>Limit czasu</h4>
                         <input type="number" v-model.number="settings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.
+                        <div v-if="settings.gameType == 'customcards'"><h4>Liczba własnych kart</h4>
+                            <input type="number" v-model.number="settings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
+                        </div>
                     </div>
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
@@ -160,29 +167,44 @@
                 </div>
                 
                 <!-- Show who is Card Master -->
-                <div id="card-master-info" class="w3-leftbar" 
+                <div class="info-box w3-leftbar" 
                     :class="{
                         'w3-border-yellow': me.state != 'master',
                         'w3-border-green': me.state == 'master',
                         'w3-pale-yellow': me.state != 'master',
                         'w3-pale-green': me.state == 'master',
                     }">
-                    <p v-if="me.state != 'master'"> <i class="icon-eye"></i> Mistrz Kart: <strong>{{master.name}}</strong></p>
-                    <p v-if="me.state == 'master'"> <i class="icon-eye"></i> <strong>Ty</strong> jesteś Mistrzem Kart</p>
+                    <div v-if="me.state != 'master'"> <i class="icon-eye"></i> Mistrz Kart: <strong>{{master.name}}</strong></div>
+                    <div v-if="me.state == 'master'"> <i class="icon-eye"></i> <strong>Ty</strong> jesteś Mistrzem Kart</div>
                 </div>
-
-                
+                <!-- Info about custom cards -->
+                <div v-if="customTextIsSet" class="info-box w3-leftbar w3-border-blue w3-pale-blue">
+                    <div>Wybierz kartę, której tekst ma być zmieniony.</div>
+                </div>
                 <hr>
 
                 <div class="hand" v-bind:class="{faded: (me.state==='master')}">
                     <div class="card w3-card w3-round-large w3-hover-shadow w3-center hvr-float"
                         v-for="card in myCards"
-                        v-bind:class="{selected: selectedCards.includes(card)}"
+                        v-bind:class="{selected: selectedCards.includes(card),
+                                        glow: customTextIsSet}"
                         v-on:click="selectCard(card)">
                         <p>{{card.text}}</p>
                         <div class="order-bubble w3-round-xxlarge"
                             v-if="selectedCards.indexOf(card)>=0">
                             {{selectedCards.indexOf(card)+1}}
+                        </div>
+
+                    </div>
+                    <div v-if="settings.customCards > customCardsUsed && settings.gameType == 'customcards'"
+                         class="card w3-card w3-container w3-round-large w3-hover-shadow w3-center hvr-float"
+                         onclick="document.getElementById('custom-card-text').innerHTML=''; document.getElementById('custom-card-text').focus();"
+                         v-on:click="customText = ''">
+                        <p id="custom-card-text" contenteditable="true" style="cursor: text"
+                           @input="customText = $event.target.innerHTML;">Własny tekst</p>
+                        <p class="w3-small w3-text-gray">Wpisz swoją treść</p>
+                        <div class="order-bubble w3-round-xxlarge">
+                            {{settings.customCards - customCardsUsed}}
                         </div>
 
                     </div>

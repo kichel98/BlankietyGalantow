@@ -27,6 +27,7 @@ class GameMaster:
         self.black_card = self.black_deck.get_card()
         self.master = None
         self.selecting_time = 60
+        self.custom_cards = 5
         self.new_selecting_time = 60
         self.timer_start_time = 0
         self.timer = None
@@ -63,7 +64,18 @@ class GameMaster:
             await self.handle_choosing_winner(data)
         if data["type"] == "CARDS_REVEAL" and "cards" in data:
             await self.handle_cards_reveal(data)
+        if data["type"] == "CUSTOM_CARD" and "card" in data:
+            await self.handle_custom_card(player, data)
 
+    async def handle_custom_card(self, player, data):
+        if player.custom_cards_used < self.custom_cards:
+            card = data["card"]
+            custom_card = player.get_card_by_id(card["id"])
+            custom_card.text = card["text"]
+
+    def update_custom_cards_count(self, new_custom_cards_count: int):
+        self.custom_cards = new_custom_cards_count
+        
     async def handle_cards_reveal(self, data):
         player = self.get_cards_owner_by_id(data["cards"])
         if player is None:
