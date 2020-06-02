@@ -73,7 +73,7 @@
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
 
                     <div class="w3-center"><br>
-                        <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Zamknij">×</span>
+                        <span @click="cancelSettingsChanges" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Zamknij">×</span>
                         <h3>Ustawienia</h3>
                     </div>
                     <hr>
@@ -84,9 +84,16 @@
                             </p>
                         </div>
                         <p>
+                            <label>Nazwa pokoju
+                                <input class="w3-input" type="text" autocomplete="off" required
+                                        v-model="newSettings.roomName"
+                                        :disabled="!me.admin">
+                            </label>
+                        </p>
+                        <p>
                             <input id="is-open" name="is-open" class="w3-check" type="checkbox"
                                    :disabled="!me.admin"
-                                   v-model="settings.open">
+                                   v-model="newSettings.open">
                             <label for="is-open">Zezwól na dołączenie nowych graczy</label>
                         </p>
                         <p  v-if="me.admin">
@@ -109,11 +116,11 @@
                         </p>
                         <h4>Tryb gry</h4>
                         <label>
-                            <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
+                            <input class="w3-radio" v-model="newSettings.gameType" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
                             Standardowy
                         </label><br>
                         <label>
-                            <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="customcards" :disabled="!me.admin">
+                            <input class="w3-radio" v-model="newSettings.gameType" type="radio" name="game-type" value="customcards" :disabled="!me.admin">
                             Mydełko
                             <span class="tooltip">(?)
                                 <span class="tooltiptext">
@@ -122,13 +129,13 @@
                             </span>
                         </label><br>
                         <h4>Limit czasu</h4>
-                        <input type="number" v-model.number="settings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.
-                        <div v-if="settings.gameType == 'customcards'"><h4>Liczba własnych kart</h4>
-                            <input type="number" v-model.number="settings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
+                        <input type="number" v-model.number="newSettings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.
+                        <div v-if="newSettings.gameType == 'customcards'"><h4>Liczba własnych kart</h4>
+                            <input type="number" v-model.number="newSettings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
                         </div>
                     </div>
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                        <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
+                        <button @click="cancelSettingsChanges" type="button" class="w3-button w3-red" >Anuluj</button>
                         <button @click="submitSettings" type="button" class="w3-button w3-green w3-right"
                                 :disabled="!me.admin">Zapisz</button>
                     </div>
@@ -247,7 +254,7 @@
             <div class="w3-third">
                 <div id="sidebar" class="w3-card w3-bar-block">
                     <div class="w3-container w3-bar-item" style="display: flex;">
-                        <h2 style="width: 100%;">Stół: {{ tableId }}</h2>
+                        <h2 style="width: 100%;">Pokój: {{ settings.roomName }}</h2>
                         <button class="w3-button" style="width: 100px;" @click="showSettings=true"><i class="icon-cog w3-xxxlarge"></i></button>
                     </div>
                     <button class="w3-button w3-bar-item w3-light-grey" @click="showPlayers = !showPlayers">Gracze <i class="icon-down-dir"></i></button>
