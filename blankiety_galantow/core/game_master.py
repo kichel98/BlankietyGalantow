@@ -3,6 +3,7 @@ import time
 
 from .chat import Chat
 from .deck import Deck, WhiteCard, BlackCard
+from .room_settings import RoomSettings
 from .utils.observable_list import ObservableList
 from .utils.timer import Timer
 from .player import Player, PlayerState
@@ -17,18 +18,17 @@ class GameMaster:
     black_card: BlackCard
 
     # FIXME: Zrezygnować z callbacku na rzecz czegoś "ładniejszego"
-    def __init__(self, players: ObservableList, chat: Chat, players_update_callback):
+    def __init__(self, players: ObservableList, chat: Chat, settings: RoomSettings, players_update_callback):
         self.players = players
         self.chat = chat
+        self.settings = settings
         self.white_deck = Deck(WhiteCard, "resources/game/decks/classic_white.csv")
         self.black_deck = Deck(BlackCard, "resources/game/decks/classic_black.csv")
         self.players_hands = {}
         self.cards_selected = {}
         self.black_card = self.black_deck.get_card()
         self.master = None
-        self.selecting_time = 60
-        self.custom_cards = 5
-        self.new_selecting_time = 60
+        self.selecting_time = self.settings.selecting_time  # current round time
         self.timer_start_time = 0
         self.timer = None
         self.game_state = GameState.selecting_cards
@@ -68,14 +68,11 @@ class GameMaster:
             await self.handle_custom_card(player, data)
 
     async def handle_custom_card(self, player, data):
-        if player.custom_cards_used < self.custom_cards:
+        if player.custom_cards_used < self.settings.custom_cards:
             card = data["card"]
             custom_card = player.get_card_by_id(card["id"])
             custom_card.text = card["text"]
 
-    def update_custom_cards_count(self, new_custom_cards_count: int):
-        self.custom_cards = new_custom_cards_count
-        
     async def handle_cards_reveal(self, data):
         player = self.get_cards_owner_by_id(data["cards"])
         if player is None:
@@ -88,12 +85,9 @@ class GameMaster:
         for player in self.players:
             await player.send_json(message)
 
-    def update_selecting_time(self, new_selecting_time: int):
-        self.new_selecting_time = new_selecting_time
-
     def timer_start(self):
-        if self.new_selecting_time != self.selecting_time:
-            self.selecting_time = self.new_selecting_time
+        if self.selecting_time != self.settings.selecting_time:
+            self.selecting_time = self.settings.selecting_time
         self.timer_start_time = time.time()
         if self.timer is not None:
             self.timer.cancel()
@@ -105,7 +99,6 @@ class GameMaster:
             await self.verify_players_activity()
         elif self.game_state == GameState.choosing_winner:
             await self.start_new_round_without_winner()
-                
 
     async def verify_players_activity(self):
         for player in self.players:

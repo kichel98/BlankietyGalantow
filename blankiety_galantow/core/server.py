@@ -35,10 +35,10 @@ class Server:
         room_list = [
             {
                 "id": key,
-                "name": room.name,
+                "name": room.settings.name,
                 "players": room.number_of_players,
-                "maxPlayers": room.number_of_seats,
-                "open": room.open
+                "maxPlayers": room.settings.number_of_seats,
+                "open": room.settings.open
             }
             for key, room in self._rooms.items()
         ]
