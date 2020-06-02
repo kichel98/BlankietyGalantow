@@ -53,15 +53,6 @@
                     <p>
                         Hasło: <input id="password" type="text" minlength="5" v-model="inputPassword">
                     </p>
-                    <div v-if="!passwordValid" style="text-align: center;">
-                        <p style="color: red; font-style: italic; margin-top: 0">
-                            Hasło musi być dłuższe niż 5 znaków.
-                        </p>
-                    </div>
-
-                    <p class="w3-card">
-                        <img id="stop-meme" src="https://assets3.thrillist.com/v1/image/1655936/1200x630">
-                    </p>
                 </div>
                 <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                     <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
