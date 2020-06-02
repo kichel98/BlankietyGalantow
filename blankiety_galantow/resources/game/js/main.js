@@ -178,6 +178,18 @@ const app = new Vue({
         } ,
         finalCountdown: function() {
             return this.timer < 10 && this.timer > 0;
+        },
+        passwordValid: function() {
+            if(this.passwordProtected){
+                if(this.settings.password != undefined){
+                    if(this.settings.password.length > 5){
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return true;
         }
     },
     watch: {
@@ -202,8 +214,10 @@ const app = new Vue({
             customCards: 5,
             open: true,
             time: 60,
-            gameType: "default"
+            gameType: "default",
+            password: "asdaw",
         },
+        passwordProtected: false,
         showPlayers: false,
         showChat: true,
         showSettings: false,
@@ -224,7 +238,6 @@ setInterval(()=>{
         app.timer = app.timer - 1;
     }
 }, 1000)
-
 
 // Receive message from websocket
 socket.onmessage = function(event) {

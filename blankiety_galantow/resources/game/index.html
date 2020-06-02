@@ -67,6 +67,25 @@
                                    v-model="settings.open">
                             <label for="is-open">Zezwól na dołączenie nowych graczy</label>
                         </p>
+                        <p>
+                            <input v-if="me.admin" 
+                                id="is-password-protected" 
+                                name="is-password-protected" 
+                                class="w3-check" 
+                                type="checkbox"
+                                v-model="passwordProtected">
+                            <label for="is-password-protected">Zabezpieczenie hasłem</label>
+                            <p v-if="passwordProtected" >
+                                Hasło: <input type="text" minlength="5" v-model="settings.password">
+                                
+                            </p>
+                            <div v-if="!passwordValid" style="text-align: center;">
+                                <p style="color: red; font-style: italic; margin-top: 0">
+                                    Hasło musi być dłuższe niż 5 znaków.
+                                </p>
+                            </div>
+                            
+                        </p>
                         <h4>Tryb gry</h4>
                         <label>
                             <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">

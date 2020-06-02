@@ -24,6 +24,7 @@ class Room:
         self.chat = Chat(self.players)
         self.game_master = GameMaster(self.players, self.chat, self.send_players_update)
         self.admin = None
+        self.password = ""
 
 
     @property
@@ -43,6 +44,28 @@ class Room:
             logger.error(f"Player '{player}' tried to join a full server '{self.name}'")
             return
 
+        if self.password != "":
+            await self.listen_to_waiting_player(player)
+        else:
+            await self.add_player(player)
+
+    async def listen_to_waiting_player(self, player: Player):
+        try:
+            message = {
+                "type": "PASSWORD"
+            }
+            player.send_json(message)
+            while True:
+                msg = await player.receive_json()
+                if msg["type"] == "PASSWORD" and "password" in msg:
+                    if msg["password"] == self.password:
+                        await self.add_player(player)
+                    else:
+                        await player.kill("Nieprawidłowe hasło!!!")
+        except WebSocketDisconnect:
+            pass
+
+    async def add_player(self, player: Player):
         player.id = self.generate_unique_player_id()
         await self.players.append(player)
 
