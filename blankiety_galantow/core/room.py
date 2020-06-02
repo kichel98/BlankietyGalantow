@@ -56,7 +56,7 @@ class Room:
                     if msg["password"] == self.settings.password:
                         await self.add_player(player)
                     else:
-                        await player.kill("Nieprawidłowe hasło!!!")
+                        await player.kill("Nieprawidłowe hasło!")
         except WebSocketDisconnect:
             pass
 

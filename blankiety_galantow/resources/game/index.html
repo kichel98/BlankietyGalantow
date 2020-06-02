@@ -102,7 +102,7 @@
                             <p v-if="settingsPasswordRequired" >
                                 Hasło: <input type="text" minlength="passwordLength" v-model="newSettings.password">
                             </p>
-                            <div v-if="passwordLength > newSettings.password.length && settingsPasswordRequired" style="text-align: center;">
+                            <div v-if="newSettings.password.length < passwordLength && settingsPasswordRequired" style="text-align: center;">
                                 <p style="color: red; font-style: italic; margin-top: 0">
                                     Hasło musi być dłuższe niż {{passwordLength}} znaki.
                                 </p>
@@ -133,7 +133,7 @@
                         <button @click="cancelSettingsChanges" type="button" class="w3-button w3-red" >Anuluj</button>
                         <button @click="submitSettings" type="button" class="w3-button w3-green w3-right"
                                 :disabled="!me.admin ||
-                                (passwordLength > newSettings.password.length && settingsPasswordRequired)">Zapisz</button>
+                                (newSettings.password.length < passwordLength && settingsPasswordRequired)">Zapisz</button>
                     </div>
                 </div>
             </div>
