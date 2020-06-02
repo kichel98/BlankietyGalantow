@@ -5,8 +5,9 @@ from fastapi.logger import logger
 
 from .chat import Chat
 from .helpers import get_random_string
-from .player import Player, PlayerState
+from .player import Player
 from .game_master import GameMaster
+from .room_settings import RoomSettings
 from .utils.observable_list import ObservableList
 from .kick_exception import KickException
 
@@ -14,17 +15,12 @@ from .kick_exception import KickException
 class Room:
     """Single room that manages players inside and game state."""
     def __init__(self, name):
-        self.name = name
-        self.open = True
-        self.selecting_time = 60
-        self.number_of_seats = 6
-        self.custom_cards = 5
-        self.game_type = "default"
         self.players = ObservableList()
         self.chat = Chat(self.players)
-        self.game_master = GameMaster(self.players, self.chat, self.send_players_update)
+        self.settings = RoomSettings(self.chat)
+        self.game_master = GameMaster(self.players, self.chat, self.settings, self.send_players_update)
+        self.settings.name = name
         self.admin = None
-
 
     @property
     def number_of_players(self):
@@ -32,15 +28,15 @@ class Room:
 
     async def add_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""
-        if not self.open:
+        if not self.settings.open:
             await player.kill("Pokój jest zamknięty.")
-            logger.error(f"Player '{player}' tried to join a closed server '{self.name}'")
+            logger.error(f"Player '{player}' tried to join a closed server '{self.settings.name}'")
             return
 
-        is_room_full = self.number_of_players == self.number_of_seats
+        is_room_full = self.number_of_players == self.settings.number_of_seats
         if is_room_full:
             await player.kill("Pokój jest pełny.")
-            logger.error(f"Player '{player}' tried to join a full server '{self.name}'")
+            logger.error(f"Player '{player}' tried to join a full server '{self.settings.name}'")
             return
 
         player.id = self.generate_unique_player_id()
@@ -81,14 +77,13 @@ class Room:
         if data["type"] == "ERROR" and "message" in data:
             logger.error(f"ERROR: {data}")
         elif data["type"] == "SETTINGS" and "settings" in data and self.is_admin(player):
-            await self.change_settings(data["settings"])
+            await self.settings.update(player.name, data["settings"])
+            await self.send_settings_to_players()
         elif data["type"] == "CHAT_MESSAGE" and "message" in data:
             await self.chat.send_message_from_player(player, data["message"])
         else:
             # Handle game_master messages
             await self.game_master.process_message(player, data)
-            
-        # TODO: other types of messages
 
     async def handle_player_leaving(self, player, message=None):
         """Does all needed operations after player leaves a room"""
@@ -101,63 +96,19 @@ class Room:
 
     def set_new_random_admin(self):
         """Choose random player as admin"""
-        if self.number_of_players>0:
+        if self.number_of_players > 0:
             self.admin = random.choice(self.players)
         else:
             self.admin = None
-
-    async def change_settings(self, settings):
-        try:
-            await self.set_open_setting(settings["open"])
-            await self.set_custom_cards_setting(settings["customCards"])
-            await self.set_selecting_time_setting(settings["time"])
-            await self.set_game_type_setting(settings["gameType"])
-            # TODO: other types of settings
-            # TODO: dedicated class for managing settings instead of single functions
-        except KeyError:
-            logger.error(f"Received invalid settings: {settings}")
-        else:
-            await self.send_settings_to_players()
-
-    async def set_open_setting(self, open_setting):
-        if self.open != open_setting:
-            self.open = open_setting
-            if open_setting:
-                msg = f"Admin {self.admin.name} otworzył pokój."
-            else:
-                msg = f"Admin {self.admin.name} zamknął pokój."
-            await self.chat.send_message_from_system(msg)
-        # FIXME: create dedicated RoomSettings class
-
-    async def set_selecting_time_setting(self, selecting_time):
-        if self.selecting_time != selecting_time:
-            self.game_master.update_selecting_time(selecting_time)
-            self.selecting_time = selecting_time
-            await self.chat.send_message_from_system(f"Admin {self.admin.name} zmienił czas rundy na {self.selecting_time} sek. \
-                Czas rundy zmieni się od następnej rundy.")
-
-    async def set_custom_cards_setting(self, custom_cards):
-        if self.custom_cards != custom_cards:
-            self.custom_cards = custom_cards
-            self.game_master.update_custom_cards_count(custom_cards)
-            await self.chat.send_message_from_system(f"Admin {self.admin.name} zmienił liczbę własnych kart na {self.custom_cards}.")
-
-    async def set_game_type_setting(self, game_type):
-        if self.game_type != game_type:
-            self.game_type = game_type
-            if self.game_type == "default":
-                await self.chat.send_message_from_system(f"Admin {self.admin.name} zmienił tryb gry na Standardowy.")
-            elif self.game_type == "customcards":
-                await self.chat.send_message_from_system(f"Admin {self.admin.name} zmienił tryb gry na Mydełko.")
 
     async def send_settings_to_players(self):
         settings_data = {
             "type": "SETTINGS",
             "settings": {
-                "open": self.open,
-                "time": self.selecting_time,
-                "customCards": self.custom_cards,
-                "gameType": self.game_type
+                "open": self.settings.open,
+                "time": self.settings.selecting_time,
+                "customCards": self.settings.custom_cards,
+                "gameType": self.settings.game_type
             }
         }
         await self.send_json_to_all_players(settings_data)
