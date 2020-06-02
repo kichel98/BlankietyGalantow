@@ -109,15 +109,12 @@ const app = new Vue({
             this.showSettings = false  // close settings modal
         },
         submitPassword: function() {
-            if(this.passwordValid)
-            {
-                const data = {
-                    type: "PASSWORD",
-                    password: this.inputPassword
-                };
-                socket.send(JSON.stringify(data));
-                this.passwordRequired = false  // close password modal
-            }
+            const data = {
+                type: "PASSWORD",
+                password: this.inputPassword
+            };
+            socket.send(JSON.stringify(data));
+            this.passwordRequired = false  // close password modal
         },
         cancelSettingsChanges: function() {
             this.newSettings = Object.assign({}, this.settings);
@@ -199,12 +196,6 @@ const app = new Vue({
         } ,
         finalCountdown: function() {
             return this.timer < 10 && this.timer > 0;
-        },
-        passwordValid: function() {
-            if(this.inputPassword.length > 5){
-                return true;
-            }
-            return false;
         },
 
     },
