@@ -1,7 +1,7 @@
 
 function connect() {
     const parts = document.location.href.split('/');
-    const game_id = parts[parts.length - 1];
+    const game_id = parts[parts.length - 1].split('?')[0];
     const username = window.localStorage.getItem("username") || "Bezimienny";
     const port = window.location.port ? ":" + window.location.port : "";
     const host = window.location.hostname;
