@@ -103,10 +103,14 @@ const app = new Vue({
         submitSettings: function() {
             const data = {
                 type: "SETTINGS",
-                settings: this.settings
+                settings: this.newSettings
             };
             socket.send(JSON.stringify(data));
             this.showSettings = false  // close settings modal
+        },
+        cancelSettingsChanges: function() {
+            this.newSettings = Object.assign({}, this.settings);
+            this.showSettings = false;
         },
         updateTimer: function() {
             this.timer = this.settings.time;
@@ -192,18 +196,19 @@ const app = new Vue({
         },
     },
     data: {
-        tableId: 20965,
         players: [],
         myCards: [],
         chat: [],
         newMessage: '',
         errorMessage: '',
         settings: {
+            roomName: "",
             customCards: 5,
             open: true,
             time: 60,
             gameType: "default"
         },
+        newSettings: {},
         showPlayers: false,
         showChat: true,
         showSettings: false,
@@ -223,7 +228,7 @@ setInterval(()=>{
     if(app.timer > 0 && app.players.length > 1){
         app.timer = app.timer - 1;
     }
-}, 1000)
+}, 1000);
 
 
 // Receive message from websocket
@@ -262,7 +267,7 @@ socket.onmessage = function(event) {
         app.updateTimer();
     }
     if(data.type === "SELECT_RANDOM_CARDS") {
-        app.selectedCards = []
+        app.selectedCards = [];
         for(const card of data.cards){
             app.selectCard(app.myCards.filter((myCard) => myCard.id === card.id)[0])
         }
@@ -272,6 +277,7 @@ socket.onmessage = function(event) {
     }
     if(data.type === "SETTINGS") {
         app.settings = data.settings;
+        app.newSettings = Object.assign({}, data.settings);
     }
     if(data.type === "KICK") {
         app.errorMessage = data.message;
