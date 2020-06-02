@@ -105,6 +105,7 @@ class Room:
         settings_data = {
             "type": "SETTINGS",
             "settings": {
+                "roomName": self.settings.name,
                 "open": self.settings.open,
                 "time": self.settings.selecting_time,
                 "customCards": self.settings.custom_cards,
