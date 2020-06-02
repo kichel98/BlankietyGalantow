@@ -141,7 +141,8 @@
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="cancelSettingsChanges" type="button" class="w3-button w3-red" >Anuluj</button>
                         <button @click="submitSettings" type="button" class="w3-button w3-green w3-right"
-                                :disabled="!me.admin">Zapisz</button>
+                                :disabled="!me.admin ||
+                                (6 > newSettings.password.length && settingsPasswordRequired)">Zapisz</button>
                     </div>
                 </div>
             </div>
