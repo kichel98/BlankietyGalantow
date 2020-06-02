@@ -95,12 +95,12 @@
                                 name="is-password-protected" 
                                 class="w3-check" 
                                 type="checkbox"
-                                @change="changePasswordProtected($event)">
+                                @change="changePasswordRequired($event)">
                             <label for="is-password-protected">Zabezpieczenie hasłem</label>
-                            <p v-if="passwordProtected" >
+                            <p v-if="passwordRequired" >
                                 Hasło: <input type="text" minlength="5" v-model="settings.password">
                             </p>
-                            <div v-if="6 > settings.password.length && passwordProtected" style="text-align: center;">
+                            <div v-if="6 > settings.password.length && passwordRequired" style="text-align: center;">
                                 <p style="color: red; font-style: italic; margin-top: 0">
                                     Hasło musi być dłuższe niż 5 znaków.
                                 </p>

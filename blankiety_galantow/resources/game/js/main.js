@@ -122,11 +122,11 @@ const app = new Vue({
         updateTimer: function() {
             this.timer = this.settings.time;
         },
-        changePasswordProtected: function(event) {
-            if(this.passwordProtected){
+        changePasswordRequired: function(event) {
+            if(this.passwordRequired){
                 this.settings.password = "";
             }
-            this.passwordProtected = !this.passwordProtected
+            this.passwordRequired = !this.passwordRequired
         }
     },
     computed: {
@@ -227,11 +227,10 @@ const app = new Vue({
             open: true,
             time: 60,
             gameType: "default",
-            password: "asdaw",
+            password: "",
         },
-        inputPassword: "",
         passwordRequired: false,
-        passwordProtected: false,
+        inputPassword: "",
         showPlayers: false,
         showChat: true,
         showSettings: false,
