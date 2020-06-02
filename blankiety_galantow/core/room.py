@@ -50,13 +50,18 @@ class Room:
                 "type": "PASSWORD"
             }
             await player.send_json(message)
+            player_valid = False
             while True:
                 msg = await player.receive_json()
                 if msg["type"] == "PASSWORD" and "password" in msg:
                     if msg["password"] == self.settings.password:
-                        await self.add_player(player)
-                    else:
-                        await player.kill("Nieprawidłowe hasło!")
+                        player_valid = True
+                    break
+            
+            if player_valid:
+                await self.add_player(player)
+            else:
+                await player.kill("Nieprawidłowe hasło!")
         except WebSocketDisconnect:
             pass
 
