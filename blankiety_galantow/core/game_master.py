@@ -51,7 +51,7 @@ class GameMaster:
             self.timer.cancel()
         if player is self.master:
             self.set_new_random_master()
-            if len(self.players) > 0:
+            if len(self.players) > 1:
                 await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
                 self.timer_start()
         if self.all_players_ready():

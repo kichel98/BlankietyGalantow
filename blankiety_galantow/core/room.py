@@ -21,7 +21,6 @@ class Room:
         self.game_master = GameMaster(self.players, self.chat, self.settings, self.send_players_update)
         self.settings.name = name
         self.admin = None
-        self.password = ""
 
     @property
     def number_of_players(self):
@@ -40,7 +39,7 @@ class Room:
             logger.error(f"Player '{player}' tried to join a full server '{self.settings.name}'")
             return
 
-        if self.password != "":
+        if self.settings.password != "":
             await self.listen_to_waiting_player(player)
         else:
             await self.add_player(player)
@@ -50,11 +49,11 @@ class Room:
             message = {
                 "type": "PASSWORD"
             }
-            player.send_json(message)
+            await player.send_json(message)
             while True:
                 msg = await player.receive_json()
                 if msg["type"] == "PASSWORD" and "password" in msg:
-                    if msg["password"] == self.password:
+                    if msg["password"] == self.settings.password:
                         await self.add_player(player)
                     else:
                         await player.kill("Nieprawidłowe hasło!!!")
@@ -131,10 +130,13 @@ class Room:
                 "open": self.settings.open,
                 "time": self.settings.selecting_time,
                 "customCards": self.settings.custom_cards,
-                "gameType": self.settings.game_type
+                "gameType": self.settings.game_type,
+                "password": ""
             }
         }
         await self.send_json_to_all_players(settings_data)
+        settings_data["settings"]["password"] = self.settings.password
+        await self.admin.send_json(settings_data)
 
     def is_admin(self, player: Player):
         return self.admin == player

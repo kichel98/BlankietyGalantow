@@ -43,6 +43,28 @@
             </div>
         </div>
 
+        <!-- Password Modal -->
+        <div class="w3-modal on-top-modal" :class="{'w3-show': passwordRequired}">
+            <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                <div class="w3-center"><br>
+                    <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                    <h3>Podaj hasło do pokoju</h3>
+                    <hr>
+                    <p>
+                        Hasło: <input id="password" type="text" minlength="5" v-model="inputPassword">
+                    </p>
+                    <div v-if="!passwordValid" style="text-align: center;">
+                        <p style="color: red; font-style: italic; margin-top: 0">
+                            Hasło musi być dłuższe niż 5 znaków.
+                        </p>
+                    </div>
+                </div>
+                <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                    <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
+                    <button @click="submitPassword" type="button" class="w3-button w3-green w3-right">Potwierdź</button>
+                </div>
+            </div>
+        </div>
         <!-- Game App Content -->
         <template v-if="gameLoaded">
             <!-- Modal -->
@@ -67,19 +89,18 @@
                                    v-model="settings.open">
                             <label for="is-open">Zezwól na dołączenie nowych graczy</label>
                         </p>
-                        <p>
-                            <input v-if="me.admin" 
+                        <p  v-if="me.admin">
+                            <input 
                                 id="is-password-protected" 
                                 name="is-password-protected" 
                                 class="w3-check" 
                                 type="checkbox"
-                                v-model="passwordProtected">
+                                @change="changePasswordProtected($event)">
                             <label for="is-password-protected">Zabezpieczenie hasłem</label>
                             <p v-if="passwordProtected" >
                                 Hasło: <input type="text" minlength="5" v-model="settings.password">
-                                
                             </p>
-                            <div v-if="!passwordValid" style="text-align: center;">
+                            <div v-if="6 > settings.password.length && passwordProtected" style="text-align: center;">
                                 <p style="color: red; font-style: italic; margin-top: 0">
                                     Hasło musi być dłuższe niż 5 znaków.
                                 </p>

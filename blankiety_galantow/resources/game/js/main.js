@@ -108,8 +108,25 @@ const app = new Vue({
             socket.send(JSON.stringify(data));
             this.showSettings = false  // close settings modal
         },
+        submitPassword: function() {
+            if(this.passwordValid)
+            {
+                const data = {
+                    type: "PASSWORD",
+                    password: this.inputPassword
+                };
+                socket.send(JSON.stringify(data));
+                this.passwordRequired = false  // close password modal
+            }
+        },
         updateTimer: function() {
             this.timer = this.settings.time;
+        },
+        changePasswordProtected: function(event) {
+            if(this.passwordProtected){
+                this.settings.password = "";
+            }
+            this.passwordProtected = !this.passwordProtected
         }
     },
     computed: {
@@ -180,17 +197,12 @@ const app = new Vue({
             return this.timer < 10 && this.timer > 0;
         },
         passwordValid: function() {
-            if(this.passwordProtected){
-                if(this.settings.password != undefined){
-                    if(this.settings.password.length > 5){
-                        return true;
-                    }
-                    return false;
-                }
-                return false;
+            if(this.inputPassword.length > 5){
+                return true;
             }
-            return true;
-        }
+            return false;
+        },
+
     },
     watch: {
         chat: function() {
@@ -217,6 +229,8 @@ const app = new Vue({
             gameType: "default",
             password: "asdaw",
         },
+        inputPassword: "",
+        passwordRequired: false,
         passwordProtected: false,
         showPlayers: false,
         showChat: true,
@@ -246,6 +260,9 @@ socket.onmessage = function(event) {
         console.error("Received incorrect message:");
         console.error(data);
         return;
+    }
+    if(data.type === "PASSWORD"){
+        app.passwordRequired = true;
     }
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);
