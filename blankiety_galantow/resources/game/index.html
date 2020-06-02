@@ -43,6 +43,23 @@
             </div>
         </div>
 
+        <!-- Password Modal -->
+        <div class="w3-modal on-top-modal" :class="{'w3-show': passwordRequired}">
+            <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                <div class="w3-center"><br>
+                    <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                    <h3>Podaj hasło do pokoju</h3>
+                    <hr>
+                    <p>
+                        Hasło: <input id="password" type="text" v-model="inputPassword">
+                    </p>
+                </div>
+                <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                    <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
+                    <button @click="submitPassword" type="button" class="w3-button w3-green w3-right">Potwierdź</button>
+                </div>
+            </div>
+        </div>
         <!-- Game App Content -->
         <template v-if="gameLoaded">
             <!-- Modal -->
@@ -74,6 +91,24 @@
                                    v-model="newSettings.open">
                             <label for="is-open">Zezwól na dołączenie nowych graczy</label>
                         </p>
+                        <p  v-if="me.admin">
+                            <input 
+                                id="is-password-protected" 
+                                name="is-password-protected" 
+                                class="w3-check" 
+                                type="checkbox"
+                                @change="changePasswordRequired($event)">
+                            <label for="is-password-protected">Zabezpieczenie hasłem</label>
+                            <p v-if="settingsPasswordRequired" >
+                                Hasło: <input type="text" minlength="passwordLength" v-model="newSettings.password">
+                            </p>
+                            <div v-if="newSettings.password.length < passwordLength && settingsPasswordRequired" style="text-align: center;">
+                                <p style="color: red; font-style: italic; margin-top: 0">
+                                    Hasło musi być dłuższe niż {{passwordLength}} znaki.
+                                </p>
+                            </div>
+                            
+                        </p>
                         <h4>Tryb gry</h4>
                         <label>
                             <input class="w3-radio" v-model="newSettings.gameType" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
@@ -97,7 +132,8 @@
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="cancelSettingsChanges" type="button" class="w3-button w3-red" >Anuluj</button>
                         <button @click="submitSettings" type="button" class="w3-button w3-green w3-right"
-                                :disabled="!me.admin">Zapisz</button>
+                                :disabled="!me.admin ||
+                                (newSettings.password.length < passwordLength && settingsPasswordRequired)">Zapisz</button>
                     </div>
                 </div>
             </div>

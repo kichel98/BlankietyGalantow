@@ -108,12 +108,26 @@ const app = new Vue({
             socket.send(JSON.stringify(data));
             this.showSettings = false  // close settings modal
         },
+        submitPassword: function() {
+            const data = {
+                type: "PASSWORD",
+                password: this.inputPassword
+            };
+            socket.send(JSON.stringify(data));
+            this.passwordRequired = false  // close password modal
+        },
         cancelSettingsChanges: function() {
             this.newSettings = Object.assign({}, this.settings);
             this.showSettings = false;
         },
         updateTimer: function() {
             this.timer = this.settings.time;
+        },
+        changePasswordRequired: function(event) {
+            if(this.settingsPasswordRequired){
+                this.settings.password = "";
+            }
+            this.settingsPasswordRequired = !this.settingsPasswordRequired
         }
     },
     computed: {
@@ -182,7 +196,8 @@ const app = new Vue({
         } ,
         finalCountdown: function() {
             return this.timer < 10 && this.timer > 0;
-        }
+        },
+
     },
     watch: {
         chat: function() {
@@ -206,8 +221,13 @@ const app = new Vue({
             customCards: 5,
             open: true,
             time: 60,
-            gameType: "default"
+            gameType: "default",
+            password: "",
         },
+        settingsPasswordRequired: false,
+        passwordRequired: false,
+        passwordLength: 3,
+        inputPassword: "",
         newSettings: {},
         showPlayers: false,
         showChat: true,
@@ -230,7 +250,6 @@ setInterval(()=>{
     }
 }, 1000);
 
-
 // Receive message from websocket
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
@@ -238,6 +257,9 @@ socket.onmessage = function(event) {
         console.error("Received incorrect message:");
         console.error(data);
         return;
+    }
+    if(data.type === "PASSWORD"){
+        app.passwordRequired = true;
     }
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);

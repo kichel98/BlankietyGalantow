@@ -26,7 +26,7 @@ class Room:
     def number_of_players(self):
         return len(self.players)
 
-    async def add_player_and_listen(self, player: Player):
+    async def connect_new_player(self, player: Player):
         """Add new player to the room and start listening."""
         if not self.settings.open:
             await player.kill("Pokój jest zamknięty.")
@@ -39,6 +39,33 @@ class Room:
             logger.error(f"Player '{player}' tried to join a full server '{self.settings.name}'")
             return
 
+        if self.settings.password != "":
+            await self.listen_to_waiting_player(player)
+        else:
+            await self.add_player_and_listen(player)
+
+    async def listen_to_waiting_player(self, player: Player):
+        try:
+            message = {
+                "type": "PASSWORD"
+            }
+            await player.send_json(message)
+            player_valid = False
+            while True:
+                msg = await player.receive_json()
+                if msg["type"] == "PASSWORD" and "password" in msg:
+                    if msg["password"] == self.settings.password:
+                        player_valid = True
+                    break
+            
+            if player_valid:
+                await self.add_player_and_listen(player)
+            else:
+                await player.kill("Nieprawidłowe hasło!")
+        except WebSocketDisconnect:
+            pass
+
+    async def add_player_and_listen(self, player: Player):
         player.id = self.generate_unique_player_id()
         await self.players.append(player)
 
@@ -109,10 +136,13 @@ class Room:
                 "open": self.settings.open,
                 "time": self.settings.selecting_time,
                 "customCards": self.settings.custom_cards,
-                "gameType": self.settings.game_type
+                "gameType": self.settings.game_type,
+                "password": ""
             }
         }
         await self.send_json_to_all_players(settings_data)
+        settings_data["settings"]["password"] = self.settings.password
+        await self.admin.send_json(settings_data)
 
     def is_admin(self, player: Player):
         return self.admin == player

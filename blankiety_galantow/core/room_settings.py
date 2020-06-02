@@ -11,6 +11,7 @@ class RoomSettings:
         self.selecting_time: int = 60
         self.game_type: str = "default"
         self.custom_cards: int = 5
+        self.password: str = ""
 
     async def update(self, who: str, data: dict):
         try:
@@ -19,6 +20,7 @@ class RoomSettings:
             await self.set_custom_cards(who, data["customCards"])
             await self.set_selecting_time(who, data["time"])
             await self.set_game_type(who, data["gameType"])
+            self.set_room_password(data["password"])
         except KeyError:
             logger.error(f"Received invalid settings: {data}")
 
@@ -55,3 +57,6 @@ class RoomSettings:
                 await self.chat.send_message_from_system(f"Admin {who} zmienił tryb gry na Standardowy.")
             elif self.game_type == "customcards":
                 await self.chat.send_message_from_system(f"Admin {who} zmienił tryb gry na Mydełko.")
+
+    def set_room_password(self, password):
+        self.password = password
