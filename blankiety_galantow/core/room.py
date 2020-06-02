@@ -26,7 +26,7 @@ class Room:
     def number_of_players(self):
         return len(self.players)
 
-    async def add_player_and_listen(self, player: Player):
+    async def connect_new_player(self, player: Player):
         """Add new player to the room and start listening."""
         if not self.settings.open:
             await player.kill("Pokój jest zamknięty.")
@@ -42,7 +42,7 @@ class Room:
         if self.settings.password != "":
             await self.listen_to_waiting_player(player)
         else:
-            await self.add_player(player)
+            await self.add_player_and_listen(player)
 
     async def listen_to_waiting_player(self, player: Player):
         try:
@@ -59,13 +59,13 @@ class Room:
                     break
             
             if player_valid:
-                await self.add_player(player)
+                await self.add_player_and_listen(player)
             else:
                 await player.kill("Nieprawidłowe hasło!")
         except WebSocketDisconnect:
             pass
 
-    async def add_player(self, player: Player):
+    async def add_player_and_listen(self, player: Player):
         player.id = self.generate_unique_player_id()
         await self.players.append(player)
 
