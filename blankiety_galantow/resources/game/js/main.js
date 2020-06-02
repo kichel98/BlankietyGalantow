@@ -127,10 +127,10 @@ const app = new Vue({
             this.timer = this.settings.time;
         },
         changePasswordRequired: function(event) {
-            if(this.passwordRequired){
+            if(this.settingsPasswordRequired){
                 this.settings.password = "";
             }
-            this.passwordRequired = !this.passwordRequired
+            this.settingsPasswordRequired = !this.settingsPasswordRequired
         }
     },
     computed: {
@@ -233,6 +233,7 @@ const app = new Vue({
             gameType: "default",
             password: "",
         },
+        settingsPasswordRequired: false,
         passwordRequired: false,
         inputPassword: "",
         newSettings: {},
