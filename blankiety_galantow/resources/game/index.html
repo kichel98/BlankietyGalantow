@@ -74,19 +74,12 @@
                         </label><br>
                         <label>
                             <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="customcards" :disabled="!me.admin">
-                            Mydełko: <i>Gracz może ustaloną liczbę razy zmienić tekst białej karty na dowolny wpisany przez siebie.</i>
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="nomercy" :disabled="!me.admin">
-                            Bez litości
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="child" :disabled="!me.admin">
-                            Dziecięcy
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="pwr" :disabled="!me.admin">
-                            Prezentacja projektu
+                            Mydełko
+                            <span class="tooltip">(?)
+                                <span class="tooltiptext">
+                                    Gracz może ustaloną liczbę razy zmienić tekst białej karty na dowolny wpisany przez siebie.
+                                </span>
+                            </span>
                         </label><br>
                         <h4>Limit czasu</h4>
                         <input type="number" v-model.number="settings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.

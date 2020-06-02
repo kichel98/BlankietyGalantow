@@ -77,10 +77,7 @@
     height: 200px;
     padding: 1.5em 1em;
 }
-/* .player-card:hover {
-    z-index:5;
-    transform: translateY(-8px);
-} */
+
 .player-card.selected {
     background: #fff9bf;
     transform: translateY(-8px);
@@ -169,6 +166,43 @@
     -webkit-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.6);
     -moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.6);
     box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.6);
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 7px;
+
+    /* Position the tooltip */
+    position: absolute;
+    /*top: -50%;*/
+    left: 25px;
+    z-index: 1;
+}
+
+.tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 15%;
+    right: 100%; /* To the left of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent black transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
 }
 
 /* FONTELLO FIX */
