@@ -100,11 +100,11 @@
                                 @change="changePasswordRequired($event)">
                             <label for="is-password-protected">Zabezpieczenie hasłem</label>
                             <p v-if="settingsPasswordRequired" >
-                                Hasło: <input type="text" minlength="5" v-model="newSettings.password">
+                                Hasło: <input type="text" minlength="passwordLength" v-model="newSettings.password">
                             </p>
-                            <div v-if="6 > newSettings.password.length && settingsPasswordRequired" style="text-align: center;">
+                            <div v-if="passwordLength > newSettings.password.length && settingsPasswordRequired" style="text-align: center;">
                                 <p style="color: red; font-style: italic; margin-top: 0">
-                                    Hasło musi być dłuższe niż 5 znaków.
+                                    Hasło musi być dłuższe niż {{passwordLength}} znaki.
                                 </p>
                             </div>
                             
@@ -133,7 +133,7 @@
                         <button @click="cancelSettingsChanges" type="button" class="w3-button w3-red" >Anuluj</button>
                         <button @click="submitSettings" type="button" class="w3-button w3-green w3-right"
                                 :disabled="!me.admin ||
-                                (6 > newSettings.password.length && settingsPasswordRequired)">Zapisz</button>
+                                (passwordLength > newSettings.password.length && settingsPasswordRequired)">Zapisz</button>
                     </div>
                 </div>
             </div>

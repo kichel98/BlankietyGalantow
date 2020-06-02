@@ -226,6 +226,7 @@ const app = new Vue({
         },
         settingsPasswordRequired: false,
         passwordRequired: false,
+        passwordLength: 3,
         inputPassword: "",
         newSettings: {},
         showPlayers: false,
