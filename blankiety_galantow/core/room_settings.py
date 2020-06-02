@@ -14,7 +14,7 @@ class RoomSettings:
 
     async def update(self, who: str, data: dict):
         try:
-            await self.set_name(who, data["roomName"])
+            # await self.set_name(who, data["roomName"])
             await self.set_open(who, data["open"])
             await self.set_custom_cards(who, data["customCards"])
             await self.set_selecting_time(who, data["time"])
