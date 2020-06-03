@@ -124,7 +124,7 @@
                             </span>
                         </label><br>
                         <h4>Limit czasu</h4>
-                        <input type="number" v-model.number="newSettings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.
+                        <input type="number" v-model.number="newSettings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin" min="1"> sek.
                         <div v-if="newSettings.gameType == 'customcards'"><h4>Liczba własnych kart</h4>
                             <input type="number" v-model.number="newSettings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
                         </div>

@@ -75,7 +75,7 @@ const app = new Vue({
             // First click reveals the stack
             stack.revealed = true;
 
-            let card_ids = [];
+            let card_iupdateTimerds = [];
             for(const card of stack.cards){
                 card_ids.push(card.id);
             }
@@ -101,6 +101,9 @@ const app = new Vue({
             this.errorMessage = "";
         },
         submitSettings: function() {
+            if(this.newSettings.time <= 0){
+                return
+            }
             const data = {
                 type: "SETTINGS",
                 settings: this.newSettings
