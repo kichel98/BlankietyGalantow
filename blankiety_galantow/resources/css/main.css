@@ -116,6 +116,11 @@ aside h2 {
     text-align: justify;
 }
 
+.about p a{
+    text-decoration:underline;
+    color: #4CAF50;
+}
+
 /* Screen larger than 600px */
 @media (min-width:600px) {
     main {
