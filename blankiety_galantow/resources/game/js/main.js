@@ -75,7 +75,7 @@ const app = new Vue({
             // First click reveals the stack
             stack.revealed = true;
 
-            let card_iupdateTimerds = [];
+            let card_ids = [];
             for(const card of stack.cards){
                 card_ids.push(card.id);
             }
