@@ -128,6 +128,11 @@
                         <div v-if="newSettings.gameType == 'customcards'"><h4>Liczba własnych kart</h4>
                             <input type="number" v-model.number="newSettings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
                         </div>
+                        <div v-if="newSettings.time < 1" style="text-align: center;">
+                            <p style="color: red; font-style: italic; margin-top: 0">
+                                Czas rundy musi być większy niż 1 sekunda.
+                            </p>
+</div>
                     </div>
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                         <button @click="cancelSettingsChanges" type="button" class="w3-button w3-red" >Anuluj</button>
