@@ -10,6 +10,7 @@
 
 .card {
     display: inline-block;
+    overflow-wrap: break-word;
     width: 150px;
     height: 200px;
     margin: 0.5em 1em;
@@ -44,6 +45,10 @@
     -webkit-box-shadow: 0 0 10px 4px rgba(255,255,0,1);
     -moz-box-shadow: 0 0 10px 4px rgba(255,255,0,1);
     box-shadow: 0 0 10px 4px rgba(255,255,0,1);
+}
+
+#black-card {
+    overflow-y: auto;
 }
 
 /*master cards stylesheet*/
