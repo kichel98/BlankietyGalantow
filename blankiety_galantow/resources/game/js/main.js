@@ -101,6 +101,9 @@ const app = new Vue({
             this.errorMessage = "";
         },
         submitSettings: function() {
+            if(this.newSettings.time <= 0){
+                return
+            }
             const data = {
                 type: "SETTINGS",
                 settings: this.newSettings
