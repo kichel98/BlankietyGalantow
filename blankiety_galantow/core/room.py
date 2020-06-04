@@ -61,17 +61,17 @@ class Room:
         return player_id
 
     async def listen_to_player(self, player):
-        """Constantly listen to player and take actions based on messages"""
         try:
             while True:
                 msg = await player.receive_json()
                 await self.process_message(player, msg)
-        except WebSocketDisconnect:
-            await self.players.remove(player)
-            await self.handle_player_leaving(player)
         except KickException as ex:
             await self.players.remove(player)
             await self.handle_player_leaving(player, message=ex.message)
+        except WebSocketDisconnect:
+            await self.players.remove(player)
+            await self.handle_player_leaving(player)
+        """Constantly listen to player and take actions based on messages"""
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
@@ -87,7 +87,7 @@ class Room:
         else:
             # Handle game_master messages
             await self.game_master.process_message(player, data)
-            
+
         # TODO: other types of messages
 
     async def handle_player_leaving(self, player, message=None):

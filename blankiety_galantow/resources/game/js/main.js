@@ -275,6 +275,7 @@ socket.onmessage = function(event) {
     }
     if(data.type === "KICK") {
         app.errorMessage = data.message;
+        addMessageToChat(data.message);
     }
     if(data.type === "ERROR") {
         app.errorMessage = data.message || data.error

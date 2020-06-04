@@ -8,6 +8,7 @@ from .utils.timer import Timer
 from .player import Player, PlayerState
 from .game_state import GameState
 from typing import Dict
+from .kick_exception import KickException
 
 
 class GameMaster:
@@ -79,8 +80,12 @@ class GameMaster:
     async def handle_cards_reveal(self, data):
         player = self.get_cards_owner_by_id(data["cards"])
         if player is None:
-            await player.kick("Próba oszustwa")
-            return
+            try:
+                await player.kick("Próba oszustwa")
+            except KickException as ex:
+                await self.chat.send_message_from_system(ex.message)
+            finally:
+                return
         message = {
             "type": "CARDS_REVEAL",
             "cards": data["cards"]
@@ -113,7 +118,11 @@ class GameMaster:
                 await self.select_random_player_cards(player)
                 player.rounds_without_activity = player.rounds_without_activity + 1
                 if player.rounds_without_activity > 2:
-                    await player.kick("Brak aktywności.")
+                    try:
+                        await player.kick("Brak aktywności.")
+                    except KickException as ex:
+                        await self.chat.send_message_from_system(ex.message)
+
             elif player.state == PlayerState.ready:
                 player.rounds_without_activity = 0
 
@@ -171,8 +180,12 @@ class GameMaster:
         Method for handling CARDS_SELECT message
         """
         if not self.player_owns_cards(player, data["cards"]):
-            await player.kick("Próba oszustwa")
-            return
+            try:
+                await player.kick("Próba oszustwa")
+            except KickException as ex:
+                await self.chat.send_message_from_system(ex.message)
+            finally:
+                return
         self.select_cards(player, data["cards"])
         # Sends played cards in this round if everybody selected their cards
         player.state = PlayerState.ready
