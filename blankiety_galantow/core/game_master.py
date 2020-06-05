@@ -1,5 +1,6 @@
 import random
 import time
+import asyncio
 
 from .chat import Chat
 from .deck import Deck, WhiteCard, BlackCard
@@ -7,6 +8,7 @@ from .room_settings import RoomSettings
 from .utils.observable_list import ObservableList
 from .utils.timer import Timer
 from .player import Player, PlayerState
+from .kick_exception import KickException
 from .game_state import GameState
 from typing import Dict
 
@@ -44,7 +46,7 @@ class GameMaster:
             self.master = player
             player.state = PlayerState.master
         if len(self.players) == 2:
-            self.timer_start()
+            await self.timer_start()
     
     async def handle_player_leave(self, player):
         if len(self.players) < 2 and self.timer is not None:
@@ -53,7 +55,7 @@ class GameMaster:
             self.set_new_random_master()
             if len(self.players) > 1:
                 await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
-                self.timer_start()
+                await self.timer_start()
         if self.all_players_ready():
             await self.send_played_cards()
 
@@ -85,13 +87,20 @@ class GameMaster:
         for player in self.players:
             await player.send_json(message)
 
-    def timer_start(self):
+    async def timer_start(self):
         if self.selecting_time != self.settings.selecting_time:
             self.selecting_time = self.settings.selecting_time
         self.timer_start_time = time.time()
         if self.timer is not None:
             self.timer.cancel()
+            try:
+                await self.timer.task
+            except asyncio.CancelledError:
+                pass
+            except KickException:
+                raise
         self.timer = Timer(self.selecting_time, self.handle_timeout)
+        
         
     async def handle_timeout(self):
         self.timer_start_time = 0
@@ -145,7 +154,7 @@ class GameMaster:
         await self.send_empty_played_cards()
         await self.players_update_callback()
         self.game_state = GameState.selecting_cards
-        self.timer_start()
+        await self.timer_start()
 
     async def send_timer_message(self, player):
         current_time = time.time()
@@ -172,7 +181,7 @@ class GameMaster:
         if self.all_players_ready():
             await self.send_played_cards()
             self.game_state = GameState.choosing_winner
-            self.timer_start()
+            await self.timer_start()
         await self.players_update_callback()
 
     def player_owns_cards(self, player, cards):
@@ -233,7 +242,7 @@ class GameMaster:
         await self.send_empty_played_cards()
         await self.players_update_callback()
         self.game_state = GameState.selecting_cards
-        self.timer_start()
+        await self.timer_start()
 
     async def add_point_to_cards_owner(self, cards):
         """Add points to card owner and send chat message about it"""
