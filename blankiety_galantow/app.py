@@ -16,6 +16,8 @@ app.mount("/js", StaticFiles(directory="resources/js"), name="js")
 app.mount("/vendor", StaticFiles(directory="resources/vendor"), name="vendor")
 app.mount("/game/css", StaticFiles(directory="resources/game/css"), name="game/css")
 app.mount("/game/js", StaticFiles(directory="resources/game/js"), name="game/js")
+app.mount("/assets", StaticFiles(directory="resources/assets"), name="assets")
+
 # Attaching router to app
 app.include_router(router)
 
