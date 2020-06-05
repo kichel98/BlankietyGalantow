@@ -35,7 +35,10 @@
                     <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
                     <h3>Błąd</h3>
                     <hr>
+                    
                     <p><h4 >{{errorMessage}}</h4></p>
+                    <img class="milord-graphic"  src="../assets/error_graphic.png">
+
                 </div>
                 <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                     <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
@@ -48,11 +51,14 @@
             <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
                 <div class="w3-center"><br>
                     <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-                    <h3>Podaj hasło do pokoju</h3>
-                    <hr>
+                    <p >
+                        <img class="milord-graphic"  src="../assets/password_graphic.png">
+                    </p>
                     <p>
                         Hasło: <input id="password" type="text" v-model="inputPassword">
                     </p>
+                    
+                    
                 </div>
                 <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                     <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
