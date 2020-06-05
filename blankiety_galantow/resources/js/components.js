@@ -37,13 +37,13 @@ Vue.component('room-create-button', {
     },
     template: `
         <li>
-            <div class="room-item w3-teal w3-bottombar w3-border-black hvr-icon-grow hvr-radial-out pointer">
+            <div id="create-room-btn" class="room-item w3-bottombar w3-border-black hvr-icon-grow hvr-radial-out pointer">
                 <i class="icon-group room-icon w3-hide-small"></i>
                 <div class="room-info">
                     <span class="w3-large">Nowy pokój</span><br>
                 </div>
                 <div class="room-status">
-                    <i class="hvr-icon icon-plus-circled full"></i>
+                    <i class="hvr-icon icon-plus-circled add-room"></i>
                 </div>
             </div>
         </li>

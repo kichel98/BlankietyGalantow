@@ -29,7 +29,16 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
     margin: 0;
 }
 
+.brand-logo {
+    max-width: 150px;
+}
+
 /* ROOMS */
+
+#create-room-btn {
+    color: #fff;
+    background-color: #00c58d;
+}
 
 .rooms {
     flex-grow: 1;
@@ -69,6 +78,9 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
     align-items: center;
     font-size: 40px;
     margin-right: 5px;
+}
+.room-status .add-room {
+    color: #ebebeb;
 }
 .room-status .open {
     color: #4CAF50;
@@ -113,12 +125,20 @@ aside h2 {
     margin-bottom: 10px;
 }
 .about p {
+    font-size: 14px;
     text-align: justify;
 }
 
 .about p a{
     text-decoration:underline;
     color: #4CAF50;
+}
+
+/* FOOTER */
+.footer p {
+    color: #666;
+    font-size: 13px;
+    text-align: center;
 }
 
 /* Screen larger than 600px */
