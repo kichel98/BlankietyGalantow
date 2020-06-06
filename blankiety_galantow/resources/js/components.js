@@ -1,7 +1,7 @@
 export const mixin = {
     methods: {
-        canRoomAcceptNewPlayer: function (room) {
-            return room.open && room.players < room.maxPlayers
+        isRoomFull: function (room) {
+            return room.players >= room.maxPlayers
         }
     }
 };
@@ -13,18 +13,19 @@ Vue.component('room-item', {
     },
     template: `
         <li>
-            <div :class="canRoomAcceptNewPlayer(room) 
-                    ? 'room-item hvr-icon-grow hvr-radial-out pointer' 
-                    : 'room-item not-allowed'">
+            <div :class="isRoomFull(room) 
+                    ? 'room-item not-allowed'
+                    : 'room-item hvr-icon-grow hvr-radial-out pointer'">
                 <i class="icon-group room-icon w3-hide-small"></i>
                 <div class="room-info">
                     <span class="w3-large">{{room.name}}</span><br>
                     <span>Gracze: {{room.players}}/{{room.maxPlayers}}</span>
                 </div>
                 <div class="room-status">
-                    <i v-if="canRoomAcceptNewPlayer(room)" class="hvr-icon icon-lock-open open"></i>
-                    <i v-else-if="!room.open" class="hvr-icon icon-lock-closed closed"></i>
-                    <i v-else class="hvr-icon icon-lock-closed-alt full"></i>
+                    <i v-if="isRoomFull(room)" class="hvr-icon icon-lock-open full"></i>
+                    <i v-else-if="room.password" class="hvr-icon icon-lock-closed closed"></i>
+                    <i v-else-if="room.open" class="hvr-icon icon-lock-closed-alt open"></i>
+                    <i v-else class="hvr-icon icon-lock-closed closed"></i>
                 </div>
             </div>
         </li>

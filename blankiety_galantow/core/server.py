@@ -43,7 +43,8 @@ class Server:
                 "name": room.settings.name,
                 "players": room.number_of_players,
                 "maxPlayers": room.settings.number_of_seats,
-                "open": room.settings.open
+                "open": room.settings.open,
+                "password": room.settings.password != ""
             }
             for key, room in self._rooms.items()
         ]
