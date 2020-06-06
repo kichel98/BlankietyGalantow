@@ -1,5 +1,5 @@
 import random
-import asyncio
+
 from typing import Dict
 from fastapi.websockets import WebSocketDisconnect
 from fastapi.logger import logger
@@ -32,11 +32,8 @@ class Room:
 
     @property
     def is_empty(self):
-        if self.number_of_players == 0 :
-            return True
-        else:
-             return False
-
+        return self.number_of_players == 0
+            
 
     async def connect_new_player(self, player: Player):
         """Add new player to the room and start listening."""
