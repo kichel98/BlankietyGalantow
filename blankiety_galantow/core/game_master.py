@@ -32,12 +32,10 @@ class GameMaster:
         self.master = None
         self.selecting_time = self.settings.selecting_time  # current round time
         self.timer_start_time = 0
-        self.timer_paused_time = 0
         self.timer = None
         self.game_state = GameState.selecting_cards
         self.players_update_callback = players_update_callback
         self.paused = True
-        self.remaining_time = 0
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
 
@@ -75,15 +73,6 @@ class GameMaster:
             await self.handle_pause_game(player, data)
    
     async def handle_pause_game(self, player, data):
-        current_time = time.time()
-        if not self.paused:
-            self.timer_paused_time = current_time
-            time_passed = int(current_time - self.timer_start_time)
-            self.remaining_time = self.selecting_time - time_passed
-        else:
-            time_passed_while_paused = int(current_time - self.timer_paused_time)
-            self.timer_start_time = self.timer_start_time + time_passed_while_paused
-            self.timer_paused_time = 0
         self.paused = data["paused"]
         if self.timer is not None:
             self.timer.cancel()
@@ -124,11 +113,7 @@ class GameMaster:
                     pass
                 except KickException:
                     raise
-            timer_time = self.selecting_time
-            if self.remaining_time != 0:
-                timer_time = self.remaining_time
-                self.remaining_time = 0
-            self.timer = Timer(timer_time, self.handle_timeout)
+            self.timer = Timer(self.selecting_time, self.handle_timeout)
         
     
     async def handle_timeout(self):

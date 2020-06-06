@@ -135,6 +135,9 @@ const app = new Vue({
         },
         updateTimer: function() {
             this.timer = this.settings.time;
+            if(this.paused){
+                this.timerStop = true
+            }
         },
         changePasswordRequired: function(event) {
             if(this.settingsPasswordRequired){
@@ -212,7 +215,7 @@ const app = new Vue({
         },
         timerState: function() {
             if(this.paused){
-                return "Gra wstrzymana"
+                return "Następna runda wstrzymana"
             }
             else{
                 return "Gra w trakcie"
@@ -257,7 +260,7 @@ const app = new Vue({
         numberOfCardsToSelect: 3,
         timer: 0,
         paused: true,
-
+        timerStop: true,
         customCardsUsed: 0,
         customText: "",
         // Card master variables
@@ -267,8 +270,11 @@ const app = new Vue({
 });
 
 setInterval(()=>{
-    if(app.timer > 0 && app.players.length > 1 && !app.paused){
+    if(app.timer > 0 && app.players.length > 1 && !app.timerStop){
         app.timer = app.timer - 1;
+    }
+    if(app.timer <= 0 && app.paused){
+        app.updateTimer() 
     }
 }, 1000);
 
@@ -285,6 +291,9 @@ socket.onmessage = function(event) {
     }
     if(data.type === "PAUSED"){
         app.paused = data.paused;
+        if(!app.paused){
+            app.timerStop = false
+        }
     }
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);
@@ -311,9 +320,8 @@ socket.onmessage = function(event) {
                 cards: card.playerCards,
             })
         }
-        if(!app.paused){
-            app.updateTimer();
-        }
+        app.updateTimer();
+        
     }
     if(data.type === "SELECT_RANDOM_CARDS") {
         app.selectedCards = [];
