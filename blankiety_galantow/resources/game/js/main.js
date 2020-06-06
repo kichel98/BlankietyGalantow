@@ -311,7 +311,9 @@ socket.onmessage = function(event) {
                 cards: card.playerCards,
             })
         }
-        app.updateTimer();
+        if(!app.paused){
+            app.updateTimer();
+        }
     }
     if(data.type === "SELECT_RANDOM_CARDS") {
         app.selectedCards = [];
