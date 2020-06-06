@@ -1,5 +1,5 @@
 from json import JSONDecodeError
-from fastapi import WebSocket
+from fastapi import WebSocket, status
 from fastapi.websockets import WebSocketDisconnect
 from .kick_exception import KickException
 from enum import Enum
@@ -57,6 +57,7 @@ class Player:
             ]
         }
         await self.send_json(message)
+
         
     async def kick(self, reason: str):
         kick_reason = {
@@ -65,7 +66,6 @@ class Player:
         }
         await self.send_json(kick_reason)
         await self.socket.close()
-        raise KickException(f"Gracz '{self.name}'' został wyrzucony z pokoju. Powód: {reason}")
 
     async def receive_json(self):
         """Await for incoming message from the player."""

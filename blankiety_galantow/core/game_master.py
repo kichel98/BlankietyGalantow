@@ -118,7 +118,8 @@ class GameMaster:
                 await self.select_random_player_cards(player)
                 player.rounds_without_activity = player.rounds_without_activity + 1
                 if player.rounds_without_activity > 2:
-                    await player.kick("Brak aktywności.")
+                    await self.chat.send_message_from_system(f"Gracz '{player.name}' został usunięty za brak aktywności.")
+                    await player.kick("Brak aktywności")
             elif player.state == PlayerState.ready:
                 player.rounds_without_activity = 0
 
@@ -176,6 +177,7 @@ class GameMaster:
         Method for handling CARDS_SELECT message
         """
         if not self.player_owns_cards(player, data["cards"]):
+            await self.chat.send_message_from_system(f"Gracz '{player.name}' został usunięty za próbę oszustwa.")
             await player.kick("Próba oszustwa")
             return
         self.select_cards(player, data["cards"])

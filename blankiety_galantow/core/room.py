@@ -101,9 +101,6 @@ class Room:
         except WebSocketDisconnect:
             await self.players.remove(player)
             await self.handle_player_leaving(player)
-        except KickException as ex:
-            await self.players.remove(player)
-            await self.handle_player_leaving(player, message=ex.message)
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
