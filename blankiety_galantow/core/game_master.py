@@ -88,20 +88,21 @@ class GameMaster:
             await player.send_json(message)
 
     async def timer_start(self):
-        if self.selecting_time != self.settings.selecting_time:
-            self.selecting_time = self.settings.selecting_time
-        self.timer_start_time = time.time()
-        if self.timer is not None:
-            self.timer.cancel()
-            try:
-                await self.timer.task
-            except asyncio.CancelledError:
-                pass
-            except KickException:
-                raise
-        self.timer = Timer(self.selecting_time, self.handle_timeout)
+        if not self.settings.paused:
+            if self.selecting_time != self.settings.selecting_time:
+                self.selecting_time = self.settings.selecting_time
+            self.timer_start_time = time.time()
+            if self.timer is not None:
+                self.timer.cancel()
+                try:
+                    await self.timer.task
+                except asyncio.CancelledError:
+                    pass
+                except KickException:
+                    raise
+            self.timer = Timer(self.selecting_time, self.handle_timeout)
         
-        
+    
     async def handle_timeout(self):
         self.timer_start_time = 0
         if self.game_state == GameState.selecting_cards:

@@ -226,6 +226,7 @@ const app = new Vue({
             time: 60,
             gameType: "default",
             password: "",
+            paused: true
         },
         settingsPasswordRequired: false,
         passwordRequired: false,
@@ -238,6 +239,7 @@ const app = new Vue({
         selectedCards: [],
         numberOfCardsToSelect: 3,
         timer: 0,
+        paused: true,
 
         customCardsUsed: 0,
         customText: "",
@@ -248,8 +250,11 @@ const app = new Vue({
 });
 
 setInterval(()=>{
-    if(app.timer > 0 && app.players.length > 1){
+    if(app.timer > 0 && app.players.length > 1 && !app.paused){
         app.timer = app.timer - 1;
+    }
+    if(app.timer <= 0){
+        app.paused = app.settings.paused;
     }
 }, 1000);
 

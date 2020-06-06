@@ -24,7 +24,7 @@ class Room:
         self.admin = None
 
     def __del__(self):
-        self.timer_cancel()
+        self.game_master.timer.cancel()
 
     @property
     def number_of_players(self):
@@ -149,7 +149,8 @@ class Room:
                 "time": self.settings.selecting_time,
                 "customCards": self.settings.custom_cards,
                 "gameType": self.settings.game_type,
-                "password": ""
+                "password": "",
+                "paused": self.settings.paused
             }
         }
         await self.send_json_to_all_players(settings_data)
@@ -192,11 +193,3 @@ class Room:
         for player in self.players:
             await player.send_json(json)
 
-    async def timer_cancel(self):
-        self.game_master.timer.cancel()
-        try:
-            await self.game_master.timer.task
-        except asyncio.CancelledError:
-            pass
-        except KickException:
-            raise
