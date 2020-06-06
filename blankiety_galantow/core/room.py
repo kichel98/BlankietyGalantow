@@ -25,10 +25,20 @@ class Room:
         self.game_master = GameMaster(self.players, self.chat, self.send_players_update)
         self.admin = None
 
+    def __del__(self):
+        self.game_master.timer.cancel()
 
     @property
     def number_of_players(self):
         return len(self.players)
+
+    @property
+    def is_empty(self):
+        if self.number_of_players == 0 :
+            return True
+        else:
+             return False
+
 
     async def add_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""
