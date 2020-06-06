@@ -99,7 +99,7 @@ class GameMaster:
                 await self.timer.task
             except asyncio.CancelledError:
                 pass
-            except KickException:
+            except Exception:
                 raise
         self.timer = Timer(self.selecting_time, self.handle_timeout)
         
