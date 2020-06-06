@@ -105,7 +105,6 @@ class GameMaster:
         
     
     async def handle_timeout(self):
-        print(self.settings.paused)
         self.timer_start_time = 0
         if not self.settings.paused:
             if self.game_state == GameState.selecting_cards:
