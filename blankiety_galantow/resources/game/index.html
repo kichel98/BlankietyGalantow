@@ -156,18 +156,45 @@
                     <p>{{topInfo}}</p>
                 </div>
                 <!-- Timer -->
-                <div class="timer w3-panel w3-center">
-                    <div>
-                        <p>
-                            <h2 
-                            class="w3-border w3-round-large" 
-                            :key="formatedTimer" 
-                            :class="{'final-countdown': finalCountdown }">
-                                {{formatedTimer}}
-                            </h2>
-                        </p>
+                <div class="timer-container">
+                    <div class="timer w3-panel w3-center">
+                        <div>
+                            <p>
+                                <h2 
+                                class="w3-border w3-round-large" 
+                                :key="formatedTimer" 
+                                :class="{'final-countdown': finalCountdown }">
+                                    {{formatedTimer}}
+                                </h2>
+                                
+                            </p>
+                        </div>
                     </div>
+                    
+                    <!-- Timer State -->
+                    <div class="timer-state w3-border w3-round-large w3-panel" 
+                        :class="{
+                            faded: paused,
+                            'timer-state-game-on': !paused
+                        }"
+                        @click="pauseGame">
+                            <!-- Start stop icon -->
+                        <div v-if="me.admin" >
+                            <p v-if="paused"><i class="icon-play w3-xlarge"></i>  </p>
+                            <p v-if="!paused"><i class="icon-pause w3-xlarge"></i>  </p>
+                        </div>
+                        <div>
+                            <h4 
+                                :key="timerState"
+                                >
+                                    {{timerState}}
+                            </h4>
+                        </div>
+                    </div>
+                    
                 </div>
+               
+                
                 <div class="table">
                     <transition name="bounce">
                         <div id="black-card" :key="blackCard.text" class="card w3-card w3-round-large w3-black w3-hover-shadow">

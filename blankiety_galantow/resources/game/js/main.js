@@ -111,6 +111,16 @@ const app = new Vue({
             socket.send(JSON.stringify(data));
             this.showSettings = false  // close settings modal
         },
+        pauseGame: function() {
+            if(this.me.admin){
+                this.paused = !this.paused;
+                const data = {
+                    type: "PAUSED",
+                    paused: this.paused
+                };
+                socket.send(JSON.stringify(data)); 
+            }
+        },
         submitPassword: function() {
             const data = {
                 type: "PASSWORD",
@@ -200,6 +210,14 @@ const app = new Vue({
         finalCountdown: function() {
             return this.timer < 10 && this.timer > 0;
         },
+        timerState: function() {
+            if(this.paused){
+                return "Gra wstrzymana"
+            }
+            else{
+                return "Gra w trakcie"
+            }
+        }
 
     },
     watch: {
@@ -226,7 +244,6 @@ const app = new Vue({
             time: 60,
             gameType: "default",
             password: "",
-            paused: true
         },
         settingsPasswordRequired: false,
         passwordRequired: false,
@@ -253,9 +270,6 @@ setInterval(()=>{
     if(app.timer > 0 && app.players.length > 1 && !app.paused){
         app.timer = app.timer - 1;
     }
-    if(app.timer <= 0){
-        app.paused = app.settings.paused;
-    }
 }, 1000);
 
 // Receive message from websocket
@@ -268,6 +282,9 @@ socket.onmessage = function(event) {
     }
     if(data.type === "PASSWORD"){
         app.passwordRequired = true;
+    }
+    if(data.type === "PAUSED"){
+        app.paused = data.paused;
     }
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);
