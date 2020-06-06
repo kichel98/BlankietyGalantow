@@ -1,13 +1,24 @@
+import {mixin} from "./components.js";
+
 const app = new Vue({
     el: '#container',
+    mixins: [mixin],
     data: {
         showCreateRoomModal: false,
         username: window.localStorage.getItem("username") || "Bober",
-        rooms: []
+        rooms: [],
+        refreshRoomsInterval: null
     },
     // instead of `created` lifecycle hook, we can use `mounted`, if needed
     created: function() {
-      this.fetchRooms()
+        const refreshRoomsPeriod = 5000;
+        this.fetchRooms();
+        this.refreshRoomsInterval = setInterval(() => {
+            this.fetchRooms()
+        }, refreshRoomsPeriod)
+    },
+    beforeDestroy: function () {
+        clearInterval(this.refreshRoomsInterval)
     },
     methods: {
         fetchRooms: function() {
@@ -18,9 +29,8 @@ const app = new Vue({
                 })
         },
         createRoom: function() {
-            
-            room_name = document.getElementById("room-name").value;
-            room_seats = document.getElementById("room-seats").value;
+            const room_name = document.getElementById("room-name").value;
+            const room_seats = document.getElementById("room-seats").value;
             if(room_seats > 1){
                 fetch(`/api/create?name=${room_name}&seats=${room_seats}`)
                 .then(response => response.json())

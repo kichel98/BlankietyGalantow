@@ -101,15 +101,36 @@ const app = new Vue({
             this.errorMessage = "";
         },
         submitSettings: function() {
+            if(this.newSettings.time <= 0){
+                return
+            }
             const data = {
                 type: "SETTINGS",
-                settings: this.settings
+                settings: this.newSettings
             };
             socket.send(JSON.stringify(data));
             this.showSettings = false  // close settings modal
         },
+        submitPassword: function() {
+            const data = {
+                type: "PASSWORD",
+                password: this.inputPassword
+            };
+            socket.send(JSON.stringify(data));
+            this.passwordRequired = false  // close password modal
+        },
+        cancelSettingsChanges: function() {
+            this.newSettings = Object.assign({}, this.settings);
+            this.showSettings = false;
+        },
         updateTimer: function() {
             this.timer = this.settings.time;
+        },
+        changePasswordRequired: function(event) {
+            if(this.settingsPasswordRequired){
+                this.settings.password = "";
+            }
+            this.settingsPasswordRequired = !this.settingsPasswordRequired
         }
     },
     computed: {
@@ -178,7 +199,8 @@ const app = new Vue({
         } ,
         finalCountdown: function() {
             return this.timer < 10 && this.timer > 0;
-        }
+        },
+
     },
     watch: {
         chat: function() {
@@ -192,18 +214,24 @@ const app = new Vue({
         },
     },
     data: {
-        tableId: 20965,
         players: [],
         myCards: [],
         chat: [],
         newMessage: '',
         errorMessage: '',
         settings: {
+            roomName: "",
             customCards: 5,
             open: true,
             time: 60,
-            gameType: "default"
+            gameType: "default",
+            password: "",
         },
+        settingsPasswordRequired: false,
+        passwordRequired: false,
+        passwordLength: 3,
+        inputPassword: "",
+        newSettings: {},
         showPlayers: false,
         showChat: true,
         showSettings: false,
@@ -223,8 +251,7 @@ setInterval(()=>{
     if(app.timer > 0 && app.players.length > 1){
         app.timer = app.timer - 1;
     }
-}, 1000)
-
+}, 1000);
 
 // Receive message from websocket
 socket.onmessage = function(event) {
@@ -233,6 +260,9 @@ socket.onmessage = function(event) {
         console.error("Received incorrect message:");
         console.error(data);
         return;
+    }
+    if(data.type === "PASSWORD"){
+        app.passwordRequired = true;
     }
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);
@@ -262,7 +292,7 @@ socket.onmessage = function(event) {
         app.updateTimer();
     }
     if(data.type === "SELECT_RANDOM_CARDS") {
-        app.selectedCards = []
+        app.selectedCards = [];
         for(const card of data.cards){
             app.selectCard(app.myCards.filter((myCard) => myCard.id === card.id)[0])
         }
@@ -272,6 +302,7 @@ socket.onmessage = function(event) {
     }
     if(data.type === "SETTINGS") {
         app.settings = data.settings;
+        app.newSettings = Object.assign({}, data.settings);
     }
     if(data.type === "KICK") {
         app.errorMessage = data.message;
@@ -293,7 +324,8 @@ socket.onmessage = function(event) {
 };
 
 socket.onclose = () => {
-    app.errorMessage = "Połączenie z serwerem zostało przerwane."
+    if (app.errorMessage === "")
+        app.errorMessage = "Połączenie z serwerem zostało przerwane."
 };
 
 function addMessageToChat(message) {

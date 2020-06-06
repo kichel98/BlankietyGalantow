@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blankiety Galantów</title>
-
+    <link rel="shortcut icon" href="../assets/favicon.ico"/>
     <link rel="stylesheet" href="../vendor/fontello/css/fontello.css">
     <link rel="stylesheet" href="../vendor/hover/hover-min.css">
     <link rel="stylesheet" href="../vendor/w3css/w3.css">
-    <link rel="stylesheet" href="css/main.css?v=1.1">
+    <link rel="stylesheet" href="css/main.css?v=1.2">
     <link rel="stylesheet" href="css/loader.css?v=1.1">
 
 
@@ -35,7 +35,10 @@
                     <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
                     <h3>Błąd</h3>
                     <hr>
+                    
                     <p><h4 >{{errorMessage}}</h4></p>
+                    <img class="milord-graphic"  src="../assets/error_graphic.png">
+
                 </div>
                 <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
                     <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
@@ -43,6 +46,26 @@
             </div>
         </div>
 
+        <!-- Password Modal -->
+        <div class="w3-modal on-top-modal" :class="{'w3-show': passwordRequired}">
+            <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                <div class="w3-center"><br>
+                    <span v-on:click="exit()" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                    <p >
+                        <img class="milord-graphic"  src="../assets/password_graphic.png">
+                    </p>
+                    <p>
+                        Hasło: <input id="password" type="text" v-model="inputPassword">
+                    </p>
+                    
+                    
+                </div>
+                <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+                    <button v-on:click="exit()" type="button" class="w3-button w3-red">Wyjdź</button>
+                    <button @click="submitPassword" type="button" class="w3-button w3-green w3-right">Potwierdź</button>
+                </div>
+            </div>
+        </div>
         <!-- Game App Content -->
         <template v-if="gameLoaded">
             <!-- Modal -->
@@ -51,7 +74,7 @@
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
 
                     <div class="w3-center"><br>
-                        <span @click="showSettings=false" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Zamknij">×</span>
+                        <span @click="cancelSettingsChanges" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Zamknij">×</span>
                         <h3>Ustawienia</h3>
                     </div>
                     <hr>
@@ -62,42 +85,66 @@
                             </p>
                         </div>
                         <p>
+                            <label>Nazwa pokoju
+                                <input class="w3-input" type="text" autocomplete="off" required
+                                        v-model="newSettings.roomName"
+                                        :disabled="!me.admin">
+                            </label>
+                        </p>
+                        <p>
                             <input id="is-open" name="is-open" class="w3-check" type="checkbox"
                                    :disabled="!me.admin"
-                                   v-model="settings.open">
+                                   v-model="newSettings.open">
                             <label for="is-open">Zezwól na dołączenie nowych graczy</label>
+                        </p>
+                        <p  v-if="me.admin">
+                            <input 
+                                id="is-password-protected" 
+                                name="is-password-protected" 
+                                class="w3-check" 
+                                type="checkbox"
+                                @change="changePasswordRequired($event)">
+                            <label for="is-password-protected">Zabezpieczenie hasłem</label>
+                            <p v-if="settingsPasswordRequired" >
+                                Hasło: <input type="text" minlength="passwordLength" v-model="newSettings.password">
+                            </p>
+                            <div v-if="newSettings.password.length < passwordLength && settingsPasswordRequired" style="text-align: center;">
+                                <p style="color: red; font-style: italic; margin-top: 0">
+                                    Hasło musi być dłuższe niż {{passwordLength}} znaki.
+                                </p>
+                            </div>
+                            
                         </p>
                         <h4>Tryb gry</h4>
                         <label>
-                            <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
+                            <input class="w3-radio" v-model="newSettings.gameType" type="radio" name="game-type" value="default" checked="" :disabled="!me.admin">
                             Standardowy
                         </label><br>
                         <label>
-                            <input class="w3-radio" v-model="settings.gameType" type="radio" name="game-type" value="customcards" :disabled="!me.admin">
-                            Mydełko: <i>Gracz może ustaloną liczbę razy zmienić tekst białej karty na dowolny wpisany przez siebie.</i>
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="nomercy" :disabled="!me.admin">
-                            Bez litości
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="child" :disabled="!me.admin">
-                            Dziecięcy
-                        </label><br>
-                        <label>
-                            <input class="w3-radio" type="radio" name="game-type" value="pwr" :disabled="!me.admin">
-                            Prezentacja projektu
+                            <input class="w3-radio" v-model="newSettings.gameType" type="radio" name="game-type" value="customcards" :disabled="!me.admin">
+                            Mydełko
+                            <span class="tooltip">(?)
+                                <span class="tooltiptext">
+                                    Gracz może ustaloną liczbę razy zmienić tekst białej karty na dowolny wpisany przez siebie.
+                                </span>
+                            </span>
                         </label><br>
                         <h4>Limit czasu</h4>
-                        <input type="number" v-model.number="settings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin"> sek.
-                        <div v-if="settings.gameType == 'customcards'"><h4>Liczba własnych kart</h4>
-                            <input type="number" v-model.number="settings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
+                        <input type="number" v-model.number="newSettings.time" name="time-limit" id="time-limit" value="60" :disabled="!me.admin" min="1"> sek.
+                        <div v-if="newSettings.gameType == 'customcards'"><h4>Liczba własnych kart</h4>
+                            <input type="number" v-model.number="newSettings.customCards" name="custom-cards" id="custom-cards" value="5" :disabled="!me.admin">
                         </div>
+                        <div v-if="newSettings.time < 1" style="text-align: center;">
+                            <p style="color: red; font-style: italic; margin-top: 0">
+                                Czas rundy musi być większy niż 1 sekunda.
+                            </p>
+</div>
                     </div>
                     <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                        <button @click="showSettings=false" type="button" class="w3-button w3-red" >Anuluj</button>
+                        <button @click="cancelSettingsChanges" type="button" class="w3-button w3-red" >Anuluj</button>
                         <button @click="submitSettings" type="button" class="w3-button w3-green w3-right"
-                                :disabled="!me.admin">Zapisz</button>
+                                :disabled="!me.admin ||
+                                (newSettings.password.length < passwordLength && settingsPasswordRequired)">Zapisz</button>
                     </div>
                 </div>
             </div>
@@ -214,7 +261,7 @@
             <div class="w3-third">
                 <div id="sidebar" class="w3-card w3-bar-block">
                     <div class="w3-container w3-bar-item" style="display: flex;">
-                        <h2 style="width: 100%;">Stół: {{ tableId }}</h2>
+                        <h2 style="width: 100%;">Pokój: {{ settings.roomName }}</h2>
                         <button class="w3-button" style="width: 100px;" @click="showSettings=true"><i class="icon-cog w3-xxxlarge"></i></button>
                     </div>
                     <button class="w3-button w3-bar-item w3-light-grey" @click="showPlayers = !showPlayers">Gracze <i class="icon-down-dir"></i></button>
@@ -251,8 +298,8 @@
     </div>
     <!-- game -->
 
-    <script src="js/websocket_connect.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/websocket_connect.js?v=1.0"></script>
+    <script src="js/main.js?v=1.0"></script>
 </body>
 
 </html>

@@ -1,4 +1,23 @@
 -------------------------------------------
+30-05-2020: Naprawa błędów, dodawanie funkcjonalności
+Zrobiono:
+ - Naprawiono wiele błędów.
+ - Przebudowano system komunikacji z klasą Player.
+ - Dokończono implementację podstawowych funkcjonalności.
+ - Dodano limit czasu trwania rundy.
+ - Dodano nowy tryb gry ("mydełko").
+ - Dodano wiele nowych kart do talii.
+ - Kilka pomniejszych usprawnień
+Nie zrobiono:
+ - 
+Planujemy:
+ - Naprawiać wykryte błędy.
+ - Uzupełnić pozostałe elementy interfejsu o sensowną treść.
+ - Opublikować aplikację w sieci.
+Problemy:
+ -
+
+-------------------------------------------
 24-06-2020: Implementacja mechanik rozgrywki
 Zrobiono:
  - Dodano wypisywanie loggów w trakcie działania serwera.

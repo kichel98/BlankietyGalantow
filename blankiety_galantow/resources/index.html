@@ -5,21 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blankiety Galantów</title>
-
+    <link rel="shortcut icon" href="assets/favicon.ico"/>
     <link rel="stylesheet" href="vendor/w3css/w3.css">
     <link rel="stylesheet" href="vendor/hover/hover-min.css">
     <link rel="stylesheet" href="vendor/fontello/css/fontello.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/main.css?v=1.0">
 
     <script src="vendor/vue/vue-dev.js"></script>
-    <script src="js/components.js"></script>
+    <script type="module" src="js/components.js?v=1.0"></script>
 </head>
 
 <body>
 
     <main class="w3-content">
         <header>
-            <h1>Blankiety Galantów</h1>
+            <h1>Blankiety <img class="brand-logo" src="assets/logo.png"> Galantów</h1>
         </header>
 
         <div id="container">
@@ -33,7 +33,7 @@
                     <hr>
                     <div class="w3-container w3-margin">
                         <h4>Nazwa pokoju</h4>
-                        <input type="text" name="room-name" id="room-name" value="Pokoj69">
+                        <input type="text" name="room-name" id="room-name" value="Nowy pokój">
                         <h4>Liczba miejsc</h4>
                         <input type="number" name="room-seats" id="room-seats" value="6" min="2">
                     </div>
@@ -59,7 +59,15 @@
                         <h2>O grze</h2>
                     </header>
                     <hr>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc malesuada magna et ligula elementum molestie. Aenean in convallis sem, a tincidunt tellus. Nam venenatis nibh ac mauris tristique, eu tempor sapien pulvinar.</p>
+                    <p>Blankiety Galantów to webowa implementacja popularnej gry karcianej Karty Dżentelmenów,
+                        stworzonej przez Aleksandra Kozika i Marcina Jarosa
+                        <a href="https://kartydzentelmenow.pl">(strona projektu)</a>.
+                        Aplikacja została stworzona w ramach kursu języka Python na Politechnice Wrocławskiej.</p>
+                    <p>Kod źródłowy gry jest dostępny w oficjalnym repozytorium projektu na portalu <a href="https://github.com/kichel98/BlankietyGalantow">GitHub</a>.</p>
+                </div>
+
+                <div class="footer">
+                    <p>Blankiety Galantów 1.0<br>Copyright &copy; 2020</p>
                 </div>
 
             </aside>
@@ -73,14 +81,14 @@
                         v-for="room in rooms"
                         v-bind:key="room.id"
                         v-bind:room="room"
-                        @click.native="connect(room.id)">
+                        @click.native="canRoomAcceptNewPlayer(room) ? connect(room.id) : null">
                     </room-item>
                 </ul>
             </div>
         </div>
     </main>
 
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 
 </html>
