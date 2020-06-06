@@ -24,7 +24,7 @@ class Room:
         self.admin = None
 
     def __del__(self):
-        self.timer_cancel()
+        self.game_master.timer.cancel()
 
     @property
     def number_of_players(self):
@@ -32,11 +32,8 @@ class Room:
 
     @property
     def is_empty(self):
-        if self.number_of_players == 0 :
-            return True
-        else:
-             return False
-
+        return self.number_of_players == 0
+            
 
     async def connect_new_player(self, player: Player):
         """Add new player to the room and start listening."""
@@ -192,11 +189,3 @@ class Room:
         for player in self.players:
             await player.send_json(json)
 
-    async def timer_cancel(self):
-        self.game_master.timer.cancel()
-        try:
-            await self.game_master.timer.task
-        except asyncio.CancelledError:
-            pass
-        except KickException:
-            raise
