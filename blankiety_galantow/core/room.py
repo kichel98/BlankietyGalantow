@@ -1,4 +1,5 @@
 import random
+
 from typing import Dict
 from fastapi.websockets import WebSocketDisconnect
 from fastapi.logger import logger
@@ -22,9 +23,17 @@ class Room:
         self.settings.name = name
         self.admin = None
 
+    def __del__(self):
+        self.game_master.timer.cancel()
+
     @property
     def number_of_players(self):
         return len(self.players)
+
+    @property
+    def is_empty(self):
+        return self.number_of_players == 0
+            
 
     async def connect_new_player(self, player: Player):
         """Add new player to the room and start listening."""
@@ -179,3 +188,4 @@ class Room:
         """Send json (given as Python dictionary) to all players"""
         for player in self.players:
             await player.send_json(json)
+

@@ -18,6 +18,7 @@ class Server:
     async def add_player_to_room(self, room_id: int, player: Player):
         """Add new player to existing room."""
         await self._rooms[room_id].connect_new_player(player)
+        self.delete_if_empty(room_id)
 
     def add_room(self, name: str, seats: int = 0):
         """Add new room with random alpha-numeric id"""
@@ -29,6 +30,10 @@ class Server:
                     room.number_of_seats = seats
                 self._rooms[random_id] = room
                 return random_id
+
+    def delete_if_empty(self, room_id: int):
+        if self._rooms[room_id].is_empty:
+            del self._rooms[room_id]
 
     def get_room_list(self):
         """Prepare and return list of all rooms."""
