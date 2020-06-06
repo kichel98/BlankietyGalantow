@@ -113,12 +113,12 @@ const app = new Vue({
         },
         pauseGame: function() {
             if(this.me.admin){
-                this.paused = !this.paused;
+                this.settings.paused = !this.settings.paused;
                 const data = {
-                    type: "PAUSED",
-                    paused: this.paused
+                    type: "SETTINGS",
+                    settings: this.settings
                 };
-                socket.send(JSON.stringify(data)); 
+                socket.send(JSON.stringify(data));
             }
         },
         submitPassword: function() {
@@ -135,7 +135,7 @@ const app = new Vue({
         },
         updateTimer: function() {
             this.timer = this.settings.time;
-            if(this.paused){
+            if(this.settings.paused){
                 this.timerStop = true
             }
         },
@@ -214,7 +214,7 @@ const app = new Vue({
             return this.timer < 10 && this.timer > 0;
         },
         timerState: function() {
-            if(this.paused){
+            if(this.settings.paused){
                 return "Następna runda wstrzymana"
             }
             else{
@@ -247,6 +247,7 @@ const app = new Vue({
             time: 60,
             gameType: "default",
             password: "",
+            paused: true,
         },
         settingsPasswordRequired: false,
         passwordRequired: false,
@@ -259,7 +260,7 @@ const app = new Vue({
         selectedCards: [],
         numberOfCardsToSelect: 3,
         timer: 0,
-        paused: true,
+        
         timerStop: true,
         customCardsUsed: 0,
         customText: "",
@@ -273,7 +274,7 @@ setInterval(()=>{
     if(app.timer > 0 && app.players.length > 1 && !app.timerStop){
         app.timer = app.timer - 1;
     }
-    if(app.timer <= 0 && app.paused){
+    if(app.timer <= 0 && app.settings.paused){
         app.updateTimer() 
     }
 }, 1000);
@@ -288,12 +289,6 @@ socket.onmessage = function(event) {
     }
     if(data.type === "PASSWORD"){
         app.passwordRequired = true;
-    }
-    if(data.type === "PAUSED"){
-        app.paused = data.paused;
-        if(!app.paused){
-            app.timerStop = false
-        }
     }
     if(data.type === "CHAT_MESSAGE" && data.message) {
         addMessageToChat(data.message);
@@ -335,6 +330,9 @@ socket.onmessage = function(event) {
     if(data.type === "SETTINGS") {
         app.settings = data.settings;
         app.newSettings = Object.assign({}, data.settings);
+        if(!app.settings.paused){
+            app.timerStop = false
+        }
     }
     if(data.type === "KICK") {
         app.errorMessage = data.message;

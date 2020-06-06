@@ -35,19 +35,18 @@ class GameMaster:
         self.timer = None
         self.game_state = GameState.selecting_cards
         self.players_update_callback = players_update_callback
-        self.paused = True
         players.add_append_callback(self.handle_add_player)
         players.add_remove_callback(self.handle_player_leave)
 
     async def handle_add_player(self, player):
         await player.add_cards(self.white_deck.get_cards(10))
         await self.send_black_card(player)
-        await self.send_timer_message(player)
         if self.master is None:
             self.master = player
             player.state = PlayerState.master
         if len(self.players) == 2:
             await self.timer_start()
+        await self.send_timer_message(player)
     
     async def handle_player_leave(self, player):
         if len(self.players) < 2 and self.timer is not None:
@@ -69,16 +68,6 @@ class GameMaster:
             await self.handle_cards_reveal(data)
         if data["type"] == "CUSTOM_CARD" and "card" in data:
             await self.handle_custom_card(player, data)
-        if data["type"] == "PAUSED" and "paused" in data:
-            await self.handle_pause_game(player, data)
-   
-    async def handle_pause_game(self, player, data):
-        self.paused = data["paused"]
-        if self.timer is not None:
-            self.timer.cancel()
-        await self.timer_start()
-        for player in self.players:
-            await player.send_json(data)
 
     async def handle_custom_card(self, player, data):
         if player.custom_cards_used < self.settings.custom_cards:
@@ -99,29 +88,30 @@ class GameMaster:
             await player.send_json(message)
 
     async def timer_start(self):
-        if not self.paused:
-            if self.selecting_time != self.settings.selecting_time:
-                self.selecting_time = self.settings.selecting_time
-            if self.timer_start_time == 0:
-                self.timer_start_time = time.time()
-            if self.timer is not None:
-                self.timer_start_time = time.time()
-                self.timer.cancel()
-                try:
-                    await self.timer.task
-                except asyncio.CancelledError:
-                    pass
-                except KickException:
-                    raise
-            self.timer = Timer(self.selecting_time, self.handle_timeout)
+        if self.selecting_time != self.settings.selecting_time:
+            self.selecting_time = self.settings.selecting_time
+        if self.timer_start_time == 0:
+            self.timer_start_time = time.time()
+        if self.timer is not None:
+            self.timer_start_time = time.time()
+            self.timer.cancel()
+            try:
+                await self.timer.task
+            except asyncio.CancelledError:
+                pass
+            except KickException:
+                raise
+        self.timer = Timer(self.selecting_time, self.handle_timeout)
         
     
     async def handle_timeout(self):
+        print(self.settings.paused)
         self.timer_start_time = 0
-        if self.game_state == GameState.selecting_cards:
-            await self.verify_players_activity()
-        elif self.game_state == GameState.choosing_winner:
-            await self.start_new_round_without_winner()
+        if not self.settings.paused:
+            if self.game_state == GameState.selecting_cards:
+                await self.verify_players_activity()
+            elif self.game_state == GameState.choosing_winner:
+                await self.start_new_round_without_winner()
 
     async def verify_players_activity(self):
         for player in self.players:

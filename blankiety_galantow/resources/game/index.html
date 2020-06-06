@@ -174,14 +174,14 @@
                     <!-- Timer State -->
                     <div class="timer-state w3-border w3-round-large w3-panel" 
                         :class="{
-                            faded: paused,
-                            'timer-state-game-on': !paused
+                            faded: settings.paused,
+                            'timer-state-game-on': !settings.paused
                         }"
                         @click="pauseGame">
                             <!-- Start stop icon -->
                         <div v-if="me.admin" >
-                            <p v-if="paused"><i class="icon-play w3-xlarge"></i>  </p>
-                            <p v-if="!paused"><i class="icon-pause w3-xlarge"></i>  </p>
+                            <p v-if="settings.paused"><i class="icon-play w3-xlarge"></i>  </p>
+                            <p v-if="!settings.paused"><i class="icon-pause w3-xlarge"></i>  </p>
                         </div>
                         <div>
                             <h4 
