@@ -111,6 +111,16 @@ const app = new Vue({
             socket.send(JSON.stringify(data));
             this.showSettings = false  // close settings modal
         },
+        pauseGame: function() {
+            if(this.me.admin){
+                this.settings.paused = !this.settings.paused;
+                const data = {
+                    type: "SETTINGS",
+                    settings: this.settings
+                };
+                socket.send(JSON.stringify(data));
+            }
+        },
         submitPassword: function() {
             const data = {
                 type: "PASSWORD",
@@ -125,6 +135,9 @@ const app = new Vue({
         },
         updateTimer: function() {
             this.timer = this.settings.time;
+            if(this.settings.paused){
+                this.timerStop = true
+            }
         },
         changePasswordRequired: function(event) {
             if(this.settingsPasswordRequired){
@@ -200,6 +213,14 @@ const app = new Vue({
         finalCountdown: function() {
             return this.timer < 10 && this.timer > 0;
         },
+        timerState: function() {
+            if(this.settings.paused){
+                return "Następna runda wstrzymana"
+            }
+            else{
+                return "Gra w trakcie"
+            }
+        }
 
     },
     watch: {
@@ -226,6 +247,7 @@ const app = new Vue({
             time: 60,
             gameType: "default",
             password: "",
+            paused: true,
         },
         settingsPasswordRequired: false,
         passwordRequired: false,
@@ -238,7 +260,8 @@ const app = new Vue({
         selectedCards: [],
         numberOfCardsToSelect: 3,
         timer: 0,
-
+        
+        timerStop: true,
         customCardsUsed: 0,
         customText: "",
         // Card master variables
@@ -248,8 +271,11 @@ const app = new Vue({
 });
 
 setInterval(()=>{
-    if(app.timer > 0 && app.players.length > 1){
+    if(app.timer > 0 && app.players.length > 1 && !app.timerStop){
         app.timer = app.timer - 1;
+    }
+    if(app.timer <= 0 && app.settings.paused){
+        app.updateTimer() 
     }
 }, 1000);
 
@@ -290,6 +316,7 @@ socket.onmessage = function(event) {
             })
         }
         app.updateTimer();
+        
     }
     if(data.type === "SELECT_RANDOM_CARDS") {
         app.selectedCards = [];
@@ -303,6 +330,9 @@ socket.onmessage = function(event) {
     if(data.type === "SETTINGS") {
         app.settings = data.settings;
         app.newSettings = Object.assign({}, data.settings);
+        if(!app.settings.paused){
+            app.timerStop = false
+        }
     }
     if(data.type === "KICK") {
         app.errorMessage = data.message;

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../vendor/fontello/css/fontello.css">
     <link rel="stylesheet" href="../vendor/hover/hover-min.css">
     <link rel="stylesheet" href="../vendor/w3css/w3.css">
-    <link rel="stylesheet" href="css/main.css?v=1.2">
+    <link rel="stylesheet" href="css/main.css?v=1.3">
     <link rel="stylesheet" href="css/loader.css?v=1.1">
 
 
@@ -156,18 +156,45 @@
                     <p>{{topInfo}}</p>
                 </div>
                 <!-- Timer -->
-                <div class="timer w3-panel w3-center">
-                    <div>
-                        <p>
-                            <h2 
-                            class="w3-border w3-round-large" 
-                            :key="formatedTimer" 
-                            :class="{'final-countdown': finalCountdown }">
-                                {{formatedTimer}}
-                            </h2>
-                        </p>
+                <div class="timer-container">
+                    <div class="timer w3-panel w3-center">
+                        <div>
+                            <p>
+                                <h2 
+                                class="w3-border w3-round-large" 
+                                :key="formatedTimer" 
+                                :class="{'final-countdown': finalCountdown }">
+                                    {{formatedTimer}}
+                                </h2>
+                                
+                            </p>
+                        </div>
                     </div>
+                    
+                    <!-- Timer State -->
+                    <div class="timer-state w3-border w3-round-large w3-panel" 
+                        :class="{
+                            faded: settings.paused,
+                            'timer-state-game-on': !settings.paused
+                        }"
+                        @click="pauseGame">
+                            <!-- Start stop icon -->
+                        <div v-if="me.admin" >
+                            <p v-if="settings.paused"><i class="icon-play w3-xlarge"></i>  </p>
+                            <p v-if="!settings.paused"><i class="icon-pause w3-xlarge"></i>  </p>
+                        </div>
+                        <div>
+                            <h4 
+                                :key="timerState"
+                                >
+                                    {{timerState}}
+                            </h4>
+                        </div>
+                    </div>
+                    
                 </div>
+               
+                
                 <div class="table">
                     <transition name="bounce">
                         <div id="black-card" :key="blackCard.text" class="card w3-card w3-round-large w3-black w3-hover-shadow">
@@ -299,7 +326,7 @@
     <!-- game -->
 
     <script src="js/websocket_connect.js?v=1.0"></script>
-    <script src="js/main.js?v=1.0"></script>
+    <script src="js/main.js?v=1.1"></script>
 </body>
 
 </html>

@@ -12,6 +12,7 @@ class RoomSettings:
         self.game_type: str = "default"
         self.custom_cards: int = 5
         self.password: str = ""
+        self.paused = True
 
     async def update(self, who: str, data: dict):
         try:
@@ -20,9 +21,20 @@ class RoomSettings:
             await self.set_custom_cards(who, data["customCards"])
             await self.set_selecting_time(who, data["time"])
             await self.set_game_type(who, data["gameType"])
+            await self.set_paused(who, data["paused"])
             self.set_room_password(data["password"])
         except KeyError:
             logger.error(f"Received invalid settings: {data}")
+
+    async def set_paused(self, who: str, paused):
+        if self.paused != paused:
+            self.paused = paused
+            msg = ""
+            if self.paused:
+                msg = f"Admin {who} wstrzymał następną rundę."
+            else:
+                msg = f"Admin {who} wznowił grę."
+            await self.chat.send_message_from_system(msg)
 
     async def set_name(self, who: str, new_name):
         if self.name != new_name:

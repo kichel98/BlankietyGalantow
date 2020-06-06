@@ -146,7 +146,8 @@ class Room:
                 "time": self.settings.selecting_time,
                 "customCards": self.settings.custom_cards,
                 "gameType": self.settings.game_type,
-                "password": ""
+                "password": "",
+                "paused": self.settings.paused
             }
         }
         await self.send_json_to_all_players(settings_data)
