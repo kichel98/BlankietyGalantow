@@ -334,6 +334,9 @@ socket.onmessage = function(event) {
         if(!app.settings.paused){
             app.timerStop = false
         }
+        else if(app.timerStop){
+            app.updateTimer()
+        }
     }
     if(data.type === "KICK") {
         app.errorMessage = data.message;

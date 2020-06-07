@@ -115,6 +115,8 @@ class Room:
         elif data["type"] == "SETTINGS" and "settings" in data and self.is_admin(player):
             await self.settings.update(player.name, data["settings"])
             await self.send_settings_to_players()
+            if not self.game_master.is_timer_set():
+                await self.game_master.timer_start()
         elif data["type"] == "CHAT_MESSAGE" and "message" in data:
             await self.chat.send_message_from_player(player, data["message"])
         else:

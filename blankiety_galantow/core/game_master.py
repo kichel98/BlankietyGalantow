@@ -101,8 +101,11 @@ class GameMaster:
                 pass
             except KickException:
                 raise
+            self.timer = None
         self.timer = Timer(self.selecting_time, self.handle_timeout)
         
+    def is_timer_set(self):
+        return self.timer is not None
     
     async def handle_timeout(self):
         self.timer_start_time = 0
@@ -111,6 +114,7 @@ class GameMaster:
                 await self.verify_players_activity()
             elif self.game_state == GameState.choosing_winner:
                 await self.start_new_round_without_winner()
+        self.timer = None
 
     async def verify_players_activity(self):
         for player in self.players:
