@@ -17,13 +17,12 @@ class GameMaster:
     black_deck: Deck
     black_card: BlackCard
 
-    # FIXME: Zrezygnować z callbacku na rzecz czegoś "ładniejszego"
     def __init__(self, room: 'Room'):
         self.room = room
         self.players = room.players
         self.chat = room.chat
         self.settings = room.settings
-        self.players_update_callback = room.send_players_update
+        self.send_players_update = room.send_players_update
         self.white_deck = Deck(WhiteCard, "resources/game/decks/classic_white.csv")
         self.black_deck = Deck(BlackCard, "resources/game/decks/classic_black.csv")
         self.players_hands = {}
@@ -75,11 +74,6 @@ class GameMaster:
             custom_card.text = card["text"]
 
     async def handle_cards_reveal(self, data):
-        # FIXME: What is this if statement?
-        # player = self.get_cards_owner_by_id(data["cards"])
-        # if player is None:
-        #     await player.kick("Próba oszustwa")
-        #     return
         message = {
             "type": "CARDS_REVEAL",
             "cards": data["cards"]
@@ -152,7 +146,7 @@ class GameMaster:
         await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
         self.reset_players_state()
         await self.send_empty_played_cards()
-        await self.players_update_callback()
+        await self.send_players_update()
         self.game_state = GameState.selecting_cards
         await self.timer_start()
 
@@ -182,7 +176,7 @@ class GameMaster:
             await self.send_played_cards()
             self.game_state = GameState.choosing_winner
             await self.timer_start()
-        await self.players_update_callback()
+        await self.send_players_update()
 
     def player_owns_cards(self, player, cards):
         """Send True if player hand has all cards, send False if any card is not in player hand"""
@@ -240,7 +234,7 @@ class GameMaster:
         await self.chat.send_message_from_system(f"Gracz '{self.master.name}' zostaje Mistrzem Kart.")
         self.reset_players_state()
         await self.send_empty_played_cards()
-        await self.players_update_callback()
+        await self.send_players_update()
         self.game_state = GameState.selecting_cards
         await self.timer_start()
 
