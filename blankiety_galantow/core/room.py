@@ -10,7 +10,6 @@ from .player import Player
 from .game_master import GameMaster
 from .room_settings import RoomSettings
 from .utils.observable_list import ObservableList
-from .kick_exception import KickException
 
 
 class Room:
@@ -33,7 +32,6 @@ class Room:
     @property
     def is_empty(self):
         return self.number_of_players == 0
-            
 
     async def connect_new_player(self, player: Player):
         """Add new player to the room and start listening."""
@@ -101,9 +99,6 @@ class Room:
         except WebSocketDisconnect:
             await self.players.remove(player)
             await self.handle_player_leaving(player)
-        except KickException as ex:
-            await self.players.remove(player)
-            await self.handle_player_leaving(player, message=ex.message)
 
     async def process_message(self, player: Player, data: Dict):
         """Process raw JSON message (data) from player."""
@@ -129,6 +124,16 @@ class Room:
             self.set_new_random_admin()
         await self.chat.send_message_from_system(message)
         await self.send_players_update()
+
+    async def kick_player(self, player: Player, reason: str):
+        kick_reason = {
+            "type": "KICK",
+            "message": f"Zostałeś wyrzucony z pokoju. Powód: {reason}"
+        }
+        await player.send_json(kick_reason)
+        await player.socket.close()
+        await self.players.remove(player)
+        await self.handle_player_leaving(player, message=reason)
 
     def set_new_random_admin(self):
         """Choose random player as admin"""

@@ -5,7 +5,6 @@ import asyncio
 from .deck import Deck, WhiteCard, BlackCard
 from .utils.timer import Timer
 from .player import Player, PlayerState
-from .kick_exception import KickException
 from .game_state import GameState
 from typing import Dict, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -20,6 +19,7 @@ class GameMaster:
 
     # FIXME: Zrezygnować z callbacku na rzecz czegoś "ładniejszego"
     def __init__(self, room: 'Room'):
+        self.room = room
         self.players = room.players
         self.chat = room.chat
         self.settings = room.settings
@@ -75,10 +75,11 @@ class GameMaster:
             custom_card.text = card["text"]
 
     async def handle_cards_reveal(self, data):
-        player = self.get_cards_owner_by_id(data["cards"])
-        if player is None:
-            await player.kick("Próba oszustwa")
-            return
+        # FIXME: What is this if statement?
+        # player = self.get_cards_owner_by_id(data["cards"])
+        # if player is None:
+        #     await player.kick("Próba oszustwa")
+        #     return
         message = {
             "type": "CARDS_REVEAL",
             "cards": data["cards"]
@@ -98,11 +99,8 @@ class GameMaster:
                 await self.timer.task
             except asyncio.CancelledError:
                 pass
-            except KickException:
-                raise
         self.timer = Timer(self.selecting_time, self.handle_timeout)
-        
-    
+
     async def handle_timeout(self):
         self.timer_start_time = 0
         if not self.settings.paused:
@@ -117,7 +115,7 @@ class GameMaster:
                 await self.select_random_player_cards(player)
                 player.rounds_without_activity = player.rounds_without_activity + 1
                 if player.rounds_without_activity > 2:
-                    await player.kick("Brak aktywności.")
+                    await self.room.kick_player(player, "Brak aktywności.")
             elif player.state == PlayerState.ready:
                 player.rounds_without_activity = 0
 
@@ -175,7 +173,7 @@ class GameMaster:
         Method for handling CARDS_SELECT message
         """
         if not self.player_owns_cards(player, data["cards"]):
-            await player.kick("Próba oszustwa")
+            await self.room.kick_player(player, "Próba oszustwa.")
             return
         self.select_cards(player, data["cards"])
         # Sends played cards in this round if everybody selected their cards
