@@ -63,7 +63,7 @@ class GameMaster:
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
             await self.handle_choosing_winner(data)
         if data["type"] == "CARDS_REVEAL" and "cards" in data:
-            await self.handle_cards_reveal(data)
+            await self.handle_cards_reveal(player, data)
         if data["type"] == "CUSTOM_CARD" and "card" in data:
             await self.handle_custom_card(player, data)
 
@@ -73,7 +73,11 @@ class GameMaster:
             custom_card = player.get_card_by_id(card["id"])
             custom_card.text = card["text"]
 
-    async def handle_cards_reveal(self, data):
+    async def handle_cards_reveal(self, player, data):
+        cards_owner = self.get_cards_owner_by_id(data["cards"])
+        if cards_owner is None:
+            await self.room.kick_player(player, "Próba oszustwa")
+            return
         message = {
             "type": "CARDS_REVEAL",
             "cards": data["cards"]
