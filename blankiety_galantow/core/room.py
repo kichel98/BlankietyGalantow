@@ -134,7 +134,6 @@ class Room:
         msg = f"Gracz {player.name} został wyrzucony z pokoju. Powód: {reason}"
         await self.chat.send_message_from_system(msg)
         await self.players.remove(player)
-        await self.handle_player_leaving(player)
         await player.socket.close()
 
     def set_new_random_admin(self):
