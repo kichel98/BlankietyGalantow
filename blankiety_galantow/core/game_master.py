@@ -2,15 +2,14 @@ import random
 import time
 import asyncio
 
-from .chat import Chat
 from .deck import Deck, WhiteCard, BlackCard
-from .room_settings import RoomSettings
-from .utils.observable_list import ObservableList
 from .utils.timer import Timer
 from .player import Player, PlayerState
 from .kick_exception import KickException
 from .game_state import GameState
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
+if TYPE_CHECKING:
+    from blankiety_galantow.core.room import Room
 
 
 class GameMaster:
@@ -20,10 +19,11 @@ class GameMaster:
     black_card: BlackCard
 
     # FIXME: Zrezygnować z callbacku na rzecz czegoś "ładniejszego"
-    def __init__(self, players: ObservableList, chat: Chat, settings: RoomSettings, players_update_callback):
-        self.players = players
-        self.chat = chat
-        self.settings = settings
+    def __init__(self, room: 'Room'):
+        self.players = room.players
+        self.chat = room.chat
+        self.settings = room.settings
+        self.players_update_callback = room.send_players_update
         self.white_deck = Deck(WhiteCard, "resources/game/decks/classic_white.csv")
         self.black_deck = Deck(BlackCard, "resources/game/decks/classic_black.csv")
         self.players_hands = {}
@@ -34,9 +34,8 @@ class GameMaster:
         self.timer_start_time = 0
         self.timer = None
         self.game_state = GameState.selecting_cards
-        self.players_update_callback = players_update_callback
-        players.add_append_callback(self.handle_add_player)
-        players.add_remove_callback(self.handle_player_leave)
+        self.players.add_append_callback(self.handle_add_player)
+        self.players.add_remove_callback(self.handle_player_leave)
 
     async def handle_add_player(self, player):
         await player.add_cards(self.white_deck.get_cards(10))

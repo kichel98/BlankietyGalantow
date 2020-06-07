@@ -19,7 +19,7 @@ class Room:
         self.players = ObservableList()
         self.chat = Chat(self.players)
         self.settings = RoomSettings(self.chat)
-        self.game_master = GameMaster(self.players, self.chat, self.settings, self.send_players_update)
+        self.game_master = GameMaster(self)
         self.settings.name = name
         self.admin = None
 
