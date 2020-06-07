@@ -1,3 +1,35 @@
+PODSUMOWANIE
+
+Projekt od samego początku szedł dobrym tempem. Pomimo użycia nieznanych
+nam wcześniej frameworków (Vue.js i FastAPI) udało nam się je okiełznać.
+Nowe funkcjonalności były regularnie dodawane i testowane. Każda zmiana
+była weryfikowana przez innych członków zespołu poprzez code review.
+
+Pomimo przesunięcia terminu oddania projektu, utrzymaliśmy tempo prac,
+a otrzymany dodatkowy czas wykorzystaliśmy na naprawę błędów, testy
+oraz implementację dodatkowych funkcjonalności, których początkowo nie
+zakładaliśmy.
+
+Projekt udało się zrealizować w ponad 100%.
+
+-------------------------------------------
+07-06-2020: Naprawa błędów, dodawanie funkcjonalności, testy
+Zrobiono:
+ - Naprawiono wiele błędów (#87, #92, #93, #96, #97, #101, #109, #121, #124).
+ - Dodanie nowych grafik.
+ - Dodano przycisk pauzujący grę.
+ - Dodano możliwość ustawienia hasła na pokój.
+ - Dodamo możliwość zmiany nazwy pokoju.
+ - Dodano nowe karty.
+Nie zrobiono:
+ - 
+Planujemy:
+ - Naprawić pozostałe błędy.
+ - Dodać więcej kart.
+ - Ogłosić aplikację światu.
+Problemy:
+ -
+
 -------------------------------------------
 30-05-2020: Naprawa błędów, dodawanie funkcjonalności
 Zrobiono:
