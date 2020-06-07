@@ -97,7 +97,6 @@ class Room:
                 msg = await player.receive_json()
                 await self.process_message(player, msg)
         except WebSocketDisconnect:
-            await self.players.remove(player)
             await self.handle_player_leaving(player)
 
     async def process_message(self, player: Player, data: Dict):
@@ -116,13 +115,14 @@ class Room:
             # Handle game_master messages
             await self.game_master.process_message(player, data)
 
-    async def handle_player_leaving(self, player, message=None):
+    async def handle_player_leaving(self, player):
         """Does all needed operations after player leaves a room"""
-        if message is None:
-            message = f"Gracz '{player.name}' opuścił pokój."
+        if player in self.players:
+            await self.players.remove(player)
+            message = f"Gracz {player.name} opuścił pokój."
+            await self.chat.send_message_from_system(message)
         if player == self.admin:
             self.set_new_random_admin()
-        await self.chat.send_message_from_system(message)
         await self.send_players_update()
 
     async def kick_player(self, player: Player, reason: str):
@@ -131,9 +131,11 @@ class Room:
             "message": f"Zostałeś wyrzucony z pokoju. Powód: {reason}"
         }
         await player.send_json(kick_reason)
-        await player.socket.close()
+        msg = f"Gracz {player.name} został wyrzucony z pokoju. Powód: {reason}"
+        await self.chat.send_message_from_system(msg)
         await self.players.remove(player)
-        await self.handle_player_leaving(player, message=reason)
+        await self.handle_player_leaving(player)
+        await player.socket.close()
 
     def set_new_random_admin(self):
         """Choose random player as admin"""
