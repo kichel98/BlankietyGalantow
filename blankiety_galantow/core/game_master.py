@@ -4,6 +4,7 @@ import asyncio
 
 from .chat import Chat
 from .deck import Deck, WhiteCard, BlackCard
+#from .room import Room
 from .room_settings import RoomSettings
 from .utils.observable_list import ObservableList
 from .utils.timer import Timer
@@ -20,10 +21,11 @@ class GameMaster:
     black_card: BlackCard
 
     # FIXME: Zrezygnować z callbacku na rzecz czegoś "ładniejszego"
-    def __init__(self, players: ObservableList, chat: Chat, settings: RoomSettings, players_update_callback):
-        self.players = players
-        self.chat = chat
-        self.settings = settings
+    def __init__(self, room):
+        self.room = room
+        self.players = room.players
+        self.chat = room.chat
+        self.settings = room.settings
         self.white_deck = Deck(WhiteCard, "resources/game/decks/classic_white.csv")
         self.black_deck = Deck(BlackCard, "resources/game/decks/classic_black.csv")
         self.players_hands = {}
@@ -34,9 +36,9 @@ class GameMaster:
         self.timer_start_time = 0
         self.timer = None
         self.game_state = GameState.selecting_cards
-        self.players_update_callback = players_update_callback
-        players.add_append_callback(self.handle_add_player)
-        players.add_remove_callback(self.handle_player_leave)
+        self.players_update_callback = room.send_players_update()
+        room.players.add_append_callback(self.handle_add_player) # nie wiem co z tym zrobić
+        room.players.add_remove_callback(self.handle_player_leave) # z tym też
 
     async def handle_add_player(self, player):
         await player.add_cards(self.white_deck.get_cards(10))
@@ -78,7 +80,7 @@ class GameMaster:
     async def handle_cards_reveal(self, data):
         player = self.get_cards_owner_by_id(data["cards"])
         if player is None:
-            await player.kick("Próba oszustwa")
+            await self.room.kick_player(player, "Próba oszustwa.")
             return
         message = {
             "type": "CARDS_REVEAL",
@@ -99,8 +101,8 @@ class GameMaster:
                 await self.timer.task
             except asyncio.CancelledError:
                 pass
-            except KickException:
-                raise
+            except KickException as ex:
+                self.chat.send_message_from_system(ex.message)
         self.timer = Timer(self.selecting_time, self.handle_timeout)
         
     
@@ -118,7 +120,7 @@ class GameMaster:
                 await self.select_random_player_cards(player)
                 player.rounds_without_activity = player.rounds_without_activity + 1
                 if player.rounds_without_activity > 2:
-                    await player.kick("Brak aktywności.")
+                    await self.room.kick_player(player, "Brak aktywności.")
             elif player.state == PlayerState.ready:
                 player.rounds_without_activity = 0
 
@@ -176,7 +178,7 @@ class GameMaster:
         Method for handling CARDS_SELECT message
         """
         if not self.player_owns_cards(player, data["cards"]):
-            await player.kick("Próba oszustwa")
+            await self.room.kick_player(player, "Próba oszustwa.")
             return
         self.select_cards(player, data["cards"])
         # Sends played cards in this round if everybody selected their cards

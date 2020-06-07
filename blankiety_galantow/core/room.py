@@ -7,6 +7,7 @@ from fastapi.logger import logger
 from .chat import Chat
 from .helpers import get_random_string
 from .player import Player
+#import game_master.GameMaster
 from .game_master import GameMaster
 from .room_settings import RoomSettings
 from .utils.observable_list import ObservableList
@@ -19,7 +20,7 @@ class Room:
         self.players = ObservableList()
         self.chat = Chat(self.players)
         self.settings = RoomSettings(self.chat)
-        self.game_master = GameMaster(self.players, self.chat, self.settings, self.send_players_update)
+        self.game_master = GameMaster(self)
         self.settings.name = name
         self.admin = None
 
@@ -120,6 +121,9 @@ class Room:
         else:
             # Handle game_master messages
             await self.game_master.process_message(player, data)
+
+    async def kick_player(self, player, reason):
+        await player.kick(reason)
 
     async def handle_player_leaving(self, player, message=None):
         """Does all needed operations after player leaves a room"""
