@@ -4,7 +4,6 @@ import asyncio
 
 from .chat import Chat
 from .deck import Deck, WhiteCard, BlackCard
-#from .room import Room
 from .room_settings import RoomSettings
 from .utils.observable_list import ObservableList
 from .utils.timer import Timer
