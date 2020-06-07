@@ -76,8 +76,8 @@ class GameMaster:
 
     async def handle_cards_reveal(self, player, data):
         cards_owner = self.get_cards_owner_by_id(data["cards"])
-        if player is not cards_owner:
-            await player.kick("Próba oszustwa")
+        if cards_owner is None:
+            await self.room.kick_player(player, "Próba oszustwa")
             return
         message = {
             "type": "CARDS_REVEAL",
