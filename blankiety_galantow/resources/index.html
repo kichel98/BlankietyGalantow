@@ -81,7 +81,7 @@
                         v-for="room in rooms"
                         v-bind:key="room.id"
                         v-bind:room="room"
-                        @click.native="canRoomAcceptNewPlayer(room) ? connect(room.id) : null">
+                        @click.native="isRoomFull(room) ? null : connect(room.id)">
                     </room-item>
                 </ul>
             </div>
@@ -89,6 +89,7 @@
     </main>
 
     <script type="module" src="js/main.js"></script>
+
 </body>
 
 </html>
