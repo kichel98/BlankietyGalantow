@@ -142,6 +142,7 @@ const app = new Vue({
         changePasswordRequired: function(event) {
             if(this.settingsPasswordRequired){
                 this.settings.password = "";
+                this.newSettings.password = "";
             }
             this.settingsPasswordRequired = !this.settingsPasswordRequired
         }
