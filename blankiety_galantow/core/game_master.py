@@ -59,9 +59,11 @@ class GameMaster:
 
     async def process_message(self, player: Player, data: Dict):
         if data["type"] == "CARDS_SELECT" and "cards" in data:
-            await self.handle_selecting_cards(player, data)
+            if self.game_state == GameState.selecting_cards:    
+                await self.handle_selecting_cards(player, data)
         if data["type"] == "CHOOSE_WINNING_CARDS" and "cards" in data:
-            await self.handle_choosing_winner(data)
+            if self.game_state == GameState.choosing_winner:    
+                await self.handle_choosing_winner(data)
         if data["type"] == "CARDS_REVEAL" and "cards" in data:
             await self.handle_cards_reveal(player, data)
         if data["type"] == "CUSTOM_CARD" and "card" in data:
