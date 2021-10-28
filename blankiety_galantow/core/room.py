@@ -22,9 +22,6 @@ class Room:
         self.settings.name = name
         self.admin = None
 
-    def __del__(self):
-        self.game_master.timer.cancel()
-
     @property
     def number_of_players(self):
         return len(self.players)
@@ -33,7 +30,7 @@ class Room:
     def is_empty(self):
         return self.number_of_players == 0
 
-    async def connect_new_player(self, player: Player):
+    async def connect_new_player_and_listen(self, player: Player):
         """Add new player to the room and start listening."""
         if not self.settings.open:
             await player.kill("Pokój jest zamknięty.")

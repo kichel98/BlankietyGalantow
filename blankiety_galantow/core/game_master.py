@@ -47,7 +47,7 @@ class GameMaster:
         await self.send_timer_message(player)
     
     async def handle_player_leave(self, player):
-        if len(self.players) < 2 and self.timer is not None:
+        if len(self.players) < 2 and self.is_timer_set():
             self.timer.cancel()
         if player is self.master:
             self.set_new_random_master()

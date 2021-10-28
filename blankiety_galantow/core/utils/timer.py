@@ -6,12 +6,10 @@ class Timer:
         self._timeout = timeout
         self._callback = callback
         self.task = asyncio.ensure_future(self._job())
-                
 
     async def _job(self):
         await asyncio.sleep(self._timeout)
         await self._callback()
-
 
     def cancel(self):
         self.task.cancel()
