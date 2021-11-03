@@ -17,7 +17,7 @@ class Server:
 
     async def add_player_to_room(self, room_id: int, player: Player):
         """Add new player to existing room."""
-        await self._rooms[room_id].connect_new_player(player)
+        await self._rooms[room_id].connect_new_player_and_listen(player)
         self.delete_if_empty(room_id)
 
     def add_room(self, name: str, seats: int = 0):
