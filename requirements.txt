@@ -4,5 +4,5 @@ fastapi==0.65.2
 h11==0.9.0
 pydantic==1.6.2
 uvicorn==0.11.7
-websockets==8.1
+websockets==9.1
 asyncio==3.4.3
